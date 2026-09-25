@@ -1,16 +1,18 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    // Node 20 の CommonJS 向け。moduleResolution: "node"（=node10）は
+    // TypeScript 7.0 で廃止されるため node16 を使う。
+    // functions/package.json に "type": "module" が無いので CommonJS で出力される。
+    "module": "node16",
+    "moduleResolution": "node16",
     "outDir": "lib",
     "rootDir": "src",
     "noEmit": false,
-    "isolatedModules": false,
-    "baseUrl": ".",
-    "paths": {
-      "@types/*": ["../app/src/types/*"]
-    }
+    "isolatedModules": false
+    // app/src/types との共有方法は未決。rootDir の制約があるため、
+    // paths エイリアスで app/ 配下を直接参照すると TS6059（rootDir の外）になる。
+    // 最初の Function を書く前に方式を決めること。
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "lib"]

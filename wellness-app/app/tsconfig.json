@@ -3,13 +3,24 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
-    "types": ["react", "expo-router/types"],
-    "baseUrl": ".",
+    "noEmit": true,
+    // baseUrl は TypeScript 7.0 で廃止されるため使わない。
+    // paths はこの tsconfig.json からの相対で解決される（TS 5.0以降）。
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "noEmit": true
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["app/**/*.ts", "app/**/*.tsx", "src/**/*.ts", "src/**/*.tsx", "*.ts"],
-  "exclude": ["node_modules", ".expo"]
+  // types は指定しない。指定すると「そのパッケージが必ず存在すること」を要求してしまうため、
+  // 依存を入れる前に Cannot find type definition file エラーになる。
+  // 未指定なら node_modules/@types 配下を自動で拾う。
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    // expo-router の typedRoutes が生成する型（expo start 実行後に作られる）
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": ["node_modules"]
 }
