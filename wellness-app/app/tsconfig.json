@@ -20,7 +20,8 @@
     "src/**/*.tsx",
     // expo-router の typedRoutes が生成する型（expo start 実行後に作られる）
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "nativewind-env.d.ts"
   ],
   "exclude": ["node_modules"]
 }
