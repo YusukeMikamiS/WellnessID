@@ -9,6 +9,8 @@
  * - /member 配下のルートでは常に dark（Member）テーマを適用する。
  */
 
+import * as palette from './palette';
+
 /** テーマが持つ色の口（Community / Member の両方がこの形を満たす） */
 export interface ThemeColors {
   /** 背景 */
@@ -31,60 +33,28 @@ export interface ThemeColors {
   tint: string;
 }
 
+/*
+ * 色の生値は palette.js（CommonJS）に置く。tailwind.config.js と共有するため。
+ * ここでは型を付けて再公開するだけで、値を書き足さないこと。
+ */
+
 /** Community（Light）— 明るいグレージュ×青 */
-const community = {
-  /** 背景 */
-  bg: '#F7F8FA',
-  /** サーフェス（カード・シート） */
-  surface: '#FFFFFF',
-  /** 文字 */
-  ink: '#1A1F27',
-  /** 補助文字 */
-  inkMuted: '#6E7684',
-  /** 主色（Primary） */
-  primary: '#1F4FBF',
-  /** 主色・濃 */
-  primaryStrong: '#16388C',
-  /** 主色・淡 */
-  primarySoft: '#EAEFF9',
-  /** 罫線 */
-  line: '#E4E8EE',
-  /** 面（Tint） */
-  tint: '#DDE3EB',
-} as const satisfies ThemeColors;
+const community = palette.community satisfies ThemeColors;
 
 /** Member（Dark Navy）— ディープネイビー×シルバー */
-const member = {
-  bg: '#0E1524',
-  surface: '#182234',
-  ink: '#EEF2F8',
-  inkMuted: '#8A96A8',
-  primary: '#7FA6F0',
-  primaryStrong: '#4C7DE0',
-  primarySoft: '#1B2740',
-  line: '#27334A',
-  tint: '#2E3A52',
-} as const satisfies ThemeColors;
+const member = palette.member satisfies ThemeColors;
 
 /**
  * 種別色 — PRODUCT / SERVICE / PROFESSIONAL をひと目で見分ける
  * ItemKind（'product' | 'service' | 'pro'）と対応する。
  */
-export const kindColors = {
-  product: { fg: '#1F4FBF', bg: '#EAEFF9' },
-  service: { fg: '#0F7A6B', bg: '#E4F2EF' },
-  pro: { fg: '#7A3E86', bg: '#F2E9F4' },
-} as const;
+export const kindColors = palette.kindColors;
 
 /**
  * セマンティックカラー
  * star は「評価」として認識させるためアンバー固定。テーマで切り替えない。
  */
-export const semantic = {
-  star: '#C9931F',
-  success: '#1B7A4B',
-  danger: '#B4483C',
-} as const;
+export const semantic = palette.semantic;
 
 export const themes = { community, member } as const;
 
@@ -147,7 +117,7 @@ export const typography = {
 /** 影（Community側のカードのみ。Member側は使わず罫線で表現する） */
 export const elevation = {
   card: {
-    shadowColor: '#1A1F27',
+    shadowColor: palette.community.ink,
     shadowOpacity: 0.06,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 2 },

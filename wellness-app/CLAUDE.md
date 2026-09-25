@@ -65,7 +65,7 @@ wellness-app/
 │   ├ components/   # ui/ discover/ review/ member/
 │   ├ hooks/        # useAuth, useCohort, useRanking, useMemberGuard
 │   ├ stores/       # Zustand
-│   ├ theme/        # tokens.ts
+│   ├ theme/        # tokens.ts（色の生値は palette.js）
 │   ├ types/        # エンティティ型定義（functions と共有）
 │   └ utils/
 ├ functions/        # Cloud Functions（TypeScript）
@@ -94,7 +94,7 @@ wellness-app/
 
 ## 4. デザイントークン（企画書⑧）
 
-`src/theme/tokens.ts` に定義済み。値は以下のとおり。
+`src/theme/tokens.ts` に定義済み（色の生値は `src/theme/palette.js` にあり、`tailwind.config.js` と共有）。値は以下のとおり。
 
 | トークン | Community（Light） | Member（Dark Navy） |
 |---|---|---|

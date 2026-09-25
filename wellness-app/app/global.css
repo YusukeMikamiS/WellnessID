@@ -1,0 +1,4 @@
+/* NativeWind のエントリ。app/app/_layout.tsx の先頭で import '../global.css' する。 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
