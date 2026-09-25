@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// 口コミ写真のみ。プロフィール画像は Phase 1 では扱わない。
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /reviews/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

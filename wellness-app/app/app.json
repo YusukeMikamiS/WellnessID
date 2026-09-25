@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "WellnessID",
+    "slug": "wellness-id",
+    "scheme": "wellnessid",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "net.stechco.wellness",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleDisplayName": "WellnessID",
+        "NSPhotoLibraryUsageDescription": "口コミに添付する写真を選択するために使用します。",
+        "NSCameraUsageDescription": "口コミに添付する写真を撮影するために使用します。"
+      }
+    },
+    "android": {
+      "package": "net.stechco.wellness"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "TODO: eas init で払い出される ID を入れる"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "lib",
+    "rootDir": "src",
+    "noEmit": false,
+    "isolatedModules": false,
+    "baseUrl": ".",
+    "paths": {
+      "@types/*": ["../app/src/types/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "lib"]
+}

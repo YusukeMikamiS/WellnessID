@@ -1,0 +1,51 @@
+{
+  "indexes": [
+    {
+      "_comment": "悩み別の絞り込み — 最も頻度の高いクエリ（企画書⑩）",
+      "collectionGroup": "items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "concernIds", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "avgScore", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "_comment": "カテゴリ別一覧",
+      "collectionGroup": "items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "categoryId", "order": "ASCENDING" },
+        { "fieldPath": "avgScore", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "_comment": "種別横断ランキングの補助",
+      "collectionGroup": "items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "kind", "order": "ASCENDING" },
+        { "fieldPath": "avgScore", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "_comment": "予約一覧（uid × startAt）",
+      "collectionGroup": "reservations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "startAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "_comment": "口コミ一覧の絞り込み（継続中／使用期間）",
+      "collectionGroup": "reviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "ongoing", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

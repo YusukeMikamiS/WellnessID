@@ -1,0 +1,29 @@
+node_modules/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# Firebase
+.firebase/
+.emulator-data/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# 秘密情報 — 絶対にコミットしない
+.env
+.env.*
+!.env.example
+*serviceAccount*.json
+google-services.json
+GoogleService-Info.plist
+*.p8
+*.p12
+*.mobileprovision
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json

@@ -1,0 +1,156 @@
+rules_version = '2';
+
+// ============================================================================
+// WellnessID（仮）Firestore セキュリティルール — 骨格
+//
+// 出典：アプリ企画書 Rev.2 ⑩ DB設計
+//
+// 【規約】
+// - 集計値（avgScore / reviewCount / repeatRate / cohortScores）と rankings/** は
+//   Cloud Functions（Admin SDK）のみが書き込む。クライアントからは読取のみ。
+// - items / serviceDetails / proDetails / columns / concerns / categories は運営のみ書込。
+// - reports は作成のみ許可、読取は運営のみ。
+//
+// ⚠️ このファイルは人が必ずレビューすること（CLAUDE.md §8）。
+// ⚠️ @firebase/rules-unit-testing でテストを書くまで本番に上げないこと。
+// ============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function role() {
+      return isSignedIn() ? request.auth.token.role : 'guest';
+    }
+
+    function isMember() {
+      return role() == 'member';
+    }
+
+    // 運営（Custom Claims の admin）。付与は運営スクリプトからのみ。
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // ---------- マスタ（誰でも読める・運営のみ書込） ----------
+    match /concerns/{concernId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- アイテム ----------
+    // 未ログインでも閲覧可（企画書②：登録不要で閲覧できる）
+    match /items/{itemId} {
+      allow read: if true;
+      // 集計値の更新は Functions（Admin SDK）のみ。クライアントは一切書けない。
+      allow write: if isAdmin();
+
+      // ---------- 口コミ ----------
+      match /reviews/{reviewId} {
+        allow read: if true;
+
+        // 投稿は Callable Function 経由（バリデーション＋集計のトランザクション更新が必要）。
+        // クライアントからの直接書込は許可しない。
+        allow create, update, delete: if false;
+      }
+    }
+
+    match /serviceDetails/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /proDetails/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 新着フィード用のフラットコレクション（Functions が書き込む）
+    match /reviews_index/{reviewId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /columns/{columnId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notices/{noticeId} {
+      // audience == 'member' のお知らせは会員のみ
+      allow read: if resource.data.audience == 'all' || isMember();
+      allow write: if isAdmin();
+    }
+
+    // ---------- ランキング（読取専用） ----------
+    match /rankings/{document=**} {
+      allow read: if true;
+      allow write: if false; // Functions の Admin SDK のみ
+    }
+
+    // ---------- ユーザー ----------
+    match /users/{uid} {
+      // プロフィールは本人のみ読取。口コミの表示には authorSnapshot を使うため、
+      // 他人の users ドキュメントを読む必要はない。
+      allow read: if isSelf(uid);
+      allow create: if isSelf(uid);
+      // role は Custom Claims 側が正。ここから role を書き換えさせない。
+      allow update: if isSelf(uid)
+                    && request.resource.data.role == resource.data.role;
+      // TODO-A(M1): 退会時の扱い。口コミを残す方針なら、アカウント削除は
+      // Callable Function 側で users 削除 ＋ authorSnapshot 匿名化を行う。
+      allow delete: if false;
+
+      match /favorites/{itemId} {
+        allow read, write: if isSelf(uid);
+      }
+    }
+
+    // ---------- 会員 ----------
+    match /memberProfiles/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow write: if isAdmin(); // サロン入会時に運営が付与
+    }
+
+    match /plans/{planId} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+
+    match /reservations/{reservationId} {
+      allow read: if isSignedIn() && resource.data.uid == request.auth.uid;
+      // 二重予約の防止をトランザクションで行うため、Callable 経由のみ。
+      allow create, update, delete: if false;
+    }
+
+    match /trainingLogs/{uid}/logs/{logId} {
+      allow read: if isSelf(uid);
+      allow write: if isAdmin(); // トレーナーが運営として入力する
+    }
+
+    // ---------- 通報（作成のみ許可・読取は運営のみ） ----------
+    match /reports/{reportId} {
+      allow read: if isAdmin();
+      allow create: if false; // Callable（reportReview）経由のみ
+      allow update, delete: if isAdmin();
+    }
+
+    // 上記に当てはまらないパスは全拒否
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
