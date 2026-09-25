@@ -10,6 +10,10 @@ const { community, member, kind, semantic } = require('./src/theme/palette');
 module.exports = {
   content: ['./app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
   presets: [require('nativewind/preset')],
+  // ライト固定（Rev.3）。未指定だと 'media' になり、Web で react-native-css-interop が
+  // 起動時に colorScheme.set() を呼んで "Cannot manually set color scheme" で落ちる。
+  // 'class' なら <html class="dark"> を付けない限り dark: は効かないので、実質ライト固定。
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
