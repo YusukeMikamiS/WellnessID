@@ -1,7 +1,7 @@
 /**
  * 悩みタグ・カテゴリ・アイテム（商品／店舗／専門家）
  *
- * 出典：アプリ企画書 Rev.2 ⑨ データ設計
+ * 出典：アプリ企画書 Rev.3（2026/09/25）⑨ データ設計
  *
  * 【設計判断】商品・サービス（店舗）・専門家を「共通の Item 1つ ＋ 種別ごとの追加情報」で持つ。
  * 共通コレクションが1つあることで横断ランキングが並べ替え1回で済み、
@@ -88,7 +88,12 @@ export interface Item {
   updatedAt: EpochMillis;
 }
 
-/** 店舗固有の情報（serviceDetails/{itemId}） */
+/**
+ * 店舗固有の情報（serviceDetails/{itemId}）
+ *
+ * Rev.3：甲のサロン（Motoazabu LIFE CREATE Salon）も、他の掲載店舗と同じくここに入る。
+ * コード上で特別扱いしないこと。予約はアプリ外（公式サイト・電話）で受ける。
+ */
 export interface ServiceDetail {
   itemId: string;
   address: string;

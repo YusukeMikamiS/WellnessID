@@ -25,8 +25,13 @@ export type CohortKey = `${AgeBand}_${Gender}`;
 export const ITEM_KINDS = ['product', 'service', 'pro'] as const;
 export type ItemKind = (typeof ITEM_KINDS)[number];
 
-/** ユーザーロール（Firebase Auth Custom Claims） */
-export const USER_ROLES = ['guest', 'free', 'member'] as const;
+/**
+ * ユーザーロール（Firebase Auth Custom Claims）
+ *
+ * Rev.3 で 'member'（サロン会員）を削除。guest / free の2値のみ。
+ * ロールによる画面の出し分け・ルートガードは実装しない。
+ */
+export const USER_ROLES = ['guest', 'free'] as const;
 export type UserRole = (typeof USER_ROLES)[number];
 
 /**
@@ -63,7 +68,7 @@ export type AreaCode = string;
 /**
  * データの出所
  * App Store Review Guideline 5.1.3 は HealthKit 由来データの広告利用・第三者提供を禁止している。
- * Phase 3 で連携する際に切り分けられなくなるため、最初からこの列を持つ。
+ * Phase 3 で連携する際に切り分けられなくなるため、型としては最初から持っておく。
  * Phase 1 では常に 'manual'。
  */
 export type DataSource = 'manual' | 'healthkit';

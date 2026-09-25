@@ -1,7 +1,7 @@
 /**
  * 仕様として固定された定数
  *
- * 出典：アプリ企画書 Rev.2 ⑪⑰
+ * 出典：アプリ企画書 Rev.3（2026/09/25）⑪⑰
  *
  * これらの値は企画書に明記された仕様。変更には甲の合意が必要。
  */
@@ -22,21 +22,24 @@ export const REVIEW_STARS_MAX = 5;
 /** 口コミ写真の最大枚数（TODO(M1): 要件定義で確定） */
 export const REVIEW_MAX_PHOTOS = 3;
 
-/** 会員証QRトークンの有効期間（ミリ秒）= 5分 */
-export const MEMBER_CARD_TOKEN_TTL_MS = 5 * 60 * 1000;
-
 /** 「1年以上継続」の絞り込みに使う月数 */
 export const LONG_TERM_MONTHS = 12;
 
-/** 予約リマインドの送信時刻（前日20時） */
-export const RESERVATION_REMINDER_HOUR = 20;
-
-/** 初期投入データの目標件数（seed スクリプトの基準） */
+/**
+ * 初期投入データの目標件数（seed スクリプトの基準）
+ *
+ * Rev.3：想定男女比 8:2。母数が溜まるのは 30s_m / 40s_m / 50s_m の3セルに集中する想定。
+ * フォールバック表示を確認するため、意図的に n<5 のセルを混ぜること。
+ */
 export const SEED_TARGETS = {
-  concerns: 14,
+  concerns: 15,
   categories: 15,
   items: 100,
   reviews: 300,
+  /** 投稿者の想定男女比（male : female） */
+  genderRatio: { m: 0.8, f: 0.2 },
+  /** 母数を厚くするコホート */
+  denseCohorts: ['30s_m', '40s_m', '50s_m'],
   /** フォールバック表示の確認のため、意図的に n<5 にするアイテム数 */
   lowSampleItems: 15,
 } as const;

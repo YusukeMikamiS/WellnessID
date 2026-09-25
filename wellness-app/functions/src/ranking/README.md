@@ -16,3 +16,6 @@ rankings/byCohort/{cohortKey}/scopes/{scopeKey}
 ```
 
 **Emulator Suite 上で検証すること。本番 Firestore で試さない。**
+
+> Rev.3：想定男女比 8:2 のため、母数が溜まるのは `30s_m` / `40s_m` / `50s_m` に集中する。
+> 女性セルは長くフォールバック表示になる想定。セグメント設計自体は変えない。

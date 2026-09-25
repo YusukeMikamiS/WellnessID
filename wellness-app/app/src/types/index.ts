@@ -1,7 +1,7 @@
 /**
  * エンティティ型定義 — このディレクトリが唯一の正
  *
- * 出典：アプリ企画書 Rev.2（2026/09/10）⑨ データ設計
+ * 出典：アプリ企画書 Rev.3（2026/09/25）⑨ データ設計
  * ／ WBS rev4（2026/09/11）／ ストア審査 iOS-Android 差分メモ（2026/09/15）
  *
  * ┌─────────────────────────────────────────────────────────────┐
@@ -23,5 +23,4 @@ export * from './item';
 export * from './user';
 export * from './review';
 export * from './ranking';
-export * from './member';
 export * from './content';

@@ -6,32 +6,10 @@
   "scripts": {
     "start": "expo start",
     "ios": "expo run:ios",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "doctor": "npx expo-doctor"
   },
-  "dependencies": {
-    "expo": "*",
-    "expo-router": "*",
-    "expo-constants": "*",
-    "expo-linking": "*",
-    "expo-status-bar": "*",
-    "expo-font": "*",
-    "@expo-google-fonts/jost": "*",
-    "@expo-google-fonts/zen-kaku-gothic-new": "*",
-    "react": "*",
-    "react-native": "*",
-    "react-native-safe-area-context": "*",
-    "react-native-screens": "*",
-    "nativewind": "*",
-    "zustand": "*",
-    "@tanstack/react-query": "*",
-    "react-hook-form": "*",
-    "@hookform/resolvers": "*",
-    "zod": "*",
-    "firebase": "*"
-  },
-  "devDependencies": {
-    "@types/react": "*",
-    "typescript": "~5.6.3",
-    "tailwindcss": "^3.4.0"
-  }
+  "//": "依存はあえて空。bash scripts/bootstrap-app.sh で `expo install` に解決させる（SDK整合を手で書かない）",
+  "dependencies": {},
+  "devDependencies": {}
 }

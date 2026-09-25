@@ -1,37 +1,36 @@
 /**
- * 色の生値（唯一の出所）
+ * カラーパレット（CommonJS）— 色の唯一の出所
  *
- * tailwind.config.js（Node が直接 require する）と tokens.ts の両方から読むため、
- * 素の CommonJS で書く。Node 20 は .ts を require できないので TypeScript 化しないこと。
+ * 出典：アプリ企画書 Rev.3（2026/09/25）⑧ UI設計
  *
- * - 画面・コンポーネントからは直接参照せず、tokens.ts 経由で使う。
- * - 型は palette.d.ts。キーを増減したらそちらも合わせる。
- * - 金（gold）は使用しない。
+ * 【なぜ .js なのか】
+ * tailwind.config.js は Node が実行するため、.ts ファイルを require できない。
+ * TypeScript 側（tokens.ts）と Tailwind 側の両方から読めるよう、
+ * 生の値だけをこのCommonJSファイルに置き、型は palette.d.ts で与えている。
+ *
+ * 【規約】色を足す・変えるのはこのファイルだけ。他のどこにもハードコードしない。
  */
 
 /** Community（Light）— 明るいグレージュ×青 */
 const community = {
-  /** 背景 */
   bg: '#F7F8FA',
-  /** サーフェス（カード・シート） */
   surface: '#FFFFFF',
-  /** 文字 */
   ink: '#1A1F27',
-  /** 補助文字 */
   inkMuted: '#6E7684',
-  /** 主色（Primary） */
   primary: '#1F4FBF',
-  /** 主色・濃 */
   primaryStrong: '#16388C',
-  /** 主色・淡 */
   primarySoft: '#EAEFF9',
-  /** 罫線 */
   line: '#E4E8EE',
-  /** 面（Tint） */
   tint: '#DDE3EB',
 };
 
-/** Member（Dark Navy）— ディープネイビー×シルバー */
+/**
+ * Member（Dark Navy）
+ *
+ * ⚠️ Rev.3 では使いません。 サロン会員機能の削除によりダークテーマは不要になりました。
+ * 将来の再導入に備えて定義だけ残しています（企画書 Rev.3 ⑧「設計上の約束」）。
+ * 画面でこれを参照しないこと。テーマ切替も実装しません。
+ */
 const member = {
   bg: '#0E1524',
   surface: '#182234',
@@ -44,24 +43,18 @@ const member = {
   tint: '#2E3A52',
 };
 
-/**
- * 種別色 — PRODUCT / SERVICE / PROFESSIONAL をひと目で見分ける
- * ItemKind（'product' | 'service' | 'pro'）と対応する。
- */
-const kindColors = {
+/** 種別色 — PRODUCT / SERVICE / PROFESSIONAL */
+const kind = {
   product: { fg: '#1F4FBF', bg: '#EAEFF9' },
   service: { fg: '#0F7A6B', bg: '#E4F2EF' },
   pro: { fg: '#7A3E86', bg: '#F2E9F4' },
 };
 
-/**
- * セマンティックカラー
- * star は「評価」として認識させるためアンバー固定。テーマで切り替えない。
- */
+/** セマンティック。star は評価として認識させるためアンバー固定（テーマで切り替えない）。 */
 const semantic = {
   star: '#C9931F',
   success: '#1B7A4B',
   danger: '#B4483C',
 };
 
-module.exports = { community, member, kindColors, semantic };
+module.exports = { community, member, kind, semantic };

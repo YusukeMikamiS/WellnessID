@@ -3,13 +3,13 @@
  *
  * 【規約】
  * - 集計値（avgScore / reviewCount / repeatRate / cohortScores）を書き込めるのはここだけ。
- * - 型は app/src/types を import して共有する（npm workspaces）。
- * - このディレクトリのコードは人が必ずレビューする（CLAUDE.md §8）。
+ * - このディレクトリのコードは人が必ずレビューする。
  *
- * 企画書⑫で ★ が付いているものが Callable の対象：
+ * 企画書 Rev.3 ⑫ で ★ が付いているものが Callable の対象：
  *   onboard.estimateCohort / review.postReview / review.reportReview
- *   member.getMemberCard / createReservation / updateReservation / cancelReservation
  * ＋ ランキングの週次集計（スケジューラ）
+ *
+ * Rev.3 で不要になったもの：予約・会員証・トレーニング履歴・契約プラン関連のすべて。
  */
 
 // TODO: 実装は基盤構築後。まずは型とルールを確定させる。

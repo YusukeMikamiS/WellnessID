@@ -1,31 +1,40 @@
-/** palette.js の型。値は palette.js にのみ書く。 */
+/** palette.js（CommonJS）の型定義 */
 
-interface PaletteTheme {
-  readonly bg: string;
-  readonly surface: string;
-  readonly ink: string;
-  readonly inkMuted: string;
-  readonly primary: string;
-  readonly primaryStrong: string;
-  readonly primarySoft: string;
-  readonly line: string;
-  readonly tint: string;
+export interface ThemeColors {
+  /** 背景 */
+  bg: string;
+  /** サーフェス（カード・シート） */
+  surface: string;
+  /** 文字 */
+  ink: string;
+  /** 補助文字 */
+  inkMuted: string;
+  /** 主色（Primary） */
+  primary: string;
+  /** 主色・濃 */
+  primaryStrong: string;
+  /** 主色・淡 */
+  primarySoft: string;
+  /** 罫線 */
+  line: string;
+  /** 面（Tint） */
+  tint: string;
 }
 
-interface PaletteKindColor {
-  readonly fg: string;
-  readonly bg: string;
+export interface KindColor {
+  fg: string;
+  bg: string;
 }
 
-export declare const community: PaletteTheme;
-export declare const member: PaletteTheme;
-export declare const kindColors: {
-  readonly product: PaletteKindColor;
-  readonly service: PaletteKindColor;
-  readonly pro: PaletteKindColor;
+export declare const community: ThemeColors;
+export declare const member: ThemeColors;
+export declare const kind: {
+  product: KindColor;
+  service: KindColor;
+  pro: KindColor;
 };
 export declare const semantic: {
-  readonly star: string;
-  readonly success: string;
-  readonly danger: string;
+  star: string;
+  success: string;
+  danger: string;
 };

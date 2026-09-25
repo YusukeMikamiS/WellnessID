@@ -1,7 +1,7 @@
 /**
  * ユーザー・プロフィール属性
  *
- * 出典：アプリ企画書 Rev.2 ⑨ データ設計
+ * 出典：アプリ企画書 Rev.3（2026/09/25）⑨ データ設計
  *
  * 【重要】プロフィール属性は「後から遡って集められない項目」。
  * Phase 1 で必ず取得する。絞り込みに使うのは年代×性別の2軸だけだが、
@@ -27,7 +27,7 @@ export interface User extends UserProfile {
   uid: string;
   nickname: string;
   email: string;
-  /** Custom Claims と同期する。付与は運営スクリプトからのみ。 */
+  /** Custom Claims と同期する。Rev.3 では guest / free の2値のみ。 */
   role: UserRole;
   /** 利用規約への同意（App Store / Google Play 審査要件） */
   termsAgreedAt: EpochMillis | null;

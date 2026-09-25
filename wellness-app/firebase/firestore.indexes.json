@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "_comment": "悩み別の絞り込み — 最も頻度の高いクエリ（企画書⑩）",
+      "_comment": "悩み別の絞り込み — 最も頻度の高いクエリ（企画書 Rev.3 ⑩）",
       "collectionGroup": "items",
       "queryScope": "COLLECTION",
       "fields": [
@@ -25,15 +25,6 @@
       "fields": [
         { "fieldPath": "kind", "order": "ASCENDING" },
         { "fieldPath": "avgScore", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "_comment": "予約一覧（uid × startAt）",
-      "collectionGroup": "reservations",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "uid", "order": "ASCENDING" },
-        { "fieldPath": "startAt", "order": "ASCENDING" }
       ]
     },
     {

@@ -1,10 +1,10 @@
 /**
  * NativeWind / Tailwind
- * 色は src/theme/palette.js（tokens.ts と共有する生値）を唯一の正とし、
- * ここではその値を参照するだけにする。ここに新しい色を直接足さないこと（CLAUDE.md §3-2）。
- * tokens.ts は Node 20 で require できないため、palette.js を直接読む。
+ *
+ * 色は src/theme/palette.js を唯一の正とし、ここではそれを読むだけ。
+ * ここに新しい色を直接足さないこと（CLAUDE.md §3-2）。
  */
-const { community, member, kindColors, semantic } = require('./src/theme/palette.js');
+const { community, member, kind, semantic } = require('./src/theme/palette');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -13,9 +13,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Community（Light）: bg-c-surface / text-c-ink など
         c: community,
+        // Member（Dark）: bg-m-surface / text-m-ink など
         m: member,
-        kind: kindColors,
+        kind,
         semantic,
       },
     },

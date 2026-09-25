@@ -1,69 +1,46 @@
 /**
  * デザイントークン
  *
- * 出典：アプリ企画書 Rev.2（2026/09/10）⑧ UI設計
+ * 出典：アプリ企画書 Rev.3（2026/09/25）⑧ UI設計
  *
  * 【規約】
- * - 色は必ずこのファイルから参照する。コンポーネント内でのハードコード禁止。
+ * - 色は必ずこのファイル（実体は palette.js）から参照する。コンポーネント内でのハードコード禁止。
  * - 金（gold）は使用しない。旧版（黒×金）のトークンは全廃済み。
- * - /member 配下のルートでは常に dark（Member）テーマを適用する。
+ * - Rev.3 で使うのは light（community）のみ。dark（member）は定義を残すだけで、
+ *   テーマ切替は実装しない。画面では useTheme() ではなく community を直接使ってよい。
+ *
+ * 色の生の値は palette.js にある。tailwind.config.js も同じファイルを読むため、
+ * Tailwind と TypeScript で色がズレることがない。
  */
 
-import * as palette from './palette';
+import { community, member, kind, semantic as semanticColors } from './palette';
+import type { ThemeColors, KindColor } from './palette';
 
-/** テーマが持つ色の口（Community / Member の両方がこの形を満たす） */
-export interface ThemeColors {
-  /** 背景 */
-  bg: string;
-  /** サーフェス（カード・シート） */
-  surface: string;
-  /** 文字 */
-  ink: string;
-  /** 補助文字 */
-  inkMuted: string;
-  /** 主色（Primary） */
-  primary: string;
-  /** 主色・濃 */
-  primaryStrong: string;
-  /** 主色・淡 */
-  primarySoft: string;
-  /** 罫線 */
-  line: string;
-  /** 面（Tint） */
-  tint: string;
-}
-
-/*
- * 色の生値は palette.js（CommonJS）に置く。tailwind.config.js と共有するため。
- * ここでは型を付けて再公開するだけで、値を書き足さないこと。
- */
-
-/** Community（Light）— 明るいグレージュ×青 */
-const community = palette.community satisfies ThemeColors;
-
-/** Member（Dark Navy）— ディープネイビー×シルバー */
-const member = palette.member satisfies ThemeColors;
+export type { ThemeColors, KindColor };
 
 /**
  * 種別色 — PRODUCT / SERVICE / PROFESSIONAL をひと目で見分ける
  * ItemKind（'product' | 'service' | 'pro'）と対応する。
  */
-export const kindColors = palette.kindColors;
+export const kindColors = kind;
 
-/**
- * セマンティックカラー
- * star は「評価」として認識させるためアンバー固定。テーマで切り替えない。
- */
-export const semantic = palette.semantic;
+/** セマンティックカラー */
+export const semantic = semanticColors;
 
 export const themes = { community, member } as const;
 
 export type ThemeMode = keyof typeof themes;
 
-/** テーマの取得。Member ルート配下では必ず 'member' を渡すこと。 */
-export function getThemeColors(mode: ThemeMode): ThemeColors {
+/**
+ * テーマの取得。
+ * Rev.3 では常に 'community'。'member' は将来用の定義で、画面から渡さないこと。
+ */
+export function getThemeColors(mode: ThemeMode = 'community'): ThemeColors {
   return themes[mode];
 }
+
+/** Rev.3 で実際に使う唯一のテーマ。画面ではこれを使う。 */
+export const colors: ThemeColors = themes.community;
 
 /** 余白（4の倍数） */
 export const spacing = {
@@ -117,7 +94,7 @@ export const typography = {
 /** 影（Community側のカードのみ。Member側は使わず罫線で表現する） */
 export const elevation = {
   card: {
-    shadowColor: palette.community.ink,
+    shadowColor: '#1A1F27',
     shadowOpacity: 0.06,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 2 },

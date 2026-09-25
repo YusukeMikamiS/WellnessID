@@ -32,12 +32,13 @@ export interface Column {
   publishedAt: EpochMillis | null;
 }
 
-/** お知らせ（notices/{noticeId}） */
+/**
+ * お知らせ（notices/{noticeId}）
+ * Rev.3 で audience（全体／会員限定の出し分け）を削除。全ユーザー共通。
+ */
 export interface Notice {
   id: string;
   title: string;
   body: string;
-  /** 全体向けか会員限定かの出し分け */
-  audience: 'all' | 'member';
   publishedAt: EpochMillis;
 }

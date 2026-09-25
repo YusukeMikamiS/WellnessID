@@ -1,9 +1,9 @@
 # src/api — データアクセス層
 
-**画面から直接 Firestore を触らないこと。** すべてのアクセスはこのディレクトリ経由にする（CLAUDE.md §3-3）。
+**画面から直接 Firestore を触らないこと。** すべてのアクセスはこのディレクトリ経由にする。
 将来の REST / GraphQL 化に備えた抽象層でもある。ESLint で機械的に弾いている。
 
-企画書⑫の API 構成に対応させる：
+企画書 Rev.3 ⑫ の API 構成に対応させる：
 
 | モジュール | 内容 |
 |---|---|
@@ -14,7 +14,8 @@
 | `review.ts` | getReviews / postReview ★Callable / toggleLike / toggleFavorite / reportReview ★Callable |
 | `column.ts` | getColumns / getColumn |
 | `mywell.ts` | getMyReviews / getMyItems |
-| `member.ts` | getMemberProfile / getMemberCard ★Callable / 予約CRUD ★Callable / getTrainingLogs / getPlan |
-| `notice.ts` | getNotices(audience) |
+| `notice.ts` | getNotices() |
 
 ★ = Cloud Functions 経由（整合性・通知・不正防止が必要なもの）
+
+> Rev.3 で `member.ts`（会員証・予約・履歴・プラン）は不要になりました。作らないこと。
