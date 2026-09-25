@@ -40,13 +40,28 @@
 
 ### ① 必要なものを入れる
 
-VS Codeでターミナルを開き（`Ctrl` + `@`）、このフォルダで実行します。
+VS Codeでターミナルを開き（`Ctrl` + `@`）、**`wellness-app` フォルダの中で**実行します。
+
+**Windows（PowerShell）の場合**
+
+```powershell
+cd wellness-app
+powershell -ExecutionPolicy Bypass -File scripts\bootstrap-app.ps1
+```
+
+**Mac / Linux / Git Bash の場合**
 
 ```bash
+cd wellness-app
 bash scripts/bootstrap-app.sh
 ```
 
 5〜10分かかります。終わるまで待ってください。
+
+> ⚠️ **OneDrive の中で作業しないでください。**
+> これから入る `node_modules` は数万ファイル・1GB近くになります。
+> OneDrive が同期しようとして「ファイルが使用中」エラーや同期の遅延を起こします。
+> `C:\dev\WellnessID` のような場所に移してから実行してください。
 
 > 💡 なぜスクリプトなのか：使うライブラリのバージョンは、手で書くと必ずズレます。
 > `expo install` というコマンドに「今のExpoに合うバージョン」を選ばせるほうが確実なので、
