@@ -21,7 +21,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { colors, fontFamily } from '@/theme/tokens';
+import { headerOptions } from '@/theme/navigation';
+import { colors } from '@/theme/tokens';
 
 const queryClient = new QueryClient();
 
@@ -42,9 +43,7 @@ export default function RootLayout() {
         <StatusBar style="dark" />
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: colors.surface },
-            headerTintColor: colors.primary,
-            headerTitleStyle: { fontFamily: fontFamily.bodyBold, color: colors.ink },
+            ...headerOptions,
             headerBackButtonDisplayMode: 'minimal',
             contentStyle: { backgroundColor: colors.bg },
           }}
@@ -52,15 +51,14 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="splash" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding/index" options={{ title: 'はじめに' }} />
+          {/* タイトルはステップごとに変わる（最近どうですか？ → あなたのこと → 準備できました） */}
+          <Stack.Screen name="onboarding/index" options={{ title: '最近どうですか？' }} />
+          {/* 悩み名・カテゴリ名はデータ取得の実装時に動的タイトルへ差し替える */}
           <Stack.Screen name="discover/concern/[id]" options={{ title: '悩み別ランキング' }} />
           <Stack.Screen name="discover/category/[id]" options={{ title: 'アイテム一覧' }} />
-          <Stack.Screen name="discover/item/[id]/index" options={{ title: 'アイテム詳細' }} />
+          <Stack.Screen name="discover/item/[id]/index" options={{ title: '詳細' }} />
           <Stack.Screen name="discover/item/[id]/reviews" options={{ title: '口コミ一覧' }} />
-          <Stack.Screen
-            name="discover/item/[id]/post"
-            options={{ title: '口コミを書く', presentation: 'modal' }}
-          />
+          <Stack.Screen name="discover/item/[id]/post" options={{ title: '口コミを投稿' }} />
           <Stack.Screen name="column/[id]" options={{ title: 'コラム' }} />
           <Stack.Screen name="notice" options={{ title: 'お知らせ' }} />
           <Stack.Screen name="settings" options={{ title: '設定' }} />

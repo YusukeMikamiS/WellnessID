@@ -1,14 +1,15 @@
 import { ScreenPlaceholder } from '@/components/ui/ScreenPlaceholder';
 
-export default function DiscoverItemScreen() {
+export default function ItemScreen() {
   return (
     <ScreenPlaceholder
-      title="アイテム詳細"
+      title="詳細"
       screenNo={10}
-      note="商品・店舗・専門家の共通詳細。評価分布・近い人の評価・外部リンク"
+      note="評価と口コミ件数 → 指標（継続中・近い人の口コミ・1年以上継続）→ 外部導線 → 悩み・目的タグ → 評価の分布 → 口コミ"
       links={[
-        { label: '⑪ 口コミ一覧', href: '/discover/item/sample/reviews' },
-        { label: '⑫ 口コミを書く', href: '/discover/item/sample/post' },
+        { label: '口コミ（すべて見る）', href: '/discover/item/sample/reviews' },
+        { label: '口コミを書く', href: '/discover/item/sample/post' },
+        { label: 'この悩み・目的で選ばれています', href: '/discover/concern/sample' },
       ]}
     />
   );

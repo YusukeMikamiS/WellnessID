@@ -1,15 +1,15 @@
 import { ScreenPlaceholder } from '@/components/ui/ScreenPlaceholder';
 
-export default function MywellnessScreen() {
+export default function MyWellnessScreen() {
   return (
     <ScreenPlaceholder
       title="MY WELLNESS"
       screenNo={14}
-      note="未ログイン／会員の2段で出し分ける。お気に入り・自分の口コミ"
+      note="未ログイン：空の状態・無料登録／ログイン・使い方の4ステップ。会員：プロフィール・いま続けているもの・やめたもの・投稿への反応"
       links={[
-        { label: '③ ログイン', href: '/login' },
-        { label: '④ 新規登録', href: '/signup' },
-        { label: '⑰ 設定', href: '/settings' },
+        { label: '無料登録してはじめる', href: '/signup' },
+        { label: 'ログイン', href: '/login' },
+        { label: '⑩ 詳細（いま続けているもの）', href: '/discover/item/sample' },
       ]}
     />
   );

@@ -5,14 +5,16 @@ export default function HomeScreen() {
     <ScreenPlaceholder
       title="ホーム"
       screenNo={5}
-      note="悩み・目的から探す入口。新着口コミ・コラム・お知らせを並べる"
+      note="上から順に：悩みから探す入口 → あなたと近い人が選んだもの → 総合ランキング → ウェルネスコラム → 新着の口コミ"
       links={[
-        { label: '① Splash', href: '/splash' },
-        { label: '② オンボーディング', href: '/onboarding' },
+        { label: '悩みから探す（すべて）', href: '/search' },
         { label: '⑦ 悩み別ランキング', href: '/discover/concern/sample' },
-        { label: '⑩ アイテム詳細', href: '/discover/item/sample' },
+        { label: '近い人が選んだもの（もっと見る）', href: '/ranking' },
+        { label: '⑩ 詳細', href: '/discover/item/sample' },
         { label: '⑮ コラム', href: '/column/sample' },
-        { label: '⑯ お知らせ', href: '/notice' },
+        { label: '新着の口コミ（もっと見る）', href: '/reviews' },
+        { label: '① Splash（確認用）', href: '/splash' },
+        { label: '② オンボーディング（確認用）', href: '/onboarding' },
       ]}
     />
   );

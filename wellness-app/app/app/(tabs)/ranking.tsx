@@ -5,8 +5,8 @@ export default function RankingScreen() {
     <ScreenPlaceholder
       title="ランキング"
       screenNo={8}
-      note="総合・種別・カテゴリ・悩み・近い人のランキング。母数 n を常に表示する"
-      links={[{ label: '⑩ アイテム詳細', href: '/discover/item/sample' }]}
+      note="「みんなの評価／あなたと近い人」の切替。総合・PRODUCTS・SERVICES・専門家・悩み別のチップ。母数 n を常に表示する"
+      links={[{ label: '⑩ 詳細', href: '/discover/item/sample' }]}
     />
   );
 }

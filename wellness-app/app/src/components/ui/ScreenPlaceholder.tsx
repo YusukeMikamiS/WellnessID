@@ -6,9 +6,12 @@
  *
  * - 動的ルート（[id]）では useLocalSearchParams() の id も表示する
  * - links は骨組み段階の遷移確認用（全17画面に到達できることを確かめるため）
+ * - タブ内ではタブバー（磨りガラス・absolute）の高さぶん下に余白を取る
  */
 
 import { Link, useLocalSearchParams, type Href } from 'expo-router';
+import { BottomTabBarHeightContext } from 'expo-router/tabs';
+import { useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -29,10 +32,21 @@ interface Props {
 
 export function ScreenPlaceholder({ title, screenNo, note, links = [] }: Props) {
   const { id } = useLocalSearchParams<{ id?: string }>();
+  // タブ外では undefined。タブバーが下端のセーフエリアを含むので、タブ内では bottom の inset を重ねない
+  const tabBarHeight = useContext(BottomTabBarHeightContext);
+  const inTabs = tabBarHeight != null;
 
   return (
-    <SafeAreaView style={styles.root}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <SafeAreaView
+      style={styles.root}
+      edges={inTabs ? ['top', 'left', 'right'] : ['top', 'bottom', 'left', 'right']}
+    >
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          inTabs && { paddingBottom: tabBarHeight + spacing.lg },
+        ]}
+      >
         <Text style={styles.screenNo}>SCREEN {String(screenNo).padStart(2, '0')}</Text>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.note}>{note}</Text>

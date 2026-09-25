@@ -6,7 +6,7 @@ export default function LoginScreen() {
       title="ログイン"
       screenNo={3}
       note="メールアドレスとパスワードでログインする"
-      links={[{ label: '新規登録へ', href: '/signup' }]}
+      links={[{ label: '新規登録（無料）', href: '/signup' }]}
     />
   );
 }
