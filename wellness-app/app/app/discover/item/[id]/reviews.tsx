@@ -1,12 +1,12 @@
 import { ScreenPlaceholder } from '@/components/ui/ScreenPlaceholder';
 
-export default function DiscoverItemReviewsScreen() {
+export default function ItemReviewsScreen() {
   return (
     <ScreenPlaceholder
       title="口コミ一覧"
       screenNo={11}
-      note="アイテムの構造化口コミを一覧で読む。通報・ブロックの導線を置く"
-      links={[{ label: '⑫ 口コミを書く', href: '/discover/item/sample/post' }]}
+      note="絞り込み（すべて／あなたと近い人／1年以上継続／継続中のみ）と母数 n。各口コミに「参考になった」と通報"
+      links={[{ label: '口コミを書く', href: '/discover/item/sample/post' }]}
     />
   );
 }

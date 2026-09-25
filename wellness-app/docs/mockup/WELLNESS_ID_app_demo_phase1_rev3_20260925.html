@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>WELLNESS ID（仮） — Phase 1 デモ rev.3（サンプルデータ版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   WELLNESS ID（仮） — Phase 1 Demo rev.3 ／ 甲提出用（サンプルデータ版）
+   2026/09/25 打ち合わせの決定を反映
+
+   rev.2（09/15）からの変更
+   ├ サロン会員機能（会員証・予約・予約変更・トレーニング履歴・契約プラン）を
+   │  スコープから削除 … 23画面 → 17画面
+   ├ WELLNESS ID 自体の会員機能（登録・ログイン・MY WELLNESS）は継続
+   ├ MY WELLNESS の出し分けを 3段（未ログイン／一般／サロン会員）→ 2段 に
+   └ ターゲットを男性寄りへ：悩みタグの言い回し・ダミー口コミの男女比
+      （12:2）・コラムの題材・専門家の得意分野を調整。
+      デザイントーンは中性的のまま変更していない
+
+   甲提出用の措置（rev.2から継続）
+   ├ 全画面に「DEMO」バーを常時表示
+   ├ 店舗／専門家／ブランド名は実在との混同を避けサンプル名に置換
+   └ ノッチは DEMO バーと重なるため非表示
+
+   Phase 1 に含めたもの（17画面）
+   ├ 悩み・目的から探す入口（オンボーディング／探す）
+   ├ カテゴリ横断ランキング（商品・サービス・専門家を横断）
+   ├ People like you 簡易版（母数n常時表示／n<5は総合へフォールバック）
+   ├ 構造化口コミ（目的・使用期間・継続中か・購入先）
+   ├ 商品カテゴリ拡張（睡眠／リカバリー／ウェアラブル／頭皮・肌ケア等）
+   ├ サービス・専門家は「情報＋口コミ＋外部予約導線」まで
+   ├ MY WELLNESS 簡易版（未ログイン／会員の2段出し分け）
+   ├ ウェルネスコラム表示
+   ├ 通報・ブロック・規約同意（App Store要件）
+   └ 会員登録・ログイン（WELLNESS ID の会員機能）
+
+   Phase 1 に入れていないもの
+   ├ サロン会員機能一式（会員証・予約・履歴・契約プラン）… 今回スコープ外
+   ├ 他社店舗のアプリ内予約（外部導線に留める）
+   ├ 専門家の指名予約
+   ├ ACTIVITY の日次記録画面
+   ├ MY ROUTINE の公開・共有
+   └ Apple Health 連携
+
+   配色（2026/09/01 の方針転換を反映：黒×金を白紙化し青系×中性的へ）
+   ├ ベース  : 明るいグレージュ
+   ├ 主色    : 青 --primary …… 押せるもの・選択中・現在地
+   ├ 種別色  : PRODUCT=青 / SERVICE=ティール / PROFESSIONAL=プラム
+   └ 星のみ  : アンバー --star（評価として認識させるため暖色固定）
+   ============================================================ */
+:root{
+  --bg:#F7F8FA; --surface:#FFFFFF; --ink:#1A1F27; --sub:#6E7684;
+  --primary:#1F4FBF; --primary-deep:#16388C; --primary-soft:#EAEFF9;
+  --prod:#1F4FBF; --prod-soft:#EAEFF9;
+  --svc:#0F7A6B;  --svc-soft:#E4F2EF;
+  --pro:#7A3E86;  --pro-soft:#F2E9F4;
+  --line:#E4E8EE; --tint:#DDE3EB;
+  --star:#C9931F; --danger:#B4483C; --ok:#1B7A4B;
+  --radius:16px; --shadow:0 2px 14px rgba(26,31,39,.06);
+  --tabbar-h:64px;
+}
+.dark{
+  --bg:#0E1524; --surface:#182234; --ink:#EEF2F8; --sub:#8A96A8;
+  --primary:#7FA6F0; --primary-deep:#4C7DE0; --primary-soft:#1B2740;
+  --prod:#7FA6F0; --prod-soft:#1B2740;
+  --svc:#5FBFAE;  --svc-soft:#12302C;
+  --pro:#BE92C7;  --pro-soft:#2A1F33;
+  --line:#27334A; --tint:#2E3A52;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Zen Kaku Gothic New',-apple-system,sans-serif;
+  background:#0A0F1A;
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  background-image:radial-gradient(ellipse at 30% 18%, #14203A 0%, #080C14 72%);
+}
+.jost{font-family:'Jost',sans-serif;font-weight:400}
+
+/* ---- Phone frame ---- */
+#frame{
+  width:393px;height:832px;max-height:96vh;
+  border-radius:48px;padding:12px;background:#121A2A;
+  box-shadow:0 30px 80px rgba(0,0,0,.6), inset 0 0 0 2px #2B3A55;position:relative;
+}
+#frame::before{content:"";position:absolute;top:24px;left:50%;transform:translateX(-50%);
+  width:110px;height:28px;border-radius:20px;background:#000;z-index:60}
+#app{width:100%;height:100%;border-radius:38px;overflow:hidden;position:relative;
+  background:var(--bg);color:var(--ink);transition:background .45s ease,color .45s ease}
+@media (max-width:520px){
+  body{background:#0E1524}
+  #frame{width:100%;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none}
+  #frame::before{display:none}
+  #app{border-radius:0}
+}
+
+/* ---- Screens & transitions ---- */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);
+  overflow:hidden;visibility:hidden;pointer-events:none;z-index:1;will-change:transform;
+  transition:transform .58s cubic-bezier(.3,.94,.22,1),opacity .42s ease,filter .58s ease,visibility 0s .58s}
+.screen.active{visibility:visible;pointer-events:auto;transition-delay:0s}
+.screen.active .scroll>*{animation:rise .7s cubic-bezier(.17,.9,.24,1) backwards}
+.screen.active .scroll>*:nth-child(1){animation-delay:.04s}
+.screen.active .scroll>*:nth-child(2){animation-delay:.09s}
+.screen.active .scroll>*:nth-child(3){animation-delay:.14s}
+.screen.active .scroll>*:nth-child(4){animation-delay:.19s}
+.screen.active .scroll>*:nth-child(5){animation-delay:.24s}
+.screen.active .scroll>*:nth-child(6){animation-delay:.29s}
+.screen.active .scroll>*:nth-child(7){animation-delay:.34s}
+.screen.active .scroll>*:nth-child(n+8){animation-delay:.39s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.listitem,.chip,.ecbtn,.slot,.tab,.backbtn,.pcard,.ccard,.cnchip,.seg b{transition:transform .18s cubic-bezier(.2,.9,.3,1.4),background .2s,color .2s,border-color .2s}
+.listitem:active,.chip:active,.ecbtn:active,.slot:active,.backbtn:active,.cnchip:active{transform:scale(.96)}
+.pcard:active,.ccard:active{transform:scale(.97)}
+.tab svg{transition:transform .35s cubic-bezier(.2,1.2,.3,1)}
+.tab.on svg{transform:translateY(-2px)}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
+.likebtn.on{animation:pop .38s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+@keyframes countup{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .screen{transition-duration:.01s!important}
+  .screen.active .scroll>*{animation:none!important}
+  .likebtn.on{animation:none!important}
+}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(var(--tabbar-h) + 28px)}
+.scroll.no-tab{padding-bottom:32px}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ---- Header ---- */
+.hdr{display:flex;align-items:center;gap:10px;padding:56px 20px 12px;background:var(--bg);position:relative;z-index:5}
+.hdr .ttl{font-size:16.5px;font-weight:700;letter-spacing:.03em;flex:1;text-align:center}
+.hdr .side{width:38px;display:flex;justify-content:center}
+.backbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.backbtn:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+/* ---- Tab bar ---- */
+#tabbar{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tabbar-h) + 14px);padding-bottom:14px;
+  background:color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);display:flex;z-index:40;transition:transform .3s ease, background .45s}
+#tabbar.hidden{transform:translateY(110%)}
+.tab{flex:1;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;color:var(--sub);font-family:inherit;
+  font-size:8.8px;font-weight:500;letter-spacing:0;white-space:nowrap;padding:0 2px}
+.tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--primary)}
+.tab.on svg{stroke-width:2.1}
+
+/* ---- Generic ---- */
+.eyebrow{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.28em;color:var(--primary);font-weight:600}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;
+  border-radius:14px;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;
+  letter-spacing:.03em;background:var(--ink);color:var(--bg);transition:opacity .2s,transform .15s}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:linear-gradient(120deg,#1A4299,#2758C9 55%,#1D4AB4);color:#fff;box-shadow:0 4px 16px rgba(31,79,191,.24)}
+.dark .btn.primary{background:linear-gradient(120deg,#2A4E9E,#3E68BE 55%,#2C52A6);box-shadow:0 3px 14px rgba(62,104,190,.22)}
+.btn.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn.outline{background:none;border:1px solid var(--primary);color:var(--primary);font-weight:700}
+.btn.sm{padding:10px 15px;font-size:13px;border-radius:11px;width:auto}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:12px;
+  font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit}
+.chip.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.hrow{display:flex;gap:8px;overflow-x:auto;padding:4px 20px 10px}
+.hrow::-webkit-scrollbar{display:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.sec{padding:18px 20px 8px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.sec h2{font-size:15.5px;font-weight:700;letter-spacing:.01em}
+.sec .note{font-size:10px;color:var(--sub);font-weight:400}
+.sec a{font-size:12px;color:var(--primary);text-decoration:none;font-weight:700;cursor:pointer;white-space:nowrap}
+.stars{color:var(--star);font-size:12.5px;letter-spacing:.5px}
+.score{font-weight:700;color:var(--ink)}
+input,select,textarea{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);font-family:inherit;font-size:14px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
+textarea{min-height:104px;resize:none}
+label{font-size:12px;font-weight:700;color:var(--sub);display:block;margin:16px 0 6px;letter-spacing:.05em}
+
+/* ---- kind badges ---- */
+.kind{font-size:8.5px;font-weight:700;letter-spacing:.1em;padding:2.5px 7px;border-radius:5px;font-family:'Jost',sans-serif}
+.k-product{background:var(--prod-soft);color:var(--prod)}
+.k-service{background:var(--svc-soft);color:var(--svc)}
+.k-pro{background:var(--pro-soft);color:var(--pro)}
+
+/* ---- image placeholder ---- */
+.pimg{border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px;
+  flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(140deg,var(--tint),#EFF2F6)}
+.dark .pimg{background:linear-gradient(140deg,#22304A,#2D3D5A)}
+.pimg::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 32%,rgba(255,255,255,.42) 48%,transparent 64%)}
+.dark .pimg::after{background:linear-gradient(120deg,transparent 32%,rgba(150,185,240,.14) 48%,transparent 64%)}
+
+/* ---- concern chips (悩み起点) ---- */
+.cngrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:4px 20px 14px}
+.cnchip{display:flex;align-items:center;gap:9px;padding:12px 12px;border-radius:14px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);
+  font-family:inherit;color:var(--ink);text-align:left}
+.cnchip .e{font-size:19px;flex-shrink:0}
+.cnchip .l{font-size:12.5px;font-weight:700;line-height:1.35}
+.cnchip.on{border-color:var(--primary);background:var(--primary-soft)}
+.cnchip.on .l{color:var(--primary-deep)}
+.dark .cnchip.on .l{color:var(--primary)}
+
+/* ---- segmented control（みんな / 近い人） ---- */
+.seg{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--tint);margin:0 20px}
+.dark .seg{background:#1B2740}
+.seg b{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:11.5px;font-weight:700;
+  cursor:pointer;color:var(--sub);line-height:1.3}
+.seg b.on{background:var(--surface);color:var(--primary);box-shadow:0 1px 5px rgba(26,31,39,.1)}
+.nbar{display:flex;align-items:flex-start;gap:7px;padding:9px 22px 2px;font-size:10.5px;color:var(--sub);line-height:1.65}
+.nbar .dot{width:5px;height:5px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:5px}
+.nbar>span:last-child{flex:1;min-width:0}
+.fallback{margin:8px 20px 0;padding:11px 13px;border-radius:12px;background:#FFF7E6;
+  border:1px solid #E8CE93;font-size:10.5px;line-height:1.7;color:#6B5220}
+.dark .fallback{background:#2A2314;border-color:#5C4A22;color:#D8C79A}
+
+/* ---- item card / row ---- */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:6px 20px 18px}
+.pcard{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;text-align:left;
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);
+  font-family:inherit;color:var(--ink);padding:0;display:flex;flex-direction:column}
+.pcard .pimg{width:100%;aspect-ratio:1.25;border-radius:0;font-size:38px}
+.pc-body{padding:9px 11px 12px;display:flex;flex-direction:column;gap:3px}
+.pc-brand{font-size:9.5px;color:var(--sub)}
+.pc-name{font-size:12.5px;font-weight:700;line-height:1.42;min-height:2.85em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-meta{display:flex;align-items:center;gap:5px;margin-top:2px}
+.pc-meta .score{font-size:12px}
+.pc-n{font-size:9.5px;color:var(--sub)}
+.pc-price{font-family:'Jost',sans-serif;font-size:13.5px;font-weight:500;margin-top:2px}
+.tagfloat{position:absolute;top:8px;left:8px;font-size:9px;font-weight:700;letter-spacing:.05em;
+  background:var(--primary);color:#fff;padding:3px 9px;border-radius:999px;z-index:3}
+.kindfloat{position:absolute;top:8px;right:8px;z-index:3}
+.rankno{width:26px;font-family:'Jost',sans-serif;font-size:17px;color:var(--sub);text-align:center;flex-shrink:0}
+.medal{width:27px;height:27px;border-radius:9px;flex-shrink:0;color:#fff;font-family:'Jost',sans-serif;
+  font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px rgba(21,34,56,.18)}
+.listitem{display:flex;align-items:center;gap:12px;padding:14px 17px;border-bottom:1px solid var(--line);
+  cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;width:100%;
+  text-align:left;font-family:inherit;color:var(--ink)}
+.listitem:last-child{border-bottom:none}
+.listitem .ic{width:34px;height:34px;border-radius:11px;background:var(--bg);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.listitem .tx{flex:1;font-size:14px;font-weight:500;min-width:0}
+.listitem .ar{color:var(--sub)}
+.badge{font-size:9px;background:var(--primary);color:#fff;border-radius:999px;padding:2px 8px;letter-spacing:.05em;font-weight:700}
+.badge.quiet{background:var(--primary-soft);color:var(--primary)}
+.badge.ok{background:var(--ok);color:#fff}
+
+/* ---- review card（構造化口コミ） ---- */
+.revstack{display:flex;flex-direction:column;gap:10px;padding:2px 20px 4px}
+.rev{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 15px;box-shadow:var(--shadow)}
+.rev .who{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.avatar{width:34px;height:34px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-family:'Jost',sans-serif;font-size:14px;font-weight:500;color:#fff}
+.rev .meta{font-size:10.5px;color:var(--sub);margin-top:2px;line-height:1.6}
+.rev p{font-size:12.8px;line-height:1.78;color:var(--ink)}
+.rev .foot{display:flex;gap:13px;margin-top:10px;align-items:center}
+/* 構造化項目の表示ブロック — このアプリの差別化の核 */
+.factbox{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 9px;padding:9px 10px;border-radius:11px;
+  background:var(--bg);border:1px solid var(--line)}
+.fact{display:flex;align-items:baseline;gap:4px;font-size:10px;color:var(--sub);line-height:1.4}
+.fact b{font-size:11px;color:var(--ink);font-weight:700}
+.fact + .fact::before{content:"";width:1px;height:10px;background:var(--line);margin-right:6px;align-self:center}
+.ongoing{font-size:9.5px;font-weight:700;color:#fff;background:var(--ok);padding:2.5px 8px;border-radius:999px;letter-spacing:.03em}
+.stopped{font-size:9.5px;font-weight:700;color:var(--sub);background:var(--tint);padding:2.5px 8px;border-radius:999px}
+.likebtn{border:none;background:none;color:var(--sub);font-size:11.5px;cursor:pointer;font-family:inherit;display:flex;gap:4px;align-items:center}
+.likebtn.on{color:var(--primary);font-weight:700}
+.reportbtn{margin-left:auto;border:none;background:none;color:var(--sub);font-size:11px;cursor:pointer;font-family:inherit;opacity:.7}
+.tagchip{font-size:10px;padding:2px 8px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-weight:700}
+.nearby{font-size:9px;background:var(--svc-soft);color:var(--svc);padding:2.5px 8px;border-radius:999px;font-weight:700;letter-spacing:.02em}
+
+/* ---- splash / onboarding ---- */
+#s-splash{background:#0A1120;color:#EEF2F8;align-items:center;justify-content:center;cursor:pointer}
+#s-splash.active{background:radial-gradient(ellipse at 50% 36%,#16233E 0%,#0A1120 66%)}
+#s-splash .mark{width:88px;height:88px;border:1px solid #4C7DE0;border-radius:26px;display:flex;
+  align-items:center;justify-content:center;font-family:'Jost',sans-serif;font-size:30px;
+  font-weight:300;color:#8FB0F2;animation:markIn 1.1s cubic-bezier(.16,.9,.24,1) both,pulse 2.8s 1.2s ease infinite}
+@keyframes markIn{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,125,224,.3)}50%{box-shadow:0 0 0 20px rgba(76,125,224,0)}}
+#s-splash h1{font-family:'Jost',sans-serif;font-weight:300;font-size:22px;letter-spacing:.36em;
+  margin:26px 0 8px;text-indent:.36em;animation:trackIn 1.4s .2s cubic-bezier(.16,.9,.24,1) both}
+@keyframes trackIn{from{opacity:0;letter-spacing:.9em;filter:blur(5px)}to{opacity:1;letter-spacing:.36em;filter:blur(0)}}
+#s-splash .tg{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:.2em;color:#8A96A8;
+  animation:fadeUp .9s .9s cubic-bezier(.2,.9,.3,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.obbar{display:flex;gap:5px;padding:0 22px 4px}
+.obbar i{flex:1;height:3px;border-radius:99px;background:var(--tint)}
+.obbar i.on{background:var(--primary)}
+.bignum{font-family:'Jost',sans-serif;font-size:46px;font-weight:500;color:var(--primary);
+  line-height:1.05;animation:countup .7s cubic-bezier(.2,.9,.3,1.2) both}
+
+/* ---- carousel / column ---- */
+.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 12px}
+.carousel::-webkit-scrollbar{display:none}
+.pick{scroll-snap-align:center;min-width:80%;border-radius:20px;padding:19px;cursor:pointer;
+  color:#EEF2F8;position:relative;overflow:hidden;border:none;text-align:left;font-family:inherit;
+  transition:transform .3s cubic-bezier(.2,.9,.3,1.3)}
+.pick:active{transform:scale(.97)}
+.pick .pe{position:absolute;right:-8px;bottom:-16px;font-size:66px;opacity:.16;animation:floaty 5s ease-in-out infinite}
+
+
+/* ---- misc ---- */
+.kpi{display:flex;gap:10px;padding:0 20px}
+.kpi .card{flex:1;padding:13px 10px;text-align:center}
+.kpi .v{font-family:'Jost',sans-serif;font-size:21px;font-weight:500}
+.kpi .k{font-size:9.5px;color:var(--sub);letter-spacing:.06em;margin-top:2px;line-height:1.3}
+#toast{position:absolute;bottom:96px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:999px;font-size:12.5px;
+  font-weight:700;opacity:0;pointer-events:none;z-index:80;max-width:84%;text-align:center;
+  line-height:1.55;transition:transform .55s cubic-bezier(.2,1.5,.3,1),opacity .3s}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.lockbox{margin:14px 20px;padding:20px;border-radius:18px;background:var(--surface);
+  border:1px solid var(--line);text-align:center;box-shadow:var(--shadow)}
+.lockbox .lk{width:44px;height:44px;border-radius:14px;background:var(--bg);border:1px solid var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto;color:var(--primary)}
+.lockbox p{font-size:12px;color:var(--sub);line-height:1.85;margin:10px 0 14px}
+.ecbtn{flex:1;padding:11px 6px;border-radius:12px;border:1px solid var(--line);cursor:pointer;
+  background:var(--surface);font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;gap:3px}
+.ecbtn small{font-size:9px;color:var(--sub);font-weight:400}
+.starpick{display:flex;gap:8px;font-size:30px;color:var(--tint);cursor:pointer}
+.starpick span.on{color:var(--star)}
+.slot{padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);
+  text-align:center;font-size:12.5px;font-weight:500;cursor:pointer;font-family:inherit;color:var(--ink)}
+.slot.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary);font-weight:700}
+.slot.dis{opacity:.34;pointer-events:none}
+.distbar{display:flex;align-items:center;gap:10px;margin:5px 0}
+.distbar .k{font-size:11px;width:24px;color:var(--sub)}
+.distbar .t{flex:1;height:7px;border-radius:99px;background:var(--bg);overflow:hidden}
+.distbar .t i{display:block;height:100%;background:linear-gradient(90deg,#2758C9,#1A4299)}
+.distbar .v{font-size:10.5px;width:32px;text-align:right;color:var(--sub)}
+.stepflow{display:flex;flex-direction:column;padding:6px 20px}
+.step{display:flex;gap:14px}
+.step .dotcol{display:flex;flex-direction:column;align-items:center}
+.step .dot{width:10px;height:10px;border-radius:50%;background:var(--tint);margin-top:5px}
+.step.on .dot{background:var(--primary);box-shadow:0 0 0 4px rgba(31,79,191,.15)}
+.step .vline{width:1px;flex:1;background:var(--line)}
+.step .body{padding-bottom:20px}
+.step .body b{font-size:13.5px}
+.step .body p{font-size:11.5px;color:var(--sub);line-height:1.75;margin-top:3px}
+.phase2{margin:14px 20px;padding:12px 14px;border-radius:12px;border:1px dashed var(--line);
+  background:var(--surface);font-size:10.5px;color:var(--sub);line-height:1.75}
+.phase2 b{color:var(--ink);font-size:11px}
+.demoflag{position:absolute;top:0;left:0;right:0;z-index:70;text-align:center;
+  font-size:9px;font-weight:700;letter-spacing:.06em;color:#E7EDF7;
+  background:rgba(10,17,32,.86);padding:4px 8px;pointer-events:none;line-height:1.3}
+/* 甲提出版：DEMOバーと重なるためノッチは表示しない */
+#frame::before{display:none!important}
+</style>
+</head>
+<body>
+<div id="frame">
+<div id="app">
+
+<!-- 甲提出用：全画面に常時表示するデモ表示 -->
+<div class="demoflag" aria-hidden="true">DEMO ／ 名称・ロゴ・掲載データはすべて仮のサンプルです</div>
+
+
+<!-- ============ SPLASH ============ -->
+<section class="screen" id="s-splash" onclick="go('onboard',false,0)">
+  <div class="mark">W</div>
+  <h1>WELLNESS ID</h1>
+  <div class="tg">Find what works for you.</div>
+  <div class="jost" style="position:absolute;bottom:58px;font-size:9px;letter-spacing:.18em;color:#5C6B84;text-align:center;line-height:2">
+    PHASE 1 DEMO rev.3<br>名称・ロゴ・掲載データはすべて仮です
+  </div>
+</section>
+
+<!-- ============ ONBOARDING（悩み → 属性 → 価値返し） ============ -->
+<section class="screen" id="s-onboard">
+  <div class="hdr" style="padding-bottom:6px">
+    <span class="side"><button class="backbtn" onclick="obBack()">‹</button></span>
+    <span class="ttl" id="ob-title">最近どうですか？</span>
+    <span class="side"><button class="backbtn" style="font-size:11px;font-weight:700" onclick="go('home',false,0)">skip</button></span>
+  </div>
+  <div class="obbar"><i class="on" id="ob-b1"></i><i id="ob-b2"></i><i id="ob-b3"></i></div>
+  <div class="scroll no-tab" id="ob-body"></div>
+</section>
+
+<!-- ============ LOGIN ============ -->
+<section class="screen" id="s-login">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">ログイン</span><span class="side"></span></div>
+  <div class="scroll no-tab" style="padding:8px 24px 40px">
+    <div style="text-align:center;margin:16px 0 8px">
+      <div class="jost" style="font-size:19px;letter-spacing:.28em;font-weight:400">WELLNESS ID</div>
+      <div class="jost" style="font-size:10px;letter-spacing:.14em;color:var(--sub);margin-top:5px">Find what works for you.</div>
+    </div>
+    <label>メールアドレス</label>
+    <input type="email" placeholder="you@example.com" value="demo@wellnessid.jp">
+    <label>パスワード</label>
+    <input type="password" placeholder="••••••••" value="password">
+    <div style="height:22px"></div>
+    <button class="btn primary" onclick="loginAs('user')">ログイン（デモ）</button>
+    <p style="text-align:center;font-size:12px;color:var(--sub);margin-top:24px;line-height:1.9">
+      アカウントをお持ちでない方は<br>
+      <a onclick="go('signup')" style="color:var(--primary);font-weight:700;cursor:pointer">新規登録（無料）</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ SIGNUP ============ -->
+<section class="screen" id="s-signup">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">新規登録</span><span class="side"></span></div>
+  <div class="scroll no-tab" style="padding:0 24px 40px">
+    <p style="font-size:12px;color:var(--sub);line-height:1.85;margin:4px 0 2px">
+      無料登録で口コミの投稿・参考になった・MY WELLNESSの記録が使えるようになります。</p>
+    <label>ニックネーム</label><input placeholder="例：kenta_f">
+    <label>メールアドレス</label><input type="email" placeholder="you@example.com">
+    <label>パスワード</label><input type="password" placeholder="8文字以上">
+    <div style="height:6px"></div>
+    <div class="card" style="padding:14px 15px;margin-top:14px">
+      <b style="font-size:12.5px">オンボーディングで入力済みの情報</b>
+      <div id="signup-profile" style="font-size:11px;color:var(--sub);line-height:1.9;margin-top:7px"></div>
+    </div>
+    <div style="height:22px"></div>
+    <button class="btn primary" onclick="loginAs('user','登録が完了しました')">同意して登録する</button>
+    <p style="font-size:10.5px;color:var(--sub);text-align:center;margin-top:11px;line-height:1.75">
+      利用規約・プライバシーポリシーに同意の上ご登録ください</p>
+  </div>
+</section>
+
+<!-- ============ HOME ============ -->
+<section class="screen" id="s-home">
+  <div class="hdr" style="justify-content:space-between">
+    <div>
+      <div class="jost" style="font-size:15px;letter-spacing:.22em;font-weight:400">WELLNESS ID</div>
+      <div style="font-size:9.5px;letter-spacing:.02em;color:var(--sub);margin-top:1px">自分に合うウェルネスが見つかる</div>
+    </div>
+    <button class="backbtn" onclick="go('notice')" aria-label="お知らせ">🔔</button>
+  </div>
+  <div class="scroll">
+    <div id="home-banner" style="margin:6px 20px 2px"></div>
+
+    <!-- 悩み起点の入口：アプリの背骨 -->
+    <div class="sec"><h2 id="home-greet">最近どうですか？</h2><a onclick="go('search')">すべて ›</a></div>
+    <div class="cngrid" id="home-cn"></div>
+
+    <!-- People like you -->
+    <div class="sec"><h2>あなたと近い人が選んだもの</h2><a onclick="openRank('cohort')">もっと見る ›</a></div>
+    <div class="nbar" id="home-cohort-n"></div>
+    <div class="card" style="margin:2px 20px" id="home-cohort"></div>
+
+    <!-- 横断ランキング -->
+    <div class="sec"><h2>総合ランキング</h2><span class="note">評価の高い順・毎週更新</span></div>
+    <div class="card" style="margin:2px 20px" id="home-rank"></div>
+
+    <!-- コラム -->
+    <div class="sec"><h2>ウェルネスコラム</h2><span class="eyebrow">COLUMN</span></div>
+    <div class="carousel" id="home-col"></div>
+
+    <!-- 新着の口コミ -->
+    <div class="sec"><h2>新着の口コミ</h2><a onclick="go('feed')">もっと見る ›</a></div>
+    <div class="revstack" id="home-revs" style="padding-bottom:18px"></div>
+  </div>
+</section>
+
+<!-- ============ SEARCH（悩みから探す） ============ -->
+<section class="screen" id="s-search">
+  <div class="hdr"><span class="ttl">探す</span></div>
+  <div style="padding:2px 20px 10px">
+    <input id="searchbox" placeholder="🔍 商品・サービス・専門家を検索" oninput="doSearch(this.value)">
+  </div>
+  <div class="scroll">
+    <div id="search-hit"></div>
+    <div class="sec"><h2>悩み・目的から探す</h2><span class="note">カテゴリを横断して比較します</span></div>
+    <div class="cngrid" id="search-cn"></div>
+    <div class="sec"><h2>カテゴリから探す</h2></div>
+    <div id="cats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 20px 20px"></div>
+  </div>
+</section>
+
+<!-- ============ CONCERN RESULT（悩み別 横断ランキング） ============ -->
+<section class="screen" id="s-concern">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span>
+    <span class="ttl" id="cn-title">悩み</span><span class="side"></span></div>
+  <div class="seg" id="cn-seg">
+    <b class="on" onclick="setMode('all','concern')">みんなの評価</b>
+    <b onclick="setMode('cohort','concern')">あなたと近い人</b>
+  </div>
+  <div class="scroll">
+    <div class="nbar" id="cn-nbar"></div>
+    <div id="cn-fb"></div>
+    <div class="hrow" id="cn-kinds" style="padding-top:8px"></div>
+    <div class="card" style="margin:2px 20px 18px" id="cn-list"></div>
+    <div class="phase2"><b>Phase 2 以降の予定</b><br>
+      店舗の空き枠表示とアプリ内予約、専門家の指名予約はPhase 2以降の範囲です。本デモでは公式サイト・電話への外部導線までを実装しています。自社サロンも同じ扱いです。</div>
+  </div>
+</section>
+
+<!-- ============ RANKING ============ -->
+<section class="screen" id="s-ranking">
+  <div class="hdr"><span class="ttl">ランキング</span></div>
+  <div class="seg">
+    <b class="on" onclick="setMode('all','ranking')">みんなの評価</b>
+    <b onclick="setMode('cohort','ranking')">あなたと近い人</b>
+  </div>
+  <div class="hrow" id="rank-chips" style="padding-top:10px"></div>
+  <div class="scroll">
+    <div class="nbar" id="rank-nbar"></div>
+    <div id="rank-fb"></div>
+    <div class="card" style="margin:2px 20px 18px" id="rank-list"></div>
+  </div>
+</section>
+
+<!-- ============ ITEM LIST ============ -->
+<section class="screen" id="s-plist">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span>
+    <span class="ttl" id="plist-title">一覧</span><span class="side"></span></div>
+  <div class="hrow">
+    <button class="chip on">おすすめ順</button>
+    <button class="chip" onclick="toast('デモ：並び替え')">評価が高い順</button>
+    <button class="chip" onclick="toast('デモ：並び替え')">口コミが多い順</button>
+    <button class="chip" onclick="toast('デモ：絞り込み')">絞り込み</button>
+  </div>
+  <div class="scroll"><div class="pgrid" id="plist-body"></div></div>
+</section>
+
+<!-- ============ ITEM DETAIL ============ -->
+<section class="screen" id="s-item">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">詳細</span>
+    <span class="side"><button class="backbtn" id="favbtn" onclick="toggleFav()" aria-label="お気に入り">♡</button></span></div>
+  <div class="scroll" id="item-body"></div>
+</section>
+
+<!-- ============ REVIEW LIST ============ -->
+<section class="screen" id="s-revlist">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span>
+    <span class="ttl" id="revlist-title">口コミ一覧</span><span class="side"></span></div>
+  <div class="hrow" id="revlist-chips"></div>
+  <div class="scroll">
+    <div class="nbar" id="revlist-nbar"></div>
+    <div class="revstack" id="revlist-body"></div>
+    <div style="padding:14px 20px 20px"><button class="btn primary" onclick="startPost()">✏️ 口コミを書く</button></div>
+  </div>
+</section>
+
+<!-- ============ REVIEW POST（構造化投稿） ============ -->
+<section class="screen" id="s-post">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">口コミを投稿</span><span class="side"></span></div>
+  <div class="scroll no-tab" style="padding:0 22px 32px">
+    <div id="post-target" style="display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)"></div>
+
+    <label>総合評価</label>
+    <div class="starpick" id="starpick" role="radiogroup" aria-label="評価">
+      <span onclick="pickStar(1)">★</span><span onclick="pickStar(2)">★</span><span onclick="pickStar(3)">★</span><span onclick="pickStar(4)">★</span><span onclick="pickStar(5)">★</span>
+    </div>
+
+    <label>使った目的（複数選択可）</label>
+    <div style="display:flex;gap:7px;flex-wrap:wrap" id="post-goals"></div>
+
+    <label>使用（利用）期間</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px" id="post-months"></div>
+
+    <label>いまも続けていますか</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px" id="post-ongoing">
+      <button class="slot on" onclick="pickOne(this)">続けている</button>
+      <button class="slot" onclick="pickOne(this)">やめた</button>
+    </div>
+
+    <label id="post-src-label">購入先</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px" id="post-source"></div>
+
+    <label>口コミ本文</label>
+    <textarea id="post-text" placeholder="続けてみて感じたこと、変化、合わなかった点などを書いてください（20文字以上）"></textarea>
+
+    <label>写真（任意）</label>
+    <div style="display:flex;gap:10px">
+      <div class="pimg" style="width:70px;height:70px;font-size:24px;cursor:pointer" onclick="toast('デモ：カメラ / ライブラリを開く')">📷</div>
+    </div>
+
+    <div class="card" style="padding:12px 14px;margin-top:18px;background:var(--primary-soft);border-color:var(--primary)">
+      <div style="font-size:11.5px;line-height:1.8;color:var(--primary-deep)">
+        <b>この投稿はあなたのWellness Passportになります</b><br>
+        使用期間と継続状況が残るため、あとから「1年続けた人の評価」として参照されます。</div>
+    </div>
+    <div style="height:18px"></div>
+    <button class="btn primary" onclick="submitReview()">投稿する</button>
+    <p style="font-size:10.5px;color:var(--sub);text-align:center;margin-top:10px;line-height:1.7">
+      ガイドラインに反する投稿は非表示になる場合があります</p>
+  </div>
+</section>
+
+<!-- ============ FEED ============ -->
+<section class="screen" id="s-feed">
+  <div class="hdr"><span class="ttl">口コミ</span>
+    <button class="backbtn" style="position:absolute;right:20px" onclick="startPost()" aria-label="口コミを書く">✏️</button></div>
+  <div class="hrow" id="feed-chips"></div>
+  <div class="scroll"><div class="revstack" id="feed-revs" style="padding-bottom:18px"></div></div>
+</section>
+
+<!-- ============ MY WELLNESS ============ -->
+<section class="screen" id="s-mywell">
+  <div class="hdr"><span class="ttl">MY WELLNESS</span>
+    <button class="backbtn" style="position:absolute;right:20px" onclick="go('settings')" aria-label="設定">⚙️</button></div>
+  <div class="scroll" id="mywell-body"></div>
+</section>
+
+<!-- ============ COLUMN ============ -->
+<section class="screen" id="s-column">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">コラム</span><span class="side"></span></div>
+  <div class="scroll" id="column-body"></div>
+</section>
+
+<!-- ============ NOTICE ============ -->
+<section class="screen" id="s-notice">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">お知らせ</span><span class="side"></span></div>
+  <div class="scroll no-tab"><div class="card" style="margin:8px 20px 24px" id="notice-list"></div></div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="screen" id="s-settings">
+  <div class="hdr"><span class="side"><button class="backbtn" onclick="back()">‹</button></span><span class="ttl">設定</span><span class="side"></span></div>
+  <div class="scroll no-tab">
+    <div class="sec"><h2>プロフィール</h2><span class="note">ランキングの精度に反映されます</span></div>
+    <div class="card" style="margin:2px 20px" id="set-profile"></div>
+    <div class="sec"><h2>安心してご利用いただくために</h2></div>
+    <div class="card" style="margin:2px 20px">
+      <button class="listitem" onclick="toast('デモ：ブロックしたユーザー一覧')"><span class="ic">🚫</span><span class="tx">ブロックしたユーザー</span><span class="ar">›</span></button>
+      <button class="listitem" onclick="toast('デモ：口コミガイドライン')"><span class="ic">📘</span><span class="tx">口コミガイドライン</span><span class="ar">›</span></button>
+      <button class="listitem" onclick="toast('デモ：通報の履歴')"><span class="ic">🛡</span><span class="tx">通報の履歴</span><span class="ar">›</span></button>
+    </div>
+    <div class="sec"><h2>その他</h2></div>
+    <div class="card" style="margin:2px 20px 24px">
+      <button class="listitem" onclick="toast('デモ：通知設定（予約リマインド・お知らせ）')"><span class="ic">🔔</span><span class="tx">通知設定</span><span class="ar">›</span></button>
+      <button class="listitem" onclick="toast('デモ：利用規約')"><span class="ic">📄</span><span class="tx">利用規約</span><span class="ar">›</span></button>
+      <button class="listitem" onclick="toast('デモ：プライバシーポリシー')"><span class="ic">🔒</span><span class="tx">プライバシーポリシー</span><span class="ar">›</span></button>
+      <button class="listitem" onclick="logout()"><span class="ic">🚪</span><span class="tx" style="color:var(--danger)">ログアウト</span><span class="ar">›</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB BAR / TOAST ============ -->
+<nav id="tabbar" aria-label="メインナビゲーション">
+  <button class="tab" data-go="home"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>ホーム</button>
+  <button class="tab" data-go="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>探す</button>
+  <button class="tab" data-go="ranking"><svg viewBox="0 0 24 24"><path d="M8 21V10M12 21V4M16 21v-7"/></svg>ランキング</button>
+  <button class="tab" data-go="feed"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 1 1-3.1-6.3L21 5l-.9 3.4A8 8 0 0 1 21 12Z"/><path d="M8 10h8M8 14h5"/></svg>口コミ</button>
+  <button class="tab" data-go="mywell"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="8.5" cy="11" r="2"/><path d="M14 10h4M14 14h3M5 17c.8-1.8 2-2.6 3.5-2.6S11.2 15.2 12 17"/></svg>MY WELLNESS</button>
+</nav>
+<div id="toast" role="status"></div>
+
+</div><!-- /#app -->
+</div><!-- /#frame -->
+<script>
+/* ============================================================
+   1. DATA LAYER（すべてダミー。将来 fetch(API) に差し替え可能な形）
+   ============================================================ */
+
+/* 悩み・目的タグマスタ — 構想3章の15項目をそのまま初版に */
+const CONCERNS=[
+ {id:"shoulder",l:"肩・首が重い",e:"🧍"},
+ {id:"posture", l:"姿勢を整えたい",e:"🦴"},
+ {id:"move",    l:"運動不足",e:"🏃"},
+ {id:"tone",    l:"身体を引き締めたい",e:"💪"},
+ {id:"diet",    l:"お腹まわりを落としたい",e:"⚖️"},
+ {id:"fatigue", l:"疲れが抜けない",e:"🔋"},
+ {id:"sleep",   l:"眠りが浅い",e:"🌙"},
+ {id:"refresh", l:"リフレッシュしたい",e:"🌿"},
+ {id:"hair",    l:"頭皮・髪が気になる",e:"💈"},
+ {id:"skin",    l:"清潔感を整えたい",e:"🧴"},
+ {id:"golf",    l:"ゴルフ",e:"⛳"},
+ {id:"run",     l:"ランニング",e:"👟"},
+ {id:"focus",   l:"仕事の集中力",e:"🧠"},
+ {id:"stamina", l:"体力をつけたい",e:"🔥"},
+ {id:"health",  l:"健康診断の数値が気になる",e:"🩺"},
+];
+const CN=id=>CONCERNS.find(c=>c.id===id);
+
+/* カテゴリ — Phase 1 で拡張（睡眠／美容／ウェアラブル／リカバリー等） */
+const CATS=[
+ {id:"protein",   name:"プロテイン",     emoji:"🥤",kind:"product"},
+ {id:"supp",      name:"サプリメント",   emoji:"💊",kind:"product"},
+ {id:"wearable",  name:"ウェアラブル",   emoji:"⌚",kind:"product"},
+ {id:"recovery",  name:"リカバリー用品", emoji:"🧊",kind:"product"},
+ {id:"sleep",     name:"睡眠用品",       emoji:"🛏",kind:"product"},
+ {id:"gear",      name:"フィットネス機器",emoji:"🏋",kind:"product"},
+ {id:"beauty",    name:"美容・ヘアケア", emoji:"✨",kind:"product"},
+ {id:"personal",  name:"パーソナルジム", emoji:"🤝",kind:"service"},
+ {id:"pilates",   name:"ピラティス",     emoji:"🧘",kind:"service"},
+ {id:"seitai",    name:"整体・鍼灸",     emoji:"💠",kind:"service"},
+ {id:"headspa",   name:"ヘッドスパ",     emoji:"💈",kind:"service"},
+ {id:"sauna",     name:"サウナ",         emoji:"🧖",kind:"service"},
+ {id:"recstudio", name:"リカバリー施設", emoji:"❄️",kind:"service"},
+ {id:"esthetic",  name:"フェイシャル・肌ケア",emoji:"🧴",kind:"service"},
+ {id:"pro",       name:"専門家",         emoji:"🧑‍🏫",kind:"pro"},
+];
+const CAT=id=>CATS.find(c=>c.id===id);
+const KINDLABEL={product:"PRODUCT",service:"SERVICE",pro:"PROFESSIONAL"};
+
+/* アイテム（商品／サービス／専門家を1つの型で持つ）
+   score = 総合評価 ／ n = 総口コミ件数
+   cs    = あなたと近い人の評価 ／ cn = 近い人の口コミ件数
+   cn < COHORT_MIN のときは総合へフォールバックする（コールドスタート対策）*/
+const ITEMS=[
+ /* --- PRODUCTS --- */
+ {id:1, kind:"product",cat:"protein", emoji:"🥤",name:"ホエイプロテイン ダブルカカオ",brand:"サンプルブランドA",score:4.72,n:328,cs:4.82,cn:41,price:"¥6,480",repeat:78,cn2:["tone","stamina","move"],tag:"人気No.1"},
+ {id:2, kind:"product",cat:"protein", emoji:"🍋",name:"クリアプロテイン シトラス",brand:"サンプルブランドB",score:4.41,n:152,cs:4.44,cn:12,price:"¥5,480",repeat:61,cn2:["diet","run"]},
+ {id:3, kind:"product",cat:"supp",    emoji:"⚡",name:"クレアチン モノハイドレート",brand:"サンプルブランドC",score:4.61,n:198,cs:4.76,cn:33,price:"¥2,980",repeat:84,cn2:["tone","stamina"]},
+ {id:4, kind:"product",cat:"supp",    emoji:"🌿",name:"マルチビタミン & ミネラル",brand:"サンプルブランドD",score:4.30,n:156,cs:4.28,cn:19,price:"¥2,780",repeat:66,cn2:["health","fatigue"]},
+ {id:5, kind:"product",cat:"supp",    emoji:"🌙",name:"グリシン + テアニン",brand:"サンプルブランドD",score:4.39,n:143,cs:4.51,cn:16,price:"¥3,180",repeat:58,cn2:["sleep","fatigue","focus"]},
+ {id:6, kind:"product",cat:"wearable",emoji:"⌚",name:"スリープバンド S2",brand:"サンプルブランドE",score:4.48,n:214,cs:4.65,cn:28,price:"¥39,800",repeat:71,cn2:["sleep","fatigue","focus","run"],tag:"急上昇"},
+ {id:7, kind:"product",cat:"recovery",emoji:"🧥",name:"リカバリーウェア NIGHT",brand:"サンプルブランドF",score:4.52,n:176,cs:4.58,cn:21,price:"¥18,700",repeat:69,cn2:["fatigue","sleep"]},
+ {id:8, kind:"product",cat:"recovery",emoji:"🔨",name:"パーカッションガン PRO",brand:"サンプルブランドF",score:4.33,n:131,cs:4.31,cn:14,price:"¥27,500",repeat:47,cn2:["shoulder","fatigue","golf"]},
+ {id:9, kind:"product",cat:"sleep",   emoji:"🛏",name:"高反発マットレス AIR",brand:"サンプルブランドG",score:4.58,n:118,cs:4.60,cn:9,price:"¥148,000",repeat:88,cn2:["sleep","shoulder"]},
+ {id:10,kind:"product",cat:"gear",    emoji:"🏋",name:"アジャスタブルダンベル 24kg",brand:"サンプルブランドC",score:4.49,n:243,cs:4.55,cn:24,price:"¥19,800",repeat:64,cn2:["tone","stamina","move"]},
+ {id:11,kind:"product",cat:"gear",    emoji:"🧖",name:"ホームサウナ CUBE",brand:"サンプルブランドH",score:4.61,n:23,cs:null,cn:2,price:"¥690,000",repeat:91,cn2:["refresh","health"],hi:true},
+ {id:12,kind:"product",cat:"gear",    emoji:"🧘",name:"ピラティスリフォーマー H1",brand:"サンプルブランドI",score:4.55,n:17,cs:null,cn:1,price:"¥480,000",repeat:76,cn2:["posture","tone"],hi:true},
+ {id:13,kind:"product",cat:"beauty",  emoji:"💈",name:"スカルプエッセンス",brand:"サンプルブランドJ",score:4.36,n:97,cs:4.30,cn:6,price:"¥7,700",repeat:55,cn2:["hair"]},
+ {id:14,kind:"product",cat:"beauty",  emoji:"🧴",name:"オールインワン保湿ジェル",brand:"サンプルブランドJ",score:4.47,n:132,cs:null,cn:4,price:"¥9,900",repeat:73,cn2:["skin"]},
+ /* --- SERVICES --- */
+ {id:20,kind:"service",cat:"personal", emoji:"🏛",name:"Motoazabu LIFE CREATE Salon",brand:"東京・元麻布",score:4.68,n:86,cs:4.78,cn:17,price:"会員制",repeat:92,cn2:["tone","posture","stamina","health","golf"],tag:"エリア1位"},
+ {id:21,kind:"service",cat:"seitai",   emoji:"💠",name:"サンプル整体院A",brand:"東京・麻布十番",score:4.72,n:164,cs:4.62,cn:26,price:"¥8,800〜",repeat:74,cn2:["shoulder","posture","fatigue"]},
+ {id:22,kind:"service",cat:"headspa",  emoji:"💈",name:"サンプルヘッドスパB",brand:"東京・西麻布",score:4.67,n:241,cs:4.55,cn:19,price:"¥12,000〜",repeat:68,cn2:["fatigue","hair","refresh"]},
+ {id:23,kind:"service",cat:"pilates",  emoji:"🧘",name:"サンプルピラティスC",brand:"東京・六本木",score:4.58,n:198,cs:4.69,cn:22,price:"¥6,600〜",repeat:70,cn2:["posture","tone","shoulder","fatigue"]},
+ {id:24,kind:"service",cat:"sauna",    emoji:"🧖",name:"サンプルサウナD",brand:"東京・南麻布",score:4.42,n:176,cs:4.50,cn:31,price:"¥4,500〜",repeat:63,cn2:["refresh","fatigue","sleep"]},
+ {id:25,kind:"service",cat:"recstudio",emoji:"❄️",name:"サンプルリカバリー施設E",brand:"東京・広尾",score:4.36,n:92,cs:4.41,cn:11,price:"¥7,700〜",repeat:57,cn2:["fatigue","run","golf"]},
+ {id:26,kind:"service",cat:"esthetic", emoji:"🧴",name:"サンプル フェイシャルサロンF",brand:"東京・白金台",score:4.44,n:147,cs:null,cn:3,price:"¥16,500〜",repeat:66,cn2:["skin","refresh"]},
+ /* --- PROFESSIONALS --- */
+ {id:30,kind:"pro",cat:"pro",emoji:"🧑‍🏫",name:"トレーナーA",brand:"Motoazabu LIFE CREATE Salon",role:"Personal Trainer",good:"40代男性 / ゴルフ / 姿勢 / 筋力",users:326,score:4.81,n:52,cs:4.84,cn:14,price:"指名可",repeat:86,cn2:["tone","golf","posture","stamina"]},
+ {id:31,kind:"pro",cat:"pro",emoji:"👩‍🏫",name:"トレーナーB",brand:"Motoazabu LIFE CREATE Salon",role:"Personal Trainer",good:"40〜50代男性 / 食事管理 / 姿勢 / 体脂肪",users:184,score:4.74,n:34,cs:4.70,cn:5,price:"指名可",repeat:81,cn2:["diet","posture","health"]},
+ {id:32,kind:"pro",cat:"pro",emoji:"🧑‍⚕️",name:"施術者C",brand:"サンプル整体院A",role:"鍼灸師・柔道整復師",good:"肩首 / デスクワーク / 慢性疲労",users:412,score:4.69,n:41,cs:4.66,cn:8,price:"指名可",repeat:79,cn2:["shoulder","fatigue","posture"]},
+];
+const IT=id=>ITEMS.find(i=>i.id===id);
+
+/* 構造化口コミ — 「誰が・何の目的で・どのくらい続けているか」まで持つ */
+const REVIEWS=[
+ {iid:1, user:"kenta_f", age:42,g:"男性",area:"東京都",freq:"週3回",goal:"tone",   months:14,on:true, src:"Amazon",     stars:5,likes:48,color:"#2F5AD0",badge:"ベストレビュアー",photos:["🥤","🍳"],
+  text:"1年以上ほぼ毎日。溶けやすさと味のバランスが良く、朝食の代わりにしても胃が重くなりません。体重は変えずに体脂肪だけ2%落ちました。"},
+ {iid:1, user:"shota_k", age:41,g:"男性",area:"東京都",freq:"週2回",goal:"diet",   months:7, on:true, src:"公式サイト",  stars:4,likes:31,color:"#3E4A5A",
+  text:"甘さは強めなので水を多めに。たんぱく質量あたりの価格で見ると優秀です。飲むようになってから間食が減りました。"},
+ {iid:1, user:"ryo_n",   age:35,g:"男性",area:"神奈川県",freq:"週4回",goal:"stamina",months:3, on:false,src:"楽天市場",    stars:3,likes:14,color:"#0F7A6B",
+  text:"味は良いのですが、自分には甘すぎて3ヶ月でやめました。プレーン系に戻しています。溶けやすさは文句なしでした。"},
+ {iid:3, user:"masa_i",  age:39,g:"男性",area:"東京都",freq:"週3回",goal:"tone",   months:11,on:true, src:"Amazon",     stars:5,likes:64,color:"#3E4A5A",badge:"認定レビュアー",
+  text:"サプリで唯一「変化を感じた」と言えるもの。2週間続けたあたりから、最後のもうひと踏ん張りが効くようになりました。溶けにくさだけ△です。"},
+ {iid:6, user:"tomo_s",  age:41,g:"男性",area:"東京都",freq:"週3回",goal:"sleep",  months:16,on:true, src:"公式サイト",  stars:5,likes:57,color:"#1F4FBF",badge:"認定レビュアー",photos:["⌚"],
+  text:"1年以上つけています。数値そのものより「寝る時間を早めた日は翌日の指標が良い」と可視化されるのが効きました。ベルトは半年で交換が必要です。"},
+ {iid:6, user:"dai_k",   age:44,g:"男性",area:"東京都",freq:"週1回",goal:"fatigue",months:5, on:true, src:"Amazon",     stars:4,likes:22,color:"#B4483C",
+  text:"睡眠の浅さが気になって購入。装着感は軽く、寝ている間は忘れます。アプリの解説がやや専門的で、慣れるまで読み飛ばしていました。"},
+ {iid:7, user:"kenta_f", age:42,g:"男性",area:"東京都",freq:"週3回",goal:"fatigue",months:9, on:true, src:"公式サイト",  stars:5,likes:39,color:"#2F5AD0",badge:"ベストレビュアー",
+  text:"トレーニングの翌日の重さが明らかに軽くなりました。夏場は少し暑いので、7〜8月は休んで9ヶ月continue。洗濯を繰り返しても生地は劣化していません。"},
+ {iid:9, user:"hiroshi.n",age:55,g:"男性",area:"東京都",freq:"週1回",goal:"sleep",  months:22,on:true, src:"店舗",       stars:5,likes:35,color:"#5A6B4A",
+  text:"2年近く使用。腰の沈み込みがなく、朝の背中の張りが消えました。価格は高いですが、1日あたりに割ると納得できます。硬めが苦手な方には不向きです。"},
+ {iid:11,user:"shin_o",  age:48,g:"男性",area:"東京都",freq:"週2回",goal:"refresh",months:19,on:true, src:"公式サイト",  stars:5,likes:41,color:"#0F7A6B",photos:["🧖","🏠"],
+  text:"1年半、週2回のペースで使い続けています。組立は業者依頼が前提。音は静かで、寝室の隣でも家族から苦情は出ていません。ジム通いの往復時間がゼロになったのが一番の価値でした。"},
+ {iid:11,user:"mika_b",  age:43,g:"女性",area:"東京都",freq:"週2回",goal:"health", months:8, on:true, src:"店舗",       stars:4,likes:18,color:"#7A3E86",
+  text:"設置スペースは実測より余裕を見たほうが良いです。家族4人で使えているので、1人あたりで考えると割安。掃除の手間は正直あります。"},
+ {iid:20,user:"satoshi.k",age:51,g:"男性",area:"東京都",freq:"週2回",goal:"health", months:26,on:true, src:"—",         stars:5,likes:57,color:"#3E4A5A",badge:"認定レビュアー",photos:["🏛"],
+  text:"2年通っています。完全個室で人目を気にせず取り組めるのと、毎回の計測データをもとにメニューを組み直してくれる点が他と違いました。予約は取りやすいです。"},
+ {iid:20,user:"kenta_f", age:42,g:"男性",area:"東京都",freq:"週3回",goal:"tone",   months:18,on:true, src:"—",         stars:5,likes:44,color:"#2F5AD0",badge:"ベストレビュアー",
+  text:"1年半。フォームの指摘が的確で、自宅トレーニングの質まで上がりました。価格は高いですが、続いているという事実が一番の評価だと思います。"},
+ {iid:21,user:"taku_v",  age:36,g:"男性",area:"東京都",freq:"週2回",goal:"shoulder",months:13,on:true,src:"—",         stars:5,likes:52,color:"#0F7A6B",
+  text:"デスクワークの肩首が限界で通い始めて1年。毎回同じ施術ではなく、その日の状態を見て変えてくれます。通う間隔が月2回→月1回に減ったのが成果です。"},
+ {iid:21,user:"yuka_o",  age:34,g:"女性",area:"東京都",freq:"週1回",goal:"posture",months:4, on:true, src:"—",         stars:4,likes:19,color:"#B4483C",
+  text:"姿勢の写真を撮って説明してくれるので納得感があります。人気の時間帯は2週間前でないと埋まっているのが唯一の難点です。"},
+ {iid:22,user:"dai_k",   age:44,g:"男性",area:"東京都",freq:"週1回",goal:"fatigue",months:11,on:true, src:"—",         stars:5,likes:63,color:"#B4483C",photos:["💈"],
+  text:"月1回のペースでほぼ1年。施術中に眠ってしまうくらい心地よく、翌日の頭の重さが違います。担当が変わると強さが変わるので、指名して通っています。"},
+ {iid:23,user:"shota_k", age:41,g:"男性",area:"東京都",freq:"週2回",goal:"posture",months:15,on:true, src:"—",         stars:5,likes:48,color:"#3E4A5A",
+  text:"1年3ヶ月。デスクワークで固まっていた背中が動くようになり、夕方の腰の張りが出なくなりました。少人数制でフォームを都度直してもらえるのが続けられている理由です。"},
+ {iid:24,user:"shin_o",  age:48,g:"男性",area:"東京都",freq:"週2回",goal:"refresh",months:20,on:true, src:"—",         stars:4,likes:26,color:"#0F7A6B",
+  text:"週1〜2回で1年半以上。水風呂の温度が安定していて、外気浴の椅子が十分にあるのが良い。土曜の夕方は混雑するので平日夜に通っています。"},
+ {iid:30,user:"ken_m",   age:47,g:"男性",area:"東京都",freq:"週2回",goal:"diet",   months:9, on:true, src:"—",         stars:5,likes:42,color:"#3E4A5A",
+  text:"トレーナーAはフォームの説明がとにかく分かりやすい。9ヶ月で体脂肪率-4%を達成できました。食事の指示が現実的で、会食が多い生活でも続けられています。"},
+ {iid:30,user:"masa_i",  age:39,g:"男性",area:"東京都",freq:"週3回",goal:"golf",   months:12,on:true, src:"—",         stars:5,likes:37,color:"#3E4A5A",badge:"認定レビュアー",
+  text:"ゴルフの飛距離を目的に1年。可動域から入って、体幹→下半身の順で組んでくれました。スイングの再現性が上がり、スコアも安定しました。"},
+ {iid:32,user:"taku_v",  age:36,g:"男性",area:"東京都",freq:"週2回",goal:"shoulder",months:13,on:true,src:"—",         stars:5,likes:29,color:"#0F7A6B",
+  text:"施術者Cに1年お世話になっています。痛みの原因を毎回言葉で説明してくれるので、自分でも姿勢を直せるようになりました。"},
+ {iid:10,user:"papa_h",  age:41,g:"男性",area:"埼玉県",freq:"週3回",goal:"tone",   months:17,on:true, src:"Amazon",     stars:5,likes:26,color:"#5A6446",
+  text:"ダイヤル式で2秒で重さを変えられるので、家でも1年以上続いています。作りも堅牢で、床に置く音が静かなのは集合住宅では大きい。"},
+ {iid:5, user:"tomo_s",  age:41,g:"男性",area:"東京都",freq:"週3回",goal:"sleep",  months:6, on:true, src:"Amazon",     stars:4,likes:21,color:"#1F4FBF",
+  text:"寝つきは明確に良くなりました。半年続けて、飲まない日との差が分かる程度。味は無味に近く、水に溶かしても気になりません。"},
+ {iid:13,user:"shin_o",  age:48,g:"男性",area:"東京都",freq:"週2回",goal:"hair",   months:10,on:true, src:"公式サイト",  stars:4,likes:24,color:"#0F7A6B",
+  text:"10ヶ月使用。劇的な変化ではありませんが、抜け毛の量は減りました。香りが控えめで朝でも使えるのが続いている理由です。"},
+ {iid:14,user:"yuka_o",  age:34,g:"女性",area:"東京都",freq:"週1回",goal:"skin",   months:8, on:true, src:"店舗",       stars:5,likes:33,color:"#B4483C",photos:["✨"],
+  text:"乾燥で夕方に粉をふくのが悩みでしたが、8ヶ月でほぼ気にならなくなりました。伸びが良く、少量で足りるのでコスパも悪くないです。"},
+];
+
+const COLUMNS=[
+ {id:1,bg:"linear-gradient(125deg,#10192B,#25375C)",eb:"BEGINNERS",t:"「疲れが抜けない」の<br>正体は3つに分かれる",s:"口コミ2,400件から見えた傾向",e:"🔋",
+  body:"「疲れが抜けない」と一言で言っても、口コミを読み込むと理由は大きく3つに分かれます。①睡眠の質、②首・肩まわりの循環、③単純な運動不足。同じ悩みでも、どれに当たるかで合うものが変わります。"},
+ {id:2,bg:"linear-gradient(125deg,#122A26,#1E4A42)",eb:"OWNER'S REVIEW",t:"ホームサウナを<br>1年半使い続けた話",s:"実際に自宅に入れた3名に聞きました",e:"🧖",
+  body:"高額なウェルネス機器で本当に知りたいのは、スペックではなく「1年後も使っているか」です。今回は自宅にサウナを導入した3名に、設置・音・掃除・家族の使用状況まで伺いました。"},
+ {id:3,bg:"linear-gradient(125deg,#1B2430,#33465C)",eb:"HEALTH CHECK",t:"外食が多い人の、<br>続く食べ方5選",s:"健康診断の数値が気になり始めたら",e:"🍱",
+  body:"続かない原因の多くは「意志」ではなく「選択肢の数」です。会食・外食が週の半分を超える人でも選べる組み合わせと、当日の帳尻の合わせ方を5つ挙げました。数値そのものより、続けられる形に落とすことを優先しています。"},
+];
+const NOTICES=[
+ {d:"9/24",t:"「悩みから探す」に “健康診断の数値が気になる” を追加しました",new:true},
+ {d:"9/12",t:"ウェルネスコラム「外食が多い人の、続く食べ方」を公開しました",new:true},
+ {d:"9/03",t:"「悩みから探す」機能を追加しました"},
+ {d:"8/28",t:"口コミに「使用期間」「継続中か」の項目が追加されました"},
+ {d:"8/20",t:"口コミ投稿キャンペーン — 抽選でプロテインをプレゼント"},
+];
+
+/* ============================================================
+   2. STATE
+   ============================================================ */
+const COHORT_MIN=5;   /* 近い人の口コミがこの件数未満なら総合へフォールバック */
+const ME={age:38,g:"男性",area:"東京都",freq:"週2〜3回",goals:["tone","fatigue","sleep"],cohort:2481};
+const S={login:false,mode:"all",cn:"fatigue",rankCat:null,cnKind:null,
+         iid:1,star:0,fav:false,months:null,src:null,posted:[]};
+const stack=[];
+const TABS=["home","search","ranking","feed","mywell"];
+const DUR=600;
+
+/* ============================================================
+   3. ROUTER
+   ============================================================ */
+function go(id,push=true,dir=1){
+  const cur=document.querySelector(".screen.active");
+  const nxt=document.getElementById("s-"+id);
+  if(!nxt||cur===nxt)return;
+  if(cur&&push)stack.push(cur.id.slice(2));
+  if(id==="mywell")renderMywell();
+  if(id==="home")renderHomeBanner();
+  if(id==="settings")renderSettings();
+  if(id==="onboard")obStep(1);
+  const tb=document.getElementById("tabbar");
+  tb.classList.toggle("hidden",!TABS.includes(id));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.go===id));
+  nxt.style.transition="none";
+  if(dir===1){nxt.style.transform="translateX(100%)";nxt.style.zIndex=6}
+  else if(dir===-1){nxt.style.transform="translateX(-26%) scale(.96)";nxt.style.filter="brightness(.74)";nxt.style.zIndex=1}
+  else{nxt.style.transform="scale(1.05)";nxt.style.opacity="0";nxt.style.zIndex=6}
+  nxt.classList.add("active");
+  nxt.getBoundingClientRect();
+  nxt.style.transition="";nxt.style.transform="";nxt.style.filter="";nxt.style.opacity="";
+  if(cur){
+    cur.classList.remove("active");
+    cur.style.visibility="visible";
+    if(dir===1){cur.style.transform="translateX(-26%) scale(.96)";cur.style.filter="brightness(.74)";cur.style.zIndex=1}
+    else if(dir===-1){cur.style.transform="translateX(100%)";cur.style.zIndex=6}
+    else{cur.style.opacity="0";cur.style.transform="scale(.96)"}
+    setTimeout(()=>{cur.style.cssText=""},DUR);
+  }
+  setTimeout(()=>{nxt.style.zIndex=""},DUR);
+  const sc=nxt.querySelector(".scroll");if(sc)sc.scrollTop=0;
+}
+function back(){const p=stack.pop();go(p||"home",false,-1)}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  stack.length=0;go(t.dataset.go,false,0);
+}));
+function toast(m){const t=document.getElementById("toast");t.innerHTML=m;t.classList.add("show");
+  clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove("show"),2600)}
+function loginAs(kind,msg){
+  S.login=true;
+  toast(msg||"ログインしました");
+  setTimeout(()=>go("home"),400);
+}
+function logout(){S.login=false;toast("ログアウトしました");setTimeout(()=>go("home"),400)}
+function pickOne(el){el.parentNode.querySelectorAll(".slot").forEach(x=>x.classList.remove("on"));el.classList.add("on")}
+
+/* ============================================================
+   4. SCORING — People like you とフォールバック
+   ============================================================ */
+/* 近い人のデータが閾値未満なら総合を返し、フォールバックした事実を返す */
+function view(it){
+  if(S.mode==="cohort"&&it.cn>=COHORT_MIN&&it.cs!=null)
+    return {score:it.cs,n:it.cn,cohort:true,fb:false};
+  if(S.mode==="cohort")
+    return {score:it.score,n:it.n,cohort:false,fb:true,cn:it.cn};
+  return {score:it.score,n:it.n,cohort:false,fb:false};
+}
+/* 並び順は「表示している評価の高い順（同点は口コミ件数順）」。
+   企画書の rankScore = 評価 × log10(件数+1) との重み付けは要件定義で確定する項目のため、
+   デモでは画面の数値と並び順が一致する形にしている */
+function sortItems(list){return [...list].sort((a,b)=>{
+  const va=view(a),vb=view(b);
+  return (vb.score-va.score)||(vb.n-va.n);
+})}
+function cohortTotals(list){
+  const ok=list.filter(i=>i.cn>=COHORT_MIN&&i.cs!=null);
+  return {ok:ok.length,all:list.length,n:list.reduce((s,i)=>s+i.cn,0)};
+}
+/* 母数の明示 — 全ランキングに必ず出す */
+function nbarHTML(list){
+  if(S.mode==="cohort"){
+    const t=cohortTotals(list);
+    return `<span class="dot"></span><span>あなたと近い人（38歳前後・男性・東京都・週2〜3回運動）<b style="color:var(--ink)">${ME.cohort.toLocaleString()}人</b>の口コミ <b style="color:var(--ink)">${t.n}件</b>を集計 ／ ${t.all}件のうち<b style="color:var(--ink)">${t.ok}件</b>は近い人の評価を表示</span>`;
+  }
+  const n=list.reduce((s,i)=>s+i.n,0);
+  return `<span class="dot"></span><span>全ユーザーの口コミ <b style="color:var(--ink)">${n.toLocaleString()}件</b>を集計（毎週更新）／ 評価と件数の重み付けは要件定義で確定</span>`;
+}
+function fbHTML(list){
+  if(S.mode!=="cohort")return "";
+  const few=list.filter(i=>i.cn<COHORT_MIN||i.cs==null);
+  if(!few.length)return "";
+  return `<div class="fallback">⚠️ <b>${few.length}件</b>は、あなたと近い人の口コミが ${COHORT_MIN}件未満のため <b>総合評価を表示</b>しています（${few.slice(0,2).map(i=>i.name).join("／")}${few.length>2?" ほか":""}）。<br>
+   母数が集まるまでは総合評価を出す設計です。件数を伏せて「近い人の評価」として見せることはしません。</div>`;
+}
+function setMode(m,screen){
+  S.mode=m;
+  document.querySelectorAll("#s-"+screen+" .seg b").forEach((b,i)=>b.classList.toggle("on",(i===0)===(m==="all")));
+  if(screen==="concern")renderConcern();
+  if(screen==="ranking")renderRank();
+  toast(m==="cohort"?"あなたと近い人の評価に切り替えました":"みんなの評価に切り替えました");
+}
+
+/* ============================================================
+   5. RENDER HELPERS
+   ============================================================ */
+const star=s=>"★".repeat(Math.round(s))+"☆".repeat(5-Math.round(s));
+const MEDAL=["linear-gradient(135deg,#5E86D8,#1F4FBF)","linear-gradient(135deg,#B9C3D2,#8C97A8)","linear-gradient(135deg,#C79A72,#9C6B42)"];
+const kindTag=k=>`<span class="kind k-${k==="pro"?"pro":k}">${KINDLABEL[k]}</span>`;
+
+function itemCard(it){
+  const v=view(it);
+  return `<button class="pcard" onclick="openItem(${it.id})">
+    ${it.tag?`<span class="tagfloat">${it.tag}</span>`:""}
+    <span class="kindfloat">${kindTag(it.kind)}</span>
+    <span class="pimg">${it.emoji}</span>
+    <span class="pc-body">
+      <span class="pc-brand">${it.brand}</span>
+      <span class="pc-name">${it.name}</span>
+      <span class="pc-meta"><span class="stars">${star(v.score)}</span><span class="score">${v.score.toFixed(2)}</span><span class="pc-n">(n=${v.n})</span></span>
+      <span class="pc-price jost">${it.price}</span>
+    </span></button>`;
+}
+function itemRow(it,rank){
+  const v=view(it);
+  return `<button class="listitem" onclick="openItem(${it.id})">
+    ${rank?(rank<=3?`<span class="medal" style="background:${MEDAL[rank-1]}">${rank}</span>`:`<span class="rankno jost">${rank}</span>`):""}
+    <span class="pimg" style="width:48px;height:48px;font-size:22px">${it.emoji}</span>
+    <span class="tx" style="font-weight:400">
+      <span style="display:flex;align-items:center;gap:5px">${kindTag(it.kind)}<span style="font-size:9.5px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it.brand}</span></span>
+      <span style="display:block;font-size:13px;font-weight:700;line-height:1.4;margin-top:2px">${it.name}</span>
+      <span style="display:flex;gap:6px;align-items:center;margin-top:2px;flex-wrap:wrap">
+        <span class="stars">${star(v.score)}</span><span class="score" style="font-size:12.5px">${v.score.toFixed(2)}</span>
+        <span style="font-size:10px;color:var(--sub)">n=${v.n}件</span>
+        ${v.cohort?`<span class="nearby">近い人</span>`:""}
+        ${v.fb?`<span class="stopped">総合を表示（近い人${v.cn}件）</span>`:""}
+      </span>
+    </span><span class="ar">›</span></button>`;
+}
+/* 構造化口コミカード — 使用期間 × 継続中 が差別化の核 */
+function revCard(r,showItem){
+  const it=IT(r.iid);
+  const near=(Math.abs(r.age-ME.age)<=7&&r.g===ME.g);
+  const period=r.months>=12?`${Math.floor(r.months/12)}年${r.months%12?r.months%12+"ヶ月":""}`:`${r.months}ヶ月`;
+  return `<div class="rev">
+    <div class="who">
+      <span class="avatar" style="background:${r.color}">${r.user[0].toUpperCase()}</span>
+      <span style="flex:1;min-width:0">
+        <b style="font-size:12.5px">${r.user}</b>${r.badge?` <span class="tagchip">${r.badge}</span>`:""}${near?` <span class="nearby">あなたと近い</span>`:""}
+        <div class="meta">${r.age}歳・${r.g} ／ ${r.area} ／ 運動 ${r.freq}</div>
+      </span>
+      <span class="stars" style="font-size:13px">${star(r.stars)}</span>
+    </div>
+    ${showItem?`<div style="font-size:11px;color:var(--primary);font-weight:700;margin-bottom:6px;cursor:pointer" onclick="openItem(${it.id})">${it.emoji} ${it.name} ›</div>`:""}
+    <div class="factbox">
+      <span class="fact">目的<b>${CN(r.goal)?CN(r.goal).l:r.goal}</b></span>
+      <span class="fact">${it.kind==="product"?"使用期間":"利用期間"}<b>${period}</b></span>
+      ${r.src!=="—"?`<span class="fact">購入先<b>${r.src}</b></span>`:""}
+      <span style="margin-left:auto">${r.on?`<span class="ongoing">いまも継続中</span>`:`<span class="stopped">やめた</span>`}</span>
+    </div>
+    <p>${r.text}</p>
+    ${r.photos?`<div style="display:flex;gap:7px;margin-top:10px">${r.photos.map(ph=>`<span class="pimg" style="width:56px;height:56px;font-size:23px">${ph}</span>`).join("")}</div>`:""}
+    <div class="foot">
+      <button class="likebtn" onclick="likeToggle(this,${r.likes})">♡ 参考になった <b>${r.likes}</b></button>
+      <button class="reportbtn" onclick="toast('デモ：この口コミを通報する<br>（App Store要件・Phase 1で実装）')">⋯ 報告</button>
+    </div></div>`;
+}
+function likeToggle(btn,n){
+  btn.classList.remove("on");void btn.offsetWidth;
+  const on=btn.dataset.on!=="1";btn.dataset.on=on?"1":"0";
+  if(on)btn.classList.add("on");
+  btn.innerHTML=(on?"♥":"♡")+" 参考になった <b>"+(on?n+1:n)+"</b>";
+  if(on)toast("このレビューが <b>"+(n+1)+"人</b> の参考になりました");
+}
+
+/* ============================================================
+   6. ONBOARDING（悩み → 属性 → その場で価値を返す）
+   ============================================================ */
+let obSel=[...ME.goals], obN=1;
+function obStep(n){
+  obN=n;
+  [1,2,3].forEach(i=>document.getElementById("ob-b"+i).classList.toggle("on",i<=n));
+  const b=document.getElementById("ob-body"),t=document.getElementById("ob-title");
+  if(n===1){
+    t.textContent="最近どうですか？";
+    b.innerHTML=`<p style="font-size:12.5px;color:var(--sub);line-height:1.85;padding:6px 22px 12px">
+      気になっていることを選んでください（複数選択可）。<br>選んだ内容から、カテゴリを横断して探せるようになります。</p>
+      <div class="cngrid" style="grid-template-columns:1fr 1fr">${CONCERNS.map(c=>
+        `<button class="cnchip ${obSel.includes(c.id)?"on":""}" onclick="obToggle('${c.id}',this)">
+          <span class="e">${c.e}</span><span class="l">${c.l}</span></button>`).join("")}</div>
+      <div style="padding:6px 22px 30px"><button class="btn primary" onclick="obStep(2)">次へ（${obSel.length}件選択中）</button></div>`;
+  }else if(n===2){
+    t.textContent="あなたのこと";
+    b.innerHTML=`<p style="font-size:12.5px;color:var(--sub);line-height:1.85;padding:6px 22px 2px">
+      同じような年代・目的・生活の人が何を選んでいるかを出すために使います。<br>
+      <b style="color:var(--ink)">3項目だけ</b>お願いします。</p>
+      <div style="padding:0 22px 30px">
+        <label>年代</label>
+        <div class="hrow" style="padding:2px 0 4px">${["20代","30代","40代","50代","60代以上"].map((x,i)=>
+          `<button class="chip ${i===1?"on":""}" onclick="pickChip(this)">${x}</button>`).join("")}</div>
+        <label>性別</label>
+        <div class="hrow" style="padding:2px 0 4px">${["男性","女性","回答しない"].map((x,i)=>
+          `<button class="chip ${i===0?"on":""}" onclick="pickChip(this)">${x}</button>`).join("")}</div>
+        <label>運動の頻度</label>
+        <div class="hrow" style="padding:2px 0 4px">${["ほぼしない","週1回","週2〜3回","週4回以上"].map((x,i)=>
+          `<button class="chip ${i===2?"on":""}" onclick="pickChip(this)">${x}</button>`).join("")}</div>
+        <label>お住まいのエリア（任意）</label>
+        <div class="hrow" style="padding:2px 0 4px">${["港区","渋谷区","目黒区","その他の東京都","東京都外"].map((x,i)=>
+          `<button class="chip ${i===0?"on":""}" onclick="pickChip(this)">${x}</button>`).join("")}</div>
+        <div style="height:24px"></div>
+        <button class="btn primary" onclick="obStep(3)">これで探してみる</button>
+        <p style="font-size:10.5px;color:var(--sub);text-align:center;margin-top:11px;line-height:1.75">
+          入力内容はランキングの絞り込みにのみ使用します</p>
+      </div>`;
+  }else{
+    t.textContent="準備できました";
+    const sel=obSel.length?obSel:["fatigue"];
+    const list=sortItems(ITEMS.filter(i=>i.cn2.some(c=>sel.includes(c))));
+    const prod=list.filter(i=>i.kind==="product").slice(0,3);
+    const svc=list.filter(i=>i.kind!=="product").slice(0,3);
+    b.innerHTML=`
+      <div style="padding:14px 22px 4px;text-align:center">
+        <div style="font-size:12.5px;color:var(--sub)">あなたと近いユーザーは</div>
+        <div class="bignum">${ME.cohort.toLocaleString()}<span style="font-size:17px">人</span></div>
+        <div style="font-size:11.5px;color:var(--sub);line-height:1.8;margin-top:6px">
+          38歳前後・男性・東京都・週2〜3回運動<br>目的：${sel.slice(0,3).map(c=>CN(c)?CN(c).l:c).join(" / ")}</div>
+      </div>
+      <div class="sec" style="padding:20px 22px 6px"><h2 style="font-size:14px">近い人が選んだ PRODUCTS</h2></div>
+      <div class="card" style="margin:0 20px">${prod.map((it,i)=>itemRow(it,i+1)).join("")}</div>
+      <div class="sec" style="padding:16px 22px 6px"><h2 style="font-size:14px">近い人が選んだ SERVICES</h2></div>
+      <div class="card" style="margin:0 20px">${svc.map((it,i)=>itemRow(it,i+1)).join("")}</div>
+      <div class="nbar" style="padding:12px 22px 0">${nbarHTML(list)}</div>
+      <div style="padding:16px 22px 30px">
+        <button class="btn primary" onclick="go('home',false,0)">はじめる</button>
+        <div style="height:10px"></div>
+        <button class="btn ghost" onclick="go('signup')">無料登録して記録を残す</button>
+      </div>`;
+    renderSignupProfile();
+  }
+  const sc=document.getElementById("ob-body");if(sc)sc.scrollTop=0;
+}
+function obBack(){obN>1?obStep(obN-1):go("splash",false,-1)}
+function obToggle(id,el){
+  const i=obSel.indexOf(id);
+  if(i>=0)obSel.splice(i,1);else obSel.push(id);
+  el.classList.toggle("on");
+  const btn=document.querySelector("#ob-body .btn.primary");
+  if(btn)btn.textContent=`次へ（${obSel.length}件選択中）`;
+}
+function pickChip(el){el.parentNode.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));el.classList.add("on")}
+function renderSignupProfile(){
+  const el=document.getElementById("signup-profile");if(!el)return;
+  el.innerHTML=`年代：30代 ／ 性別：男性 ／ 運動：週2〜3回 ／ エリア：港区<br>
+   目的：${(obSel.length?obSel:ME.goals).map(c=>CN(c)?CN(c).l:c).join("・")}
+   <div style="margin-top:6px;color:var(--primary);font-weight:700">→ あなたと近いユーザー ${ME.cohort.toLocaleString()}人</div>`;
+}
+
+/* ============================================================
+   7. HOME
+   ============================================================ */
+document.getElementById("home-cn").innerHTML=["fatigue","sleep","shoulder","health","tone","posture"]
+ .map(id=>{const c=CN(id);return `<button class="cnchip" onclick="openConcern('${id}')">
+   <span class="e">${c.e}</span><span class="l">${c.l}</span></button>`}).join("");
+document.getElementById("search-cn").innerHTML=CONCERNS
+ .map(c=>`<button class="cnchip" onclick="openConcern('${c.id}')">
+   <span class="e">${c.e}</span><span class="l">${c.l}</span></button>`).join("");
+document.getElementById("cats-grid").innerHTML=CATS.filter(c=>c.id!=="pro").map(c=>{
+  const n=ITEMS.filter(i=>i.cat===c.id).reduce((s,i)=>s+i.n,0);
+  return `<button class="card" style="padding:16px 12px;text-align:center;cursor:pointer;font-family:inherit;color:var(--ink)" onclick="openCat('${c.id}')">
+   <div style="width:42px;height:42px;border-radius:13px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto">${c.emoji}</div>
+   <div style="font-size:12.5px;font-weight:700;margin-top:8px">${c.name}</div>
+   <div style="margin-top:5px">${kindTag(c.kind)}</div>
+   <div style="font-size:9.5px;color:var(--sub);margin-top:5px">口コミ ${n.toLocaleString()}件</div></button>`}).join("")
+ +`<button class="card" style="padding:16px 12px;text-align:center;cursor:pointer;font-family:inherit;color:var(--ink)" onclick="openCat('pro')">
+   <div style="width:42px;height:42px;border-radius:13px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto">🧑‍🏫</div>
+   <div style="font-size:12.5px;font-weight:700;margin-top:8px">専門家から探す</div>
+   <div style="margin-top:5px">${kindTag("pro")}</div>
+   <div style="font-size:9.5px;color:var(--sub);margin-top:5px">トレーナー・施術者</div></button>`;
+
+function renderHomeTop(){
+  const prev=S.mode;S.mode="cohort";
+  const list=sortItems(ITEMS.filter(i=>i.cn2.some(c=>ME.goals.includes(c))));
+  document.getElementById("home-cohort").innerHTML=list.slice(0,3).map((it,i)=>itemRow(it,i+1)).join("");
+  document.getElementById("home-cohort-n").innerHTML=nbarHTML(list.slice(0,3));
+  S.mode="all";
+  document.getElementById("home-rank").innerHTML=sortItems(ITEMS).slice(0,4).map((it,i)=>itemRow(it,i+1)).join("");
+  S.mode=prev;
+}
+renderHomeTop();
+document.getElementById("home-revs").innerHTML=REVIEWS.slice(0,3).map(r=>revCard(r,true)).join("");
+document.getElementById("home-col").innerHTML=COLUMNS.map(c=>
+ `<button class="pick" style="background:${c.bg}" onclick="openColumn(${c.id})">
+   <span class="eyebrow" style="color:#8FB0F2">${c.eb}</span>
+   <span style="display:block;font-size:16.5px;font-weight:700;line-height:1.55;margin:9px 0 6px">${c.t}</span>
+   <span style="font-size:11px;color:#9FB0CC">${c.s}</span>
+   <span class="pe">${c.e}</span></button>`).join("");
+function renderHomeBanner(){
+  const el=document.getElementById("home-banner");
+  document.getElementById("home-greet").textContent=S.login?"今日はどうですか？":"最近どうですか？";
+  if(S.login){
+    el.innerHTML="";
+  }else{
+    el.innerHTML=`<button class="btn ghost" style="justify-content:space-between;padding:12px 15px" onclick="go('login')">
+      <span style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
+        <b style="font-size:12.5px">無料登録で口コミを残す</b>
+        <small style="font-size:10px;color:var(--sub);font-weight:400">使ったもの・通った場所が MY WELLNESS に残ります</small>
+      </span><span style="color:var(--primary)">›</span></button>`;
+  }
+}
+
+/* ============================================================
+   8. CONCERN / RANKING / SEARCH / LIST
+   ============================================================ */
+function openConcern(id){S.cn=id;S.cnKind=null;renderConcern();go("concern")}
+function renderConcern(){
+  const c=CN(S.cn);
+  document.getElementById("cn-title").textContent=c.l;
+  document.querySelectorAll("#s-concern .seg b").forEach((b,i)=>b.classList.toggle("on",(i===0)===(S.mode==="all")));
+  let list=ITEMS.filter(i=>i.cn2.includes(S.cn));
+  document.getElementById("cn-kinds").innerHTML=
+    `<button class="chip ${!S.cnKind?"on":""}" onclick="S.cnKind=null;renderConcern()">すべて（${list.length}）</button>`+
+    ["product","service","pro"].map(k=>{const n=list.filter(i=>i.kind===k).length;
+      return n?`<button class="chip ${S.cnKind===k?"on":""}" onclick="S.cnKind='${k}';renderConcern()">${KINDLABEL[k]}（${n}）</button>`:""}).join("");
+  if(S.cnKind)list=list.filter(i=>i.kind===S.cnKind);
+  const sorted=sortItems(list);
+  document.getElementById("cn-nbar").innerHTML=nbarHTML(sorted);
+  document.getElementById("cn-fb").innerHTML=fbHTML(sorted);
+  document.getElementById("cn-list").innerHTML=sorted.length
+    ? sorted.map((it,i)=>itemRow(it,i+1)).join("")
+    : `<div style="padding:34px;text-align:center;font-size:12px;color:var(--sub);line-height:1.9">この条件の登録はまだありません。<br>最初の口コミを投稿してみましょう。</div>`;
+}
+const rc=document.getElementById("rank-chips");
+rc.innerHTML=`<button class="chip on" onclick="S.rankCat=null;renderRank(this)">総合</button>`
+ +`<button class="chip" onclick="S.rankCat='product';renderRank(this)">PRODUCTS</button>`
+ +`<button class="chip" onclick="S.rankCat='service';renderRank(this)">SERVICES</button>`
+ +`<button class="chip" onclick="S.rankCat='pro';renderRank(this)">専門家</button>`
+ +CONCERNS.slice(0,8).map(c=>`<button class="chip" onclick="S.rankCat='c:${c.id}';renderRank(this)">${c.e} ${c.l}</button>`).join("");
+function renderRank(btn){
+  if(btn){rc.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));btn.classList.add("on")}
+  let list=ITEMS;
+  if(S.rankCat&&S.rankCat.startsWith("c:"))list=ITEMS.filter(i=>i.cn2.includes(S.rankCat.slice(2)));
+  else if(S.rankCat)list=ITEMS.filter(i=>i.kind===S.rankCat);
+  const sorted=sortItems(list);
+  document.getElementById("rank-nbar").innerHTML=nbarHTML(sorted);
+  document.getElementById("rank-fb").innerHTML=fbHTML(sorted);
+  document.getElementById("rank-list").innerHTML=sorted.map((it,i)=>itemRow(it,i+1)).join("");
+}
+function openRank(mode){S.mode=mode||"all";S.rankCat=null;stack.length=0;
+  document.querySelectorAll("#s-ranking .seg b").forEach((b,i)=>b.classList.toggle("on",(i===0)===(S.mode==="all")));
+  renderRank(rc.querySelector(".chip"));stack.length=0;go("ranking",false,0);}
+renderRank();
+function openCat(id){
+  const c=CAT(id);
+  document.getElementById("plist-title").textContent=c.name;
+  const list=sortItems(ITEMS.filter(i=>i.cat===id));
+  document.getElementById("plist-body").innerHTML=list.length?list.map(it=>itemCard(it)).join("")
+   :`<div style="grid-column:1/-1;padding:34px;text-align:center;font-size:12px;color:var(--sub);line-height:1.9">このカテゴリの登録はまだありません。</div>`;
+  go("plist");
+}
+function doSearch(q){
+  const el=document.getElementById("search-hit");
+  if(!q){el.innerHTML="";return}
+  const hit=ITEMS.filter(i=>(i.name+i.brand).toLowerCase().includes(q.toLowerCase()));
+  el.innerHTML=`<div class="sec"><h2>「${q}」の検索結果</h2><span class="note">${hit.length}件</span></div>`
+   +(hit.length?`<div class="pgrid">${hit.map(it=>itemCard(it)).join("")}</div>`
+    :`<div style="padding:20px 22px;font-size:12px;color:var(--sub);line-height:1.9">該当がありません。下の「悩み・目的から探す」もお試しください。</div>`);
+}
+
+/* ============================================================
+   9. ITEM DETAIL
+   ============================================================ */
+function openItem(id){
+  S.iid=id;S.fav=false;
+  const fb=document.getElementById("favbtn");fb.textContent="♡";fb.style.color="";
+  const it=IT(id),v=view(it);
+  const revs=REVIEWS.filter(r=>r.iid===id);
+  const isSvc=it.kind!=="product";
+  /* 表示中の抜粋ではなく、アイテム全体の件数から出す（ヘッダーのnと矛盾させない） */
+  const near=it.cn;
+  const longterm=Math.round(it.n*it.repeat/100*0.42);
+  document.getElementById("item-body").innerHTML=`
+   <div style="padding:6px 20px">
+     <div class="pimg" style="width:100%;height:186px;font-size:70px;border-radius:18px">${it.emoji}</div>
+     <div style="display:flex;align-items:center;gap:7px;margin-top:14px">
+       ${kindTag(it.kind)}<span style="font-size:11px;color:var(--sub)">${it.brand} ／ ${CAT(it.cat).name}</span>
+     </div>
+     <h2 style="font-size:18px;line-height:1.5;margin-top:5px">${it.name}</h2>
+     ${it.role?`<div style="font-size:11.5px;color:var(--sub);margin-top:4px">${it.role} ／ 得意：${it.good}<br>利用者 ${it.users}人</div>`:""}
+     <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+       <span class="stars" style="font-size:17px">${star(v.score)}</span>
+       <span class="score jost" style="font-size:19px">${v.score.toFixed(2)}</span>
+       <span style="font-size:11.5px;color:var(--sub)">口コミ ${it.n}件</span>
+       ${v.cohort?`<span class="nearby">近い人 n=${v.n}</span>`:""}
+     </div>
+     <div style="display:flex;gap:10px;align-items:center;margin-top:10px">
+       <span class="jost" style="font-size:19px;font-weight:500">${it.price}</span>
+       ${it.tag?`<span class="badge">${it.tag}</span>`:""}
+     </div>
+
+     <!-- 構造化口コミから自動的に出せる指標 -->
+     <div class="kpi" style="padding:16px 0 0">
+       <div class="card"><div class="v">${it.repeat}<span style="font-size:12px">%</span></div><div class="k">いまも継続中</div></div>
+       <div class="card"><div class="v">${near}</div><div class="k">近い人の口コミ</div></div>
+       <div class="card"><div class="v">${longterm}</div><div class="k">1年以上継続</div></div>
+     </div>
+     ${it.hi?`<div class="fallback" style="margin:12px 0 0">この価格帯の商品は購入者が少なく、口コミは ${it.n}件（近い人 ${it.cn}件）です。編集部が実際の所有者に取材した<b>オーナーズレビュー</b>も併せてご覧ください。
+       <div style="margin-top:8px"><button class="btn sm outline" onclick="openColumn(2)">オーナーズレビューを読む</button></div></div>`:""}
+
+     <div style="display:flex;gap:8px;margin-top:16px">
+       ${isSvc
+         ? `<button class="ecbtn" onclick="toast('デモ：公式サイトの予約ページへ遷移')"><b>公式サイト</b><small>で予約する</small></button>
+            <button class="ecbtn" onclick="toast('デモ：電話をかける')"><b>電話</b><small>で問い合わせ</small></button>
+            <button class="ecbtn" onclick="toast('デモ：地図アプリを開く')"><b>地図</b><small>を見る</small></button>`
+         : `<button class="ecbtn" onclick="toast('デモ：Amazonへ遷移')"><b>Amazon</b><small>で購入</small></button>
+            <button class="ecbtn" onclick="toast('デモ：楽天市場へ遷移')"><b>楽天市場</b><small>で購入</small></button>
+            <button class="ecbtn" onclick="toast('デモ：公式サイトへ遷移')"><b>公式サイト</b><small>を見る</small></button>`}
+     </div>
+     ${isSvc?`<p style="font-size:10px;color:var(--sub);line-height:1.75;margin-top:9px">
+       Phase 1 では店舗の公式サイト・電話への外部導線までを実装します。アプリ内での空き枠表示・予約はPhase 2以降の範囲です。</p>`:""}
+
+     <div class="sec" style="padding:20px 0 6px"><h2 style="font-size:14.5px">この悩み・目的で選ばれています</h2></div>
+     <div style="display:flex;gap:7px;flex-wrap:wrap">${it.cn2.map(c=>
+       `<button class="chip" onclick="openConcern('${c}')">${CN(c).e} ${CN(c).l}</button>`).join("")}</div>
+   </div>
+
+   <div class="sec"><h2>評価の分布</h2></div>
+   <div class="card" style="margin:2px 20px;padding:13px 15px">
+     ${[["★5",Math.round(it.repeat*.85)],["★4",Math.round((100-it.repeat*.85)*.62)],["★3",Math.round((100-it.repeat*.85)*.24)],["★2",Math.round((100-it.repeat*.85)*.09)],["★1",Math.round((100-it.repeat*.85)*.05)]]
+      .map(([k,v])=>`<div class="distbar"><span class="k">${k}</span><span class="t"><i style="width:${v}%"></i></span><span class="v">${v}%</span></div>`).join("")}
+   </div>
+
+   <div class="sec"><h2>口コミ（${it.n}件）</h2><a onclick="openRevlist(${it.id})">すべて見る ›</a></div>
+   <div class="revstack">${(revs.length?revs:REVIEWS.slice(0,2)).slice(0,3).map(r=>revCard(r)).join("")}</div>
+   <div style="padding:16px 20px 20px"><button class="btn primary" onclick="startPost()">✏️ 口コミを書く</button></div>`;
+  go("item");
+}
+function toggleFav(){
+  S.fav=!S.fav;
+  const fb=document.getElementById("favbtn");
+  fb.textContent=S.fav?"♥":"♡";fb.style.color=S.fav?"var(--danger)":"";
+  toast(S.fav?"MY WELLNESS に追加しました":"MY WELLNESS から外しました");
+}
+function openColumn(id){
+  const c=COLUMNS.find(x=>x.id===id);
+  document.getElementById("column-body").innerHTML=`
+   <div style="margin:6px 20px 0;border-radius:18px;padding:22px;background:${c.bg};color:#EEF2F8">
+     <span class="eyebrow" style="color:#8FB0F2">${c.eb}</span>
+     <div style="font-size:19px;font-weight:700;line-height:1.55;margin:9px 0 6px">${c.t}</div>
+     <div style="font-size:11px;color:#9FB0CC">${c.s}</div>
+   </div>
+   <div style="padding:18px 22px 8px;font-size:13.5px;line-height:2;color:var(--ink)">${c.body}</div>
+   <div class="sec"><h2 style="font-size:14.5px">この記事で紹介したもの</h2></div>
+   <div class="card" style="margin:2px 20px 24px">${sortItems(ITEMS.filter(i=>i.cn2.includes(id===1?"fatigue":id===2?"refresh":"diet"))).slice(0,3).map(it=>itemRow(it)).join("")}</div>`;
+  go("column");
+}
+
+/* ============================================================
+   10. REVIEW LIST / POST
+   ============================================================ */
+function openRevlist(iid){
+  S.iid=iid;const it=IT(iid);
+  document.getElementById("revlist-title").textContent="口コミ・"+it.n+"件";
+  const revs=REVIEWS.filter(r=>r.iid===iid);
+  const all=revs.length?revs:REVIEWS.slice(0,4);
+  document.getElementById("revlist-chips").innerHTML=
+   `<button class="chip on" onclick="filterRev('all',this)">すべて（${all.length}）</button>
+    <button class="chip" onclick="filterRev('near',this)">あなたと近い人</button>
+    <button class="chip" onclick="filterRev('long',this)">1年以上継続</button>
+    <button class="chip" onclick="filterRev('on',this)">継続中のみ</button>`;
+  window._revs=all;filterRev("all");
+  go("revlist");
+}
+function filterRev(f,btn){
+  if(btn){btn.parentNode.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));btn.classList.add("on")}
+  const all=window._revs||[];
+  let list=all;
+  if(f==="near")list=all.filter(r=>Math.abs(r.age-ME.age)<=7&&r.g===ME.g);
+  if(f==="long")list=all.filter(r=>r.months>=12);
+  if(f==="on")  list=all.filter(r=>r.on);
+  const label={all:"すべての口コミ",near:"あなたと近い人の口コミ",long:"1年以上継続している人の口コミ",on:"いまも継続中の人の口コミ"}[f];
+  document.getElementById("revlist-nbar").innerHTML=
+   `<span class="dot"></span><span>${label} <b style="color:var(--ink)">n=${list.length}件</b>`
+   +(list.length<COHORT_MIN?` ／ 母数が少ないため参考程度にご覧ください`:"")+`</span>`;
+  document.getElementById("revlist-body").innerHTML=list.length?list.map(r=>revCard(r)).join("")
+   :`<div style="padding:30px;text-align:center;font-size:12px;color:var(--sub);line-height:1.9">この条件の口コミはまだありません。</div>`;
+}
+function startPost(){
+  if(!S.login){toast("口コミの投稿にはログインが必要です");setTimeout(()=>go("login"),800);return}
+  const it=IT(S.iid);S.star=0;S.months=null;S.src=null;pickStar(0);
+  document.getElementById("post-text").value="";
+  document.getElementById("post-target").innerHTML=`
+    <span class="pimg" style="width:46px;height:46px;font-size:22px">${it.emoji}</span>
+    <span style="min-width:0"><span style="display:flex;align-items:center;gap:5px">${kindTag(it.kind)}
+    <span style="font-size:10px;color:var(--sub)">${it.brand}</span></span>
+    <b style="font-size:13px">${it.name}</b></span>`;
+  document.getElementById("post-goals").innerHTML=CONCERNS.slice(0,9).map((c,i)=>
+    `<button class="chip ${i===3?"on":""}" onclick="this.classList.toggle('on')">${c.l}</button>`).join("");
+  document.getElementById("post-months").innerHTML=["1ヶ月未満","1〜3ヶ月","3〜6ヶ月","6ヶ月〜1年","1〜2年","2年以上"]
+    .map(x=>`<button class="slot" onclick="pickOne(this);S.months='${x}'">${x}</button>`).join("");
+  const isSvc=it.kind!=="product";
+  document.getElementById("post-src-label").textContent=isSvc?"知ったきっかけ":"購入先";
+  document.getElementById("post-source").innerHTML=(isSvc?["紹介","SNS","検索","このアプリ"]:["Amazon","楽天市場","公式サイト","店舗"])
+    .map(x=>`<button class="slot" onclick="pickOne(this);S.src='${x}'">${x}</button>`).join("");
+  document.getElementById("post-ongoing").querySelectorAll(".slot").forEach((s,i)=>s.classList.toggle("on",i===0));
+  go("post");
+}
+function pickStar(n){S.star=n;document.querySelectorAll("#starpick span").forEach((s,i)=>{
+  s.classList.toggle("on",i<n);
+  if(i===n-1){s.style.animation="none";void s.offsetWidth;s.style.animation="pop .4s cubic-bezier(.2,.9,.3,1.4)"}
+})}
+function submitReview(){
+  if(!S.star){toast("評価（★）を選択してください");return}
+  if(!S.months){toast("使用（利用）期間を選択してください");return}
+  const txt=document.getElementById("post-text").value.trim();
+  if(txt.length<10){toast("口コミ本文を10文字以上ご入力ください");return}
+  const M={"1ヶ月未満":1,"1〜3ヶ月":2,"3〜6ヶ月":5,"6ヶ月〜1年":9,"1〜2年":15,"2年以上":30}[S.months]||6;
+  const on=document.querySelector("#post-ongoing .slot.on").textContent==="続けている";
+  const nr={iid:S.iid,user:"you_demo",age:ME.age,g:ME.g,area:ME.area,freq:ME.freq,
+            goal:"tone",months:M,on:on,src:S.src||"—",stars:S.star,likes:0,color:"#1F4FBF",text:txt};
+  REVIEWS.unshift(nr);S.posted.push(S.iid);
+  document.getElementById("feed-revs").innerHTML=REVIEWS.map(r=>revCard(r,true)).join("");
+  document.getElementById("home-revs").innerHTML=REVIEWS.slice(0,3).map(r=>revCard(r,true)).join("");
+  toast("投稿しました 🎉<br>MY WELLNESS に記録されました");
+  setTimeout(()=>openRevlist(S.iid),600);
+}
+
+/* ============================================================
+   11. FEED
+   ============================================================ */
+document.getElementById("feed-chips").innerHTML=
+ `<button class="chip on" onclick="feedFilter('new',this)">新着</button>
+  <button class="chip" onclick="feedFilter('near',this)">あなたと近い人</button>
+  <button class="chip" onclick="feedFilter('long',this)">1年以上継続</button>
+  <button class="chip" onclick="feedFilter('high',this)">高評価</button>`;
+function feedFilter(f,btn){
+  if(btn){btn.parentNode.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));btn.classList.add("on")}
+  let list=REVIEWS;
+  if(f==="near")list=REVIEWS.filter(r=>Math.abs(r.age-ME.age)<=7&&r.g===ME.g);
+  if(f==="long")list=REVIEWS.filter(r=>r.months>=12);
+  if(f==="high")list=[...REVIEWS].sort((a,b)=>b.stars-a.stars||b.likes-a.likes);
+  document.getElementById("feed-revs").innerHTML=list.map(r=>revCard(r,true)).join("");
+}
+feedFilter("new");
+
+/* ============================================================
+   12. MY WELLNESS（Phase 1 簡易版）
+   ============================================================ */
+function renderMywell(){
+  const b=document.getElementById("mywell-body");
+  if(!S.login){
+    b.innerHTML=`
+     <div style="padding:24px 24px 8px;text-align:center">
+       <div class="pimg" style="width:72px;height:72px;border-radius:24px;margin:0 auto;font-size:28px">🪪</div>
+       <h2 style="font-size:16px;margin-top:13px">MY WELLNESS はまだ空です</h2>
+       <p style="font-size:12px;color:var(--sub);line-height:1.85;margin-top:7px">
+         使ったもの・通った場所を口コミとして残すと、<br>ここに自分の記録として蓄積されていきます。</p>
+     </div>
+     <div style="padding:8px 24px"><button class="btn primary" onclick="go('signup')">無料登録してはじめる</button>
+       <div style="height:10px"></div><button class="btn ghost" onclick="go('login')">ログイン</button></div>
+     <div class="stepflow" style="margin-top:22px">
+       <div class="sec" style="padding:0 2px 12px"><h2>使うほど「自分に合う」が分かる</h2></div>
+       <div class="step on"><span class="dotcol"><span class="dot"></span><span class="vline"></span></span>
+         <span class="body"><b>① 悩み・目的を選ぶ</b><p>カテゴリを横断して、商品・サービス・専門家を比較できます。登録は不要です。</p></span></div>
+       <div class="step on"><span class="dotcol"><span class="dot"></span><span class="vline"></span></span>
+         <span class="body"><b>② プロフィールを入れる</b><p>年代・性別・運動頻度を入れると、ランキングが「自分と近い人」基準に変わります。</p></span></div>
+       <div class="step on"><span class="dotcol"><span class="dot"></span><span class="vline"></span></span>
+         <span class="body"><b>③ 使ったものを評価する</b><p>使用期間と継続状況まで残すので、あとから「1年続けた人の評価」として参照されます。</p></span></div>
+       <div class="step"><span class="dotcol"><span class="dot"></span></span>
+         <span class="body"><b>④ MY WELLNESS が育つ</b><p>何を使い、どこへ通い、何を続けているかが自分の記録として残ります。</p></span></div>
+     </div>
+     <div class="phase2"><b>Phase 2 以降の予定</b><br>
+       日々のACTIVITY記録、MY ROUTINEの公開・共有、Apple Health連携はPhase 2以降の範囲です。</div>`;
+    return;
+  }
+  const mine=[
+    {iid:1, months:14,on:true, stars:5},
+    {iid:20,months:18,on:true, stars:5},
+    {iid:22,months:11,on:true, stars:4},
+    {iid:6, months:16,on:true, stars:5},
+    {iid:3, months:11,on:true, stars:5},
+    {iid:8, months:4, on:false,stars:3},
+  ];
+  const on=mine.filter(m=>m.on).length;
+  const total=mine.reduce((s,m)=>s+m.months,0);
+  b.innerHTML=`
+   <div style="padding:18px 22px 4px;display:flex;gap:14px;align-items:center">
+     <span class="avatar" style="width:56px;height:56px;font-size:21px;border-radius:18px;background:#2F5AD0">Y</span>
+     <span style="min-width:0">
+       <b style="font-size:16px">you_demo</b>
+       <div style="font-size:11px;color:var(--sub);margin-top:3px">38歳・男性 ／ 東京都・港区 ／ 運動 週2〜3回</div>
+     </span>
+   </div>
+   <div style="padding:8px 22px 0;display:flex;gap:7px;flex-wrap:wrap">
+     ${ME.goals.map(g=>`<span class="tagchip">${CN(g).l}</span>`).join("")}
+     <button class="chip" style="padding:2px 10px;font-size:10px" onclick="go('settings')">目的を編集</button>
+   </div>
+
+   <div class="kpi" style="margin-top:16px">
+     <div class="card"><div class="v">${mine.length}</div><div class="k">評価したもの</div></div>
+     <div class="card"><div class="v">${on}</div><div class="k">継続中</div></div>
+     <div class="card"><div class="v">${total}<span style="font-size:12px">ヶ月</span></div><div class="k">記録の合計</div></div>
+   </div>
+
+   <div class="sec"><h2>いま続けているもの</h2><span class="note">Wellness Passport</span></div>
+   <div class="card" style="margin:2px 20px">
+     ${mine.filter(m=>m.on).map(m=>{const it=IT(m.iid);
+       const p=m.months>=12?`${Math.floor(m.months/12)}年${m.months%12?m.months%12+"ヶ月":""}`:`${m.months}ヶ月`;
+       return `<button class="listitem" onclick="openItem(${it.id})">
+         <span class="pimg" style="width:42px;height:42px;font-size:19px">${it.emoji}</span>
+         <span class="tx" style="font-weight:400">
+           <span style="display:flex;align-items:center;gap:5px">${kindTag(it.kind)}<span style="font-size:9.5px;color:var(--sub)">${p}</span></span>
+           <span style="display:block;font-size:13px;font-weight:700;margin-top:2px">${it.name}</span>
+           <span class="stars" style="font-size:12px">${star(m.stars)}</span> <span class="score" style="font-size:11.5px">${m.stars.toFixed(1)}</span>
+         </span><span class="ongoing">継続中</span></button>`}).join("")}
+   </div>
+
+   <div class="sec"><h2>やめたもの</h2><span class="note">これも記録として残ります</span></div>
+   <div class="card" style="margin:2px 20px;opacity:.66">
+     ${mine.filter(m=>!m.on).map(m=>{const it=IT(m.iid);
+       return `<button class="listitem" onclick="openItem(${it.id})">
+         <span class="pimg" style="width:42px;height:42px;font-size:19px">${it.emoji}</span>
+         <span class="tx" style="font-weight:400">
+           <span style="font-size:9.5px;color:var(--sub)">${m.months}ヶ月で終了</span>
+           <span style="display:block;font-size:13px;font-weight:700;margin-top:2px">${it.name}</span>
+         </span><span class="stopped">やめた</span></button>`}).join("")}
+   </div>
+
+   <div class="sec"><h2>あなたの投稿への反応</h2></div>
+   <div class="card" style="margin:2px 20px;padding:15px 16px">
+     <div style="font-size:13px;line-height:1.9">これまでの口コミが <b style="color:var(--primary)">231人</b> の参考になりました。<br>
+     <span style="font-size:11.5px;color:var(--sub)">1年以上継続した口コミは、他のユーザーの検索結果で優先して表示されます。</span></div>
+   </div>
+   <div class="phase2"><b>Phase 2 以降の予定</b><br>
+     日々のACTIVITY記録、MY ROUTINEの公開・共有、Apple Health連携はPhase 2以降の範囲です。Phase 1では、口コミの投稿がそのまま自分の記録になる設計にしています。</div>`;
+}
+
+/* ============================================================
+   13. SETTINGS / MEMBER / NOTICE
+   ============================================================ */
+function renderSettings(){
+  document.getElementById("set-profile").innerHTML=`
+   <button class="listitem" onclick="toast('デモ：年代を編集')"><span class="ic">🎂</span><span class="tx">年代</span><span style="font-size:11px;color:var(--sub)">30代</span><span class="ar">›</span></button>
+   <button class="listitem" onclick="toast('デモ：性別を編集')"><span class="ic">👤</span><span class="tx">性別</span><span style="font-size:11px;color:var(--sub)">男性</span><span class="ar">›</span></button>
+   <button class="listitem" onclick="toast('デモ：エリアを編集')"><span class="ic">📍</span><span class="tx">エリア</span><span style="font-size:11px;color:var(--sub)">東京都・港区</span><span class="ar">›</span></button>
+   <button class="listitem" onclick="toast('デモ：運動頻度を編集')"><span class="ic">🏃</span><span class="tx">運動の頻度</span><span style="font-size:11px;color:var(--sub)">週2〜3回</span><span class="ar">›</span></button>
+   <button class="listitem" onclick="go('onboard')"><span class="ic">🎯</span><span class="tx">悩み・目的</span><span style="font-size:11px;color:var(--sub)">${ME.goals.length}件</span><span class="ar">›</span></button>`;
+}
+document.getElementById("notice-list").innerHTML=NOTICES.map(n=>
+ `<button class="listitem" onclick="toast('デモ：お知らせ詳細')"><span class="ic">${n.new?"✨":"📢"}</span>
+  <span class="tx">${n.t}<div style="font-size:10.5px;color:var(--sub);font-weight:400;margin-top:3px">2026/${n.d}</div></span><span class="ar">›</span></button>`).join("");
+
+/* ---- Boot ---- */
+renderConcern();renderHomeBanner();
+go("splash",false,0);
+setTimeout(()=>{if(document.getElementById("s-splash").classList.contains("active"))go("onboard",false,0)},2500);
+</script>
+</body>
+</html>
