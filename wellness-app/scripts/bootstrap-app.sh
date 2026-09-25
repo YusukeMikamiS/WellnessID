@@ -11,6 +11,8 @@
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
+# このプロジェクトは Node 22 系を前提にしています（Cloud Functions も nodejs22）。
+
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 echo "▶ repo root: $ROOT"

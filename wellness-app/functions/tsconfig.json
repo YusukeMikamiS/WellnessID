@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    // Node 20 の CommonJS 向け。moduleResolution: "node"（=node10）は
+    // Node 22 の CommonJS 向け。moduleResolution: "node"（=node10）は
     // TypeScript 7.0 で廃止されるため node16 を使う。
     // functions/package.json に "type": "module" が無いので CommonJS で出力される。
     "module": "node16",
