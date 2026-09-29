@@ -27,4 +27,5 @@ export { deleteAccount } from './account/deleteAccount';
 export { rebuildRankings, weeklyRankings } from './ranking/weekly';
 export { deleteReview } from './review/deleteReview';
 export { reportReview } from './review/reportReview';
+export { toggleLike } from './review/toggleLike';
 export { postReview } from './review/postReview';

@@ -200,9 +200,14 @@ export interface ReviewDraft {
   photos: string[];
 }
 
-/** いいね（ReviewLike） */
+/**
+ * 「参考になった」（items/{itemId}/reviews/{reviewId}/likes/{uid}）
+ * ID は押した人の uid（1人1回。もう一度押すと取り消し）。
+ * 作成・削除と Review.likeCount の更新は Callable（toggleLike）だけが行う。
+ */
 export interface ReviewLike {
   uid: string;
+  itemId: string;
   reviewId: string;
   createdAt: EpochMillis;
 }

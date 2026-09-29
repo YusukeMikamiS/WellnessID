@@ -7,20 +7,20 @@
  *   - 新着フィード（reviews_index）の表示名も同じく差し替える
  *   - 通報（reports）：uid を null にして残す（運営の対応記録のため）
  *   - お気に入り・プロフィール（users/{uid}）・Auth のアカウントは削除する
+ *   - 本人が押した「参考になった」は取り消し、相手の口コミの likeCount を減らす
  *   - 集計値（avgScore / reviewCount / n）は変えない
- *
- * TODO：いいね（ReviewLike）の保存先が決まったら、本人のいいねの削除と likeCount の減算を足す。
  *
  * App Store Review Guideline 5.1.1(v)：アプリ内からアカウントを削除できること。
  * ⚠️ 人が必ずレビューする箇所（CLAUDE.md §9）。
  */
 
 import { getAuth } from 'firebase-admin/auth';
+import { FieldValue } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { logger } from 'firebase-functions/v2';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 
-import { type Review, WITHDRAWN_NICKNAME } from '../../../app/src/types';
+import { type Review, type ReviewLike, WITHDRAWN_NICKNAME } from '../../../app/src/types';
 import { db, REGION } from '../lib/admin';
 
 export interface DeleteAccountResult {
@@ -48,10 +48,11 @@ export const deleteAccount = onCall(
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError('unauthenticated', 'ログインが必要です。');
 
-    const [reviewsSnap, reportsSnap, favoritesSnap] = await Promise.all([
+    const [reviewsSnap, reportsSnap, favoritesSnap, likesSnap] = await Promise.all([
       db.collectionGroup('reviews').where('uid', '==', uid).get(),
       db.collection('reports').where('uid', '==', uid).get(),
       db.collection(`users/${uid}/favorites`).get(),
+      db.collectionGroup('likes').where('uid', '==', uid).get(),
     ]);
 
     const photos = reviewsSnap.docs.flatMap((d) => (d.data() as Review).photos ?? []);
@@ -73,6 +74,18 @@ export const deleteAccount = onCall(
       }
     }
     for (const doc of reportsSnap.docs) void writer.update(doc.ref, { uid: null });
+    // 本人が押した「参考になった」を取り消す（相手の口コミの件数も減らす）
+    for (const doc of likesSnap.docs) {
+      const like = doc.data() as ReviewLike;
+      void writer.delete(doc.ref);
+      void writer.update(db.doc(`items/${like.itemId}/reviews/${like.reviewId}`), {
+        likeCount: FieldValue.increment(-1),
+      });
+      const indexRef = db.doc(`reviews_index/${like.reviewId}`);
+      if ((await indexRef.get()).exists) {
+        void writer.update(indexRef, { likeCount: FieldValue.increment(-1) });
+      }
+    }
     for (const doc of favoritesSnap.docs) void writer.delete(doc.ref);
     void writer.delete(db.doc(`users/${uid}`));
     await writer.close();

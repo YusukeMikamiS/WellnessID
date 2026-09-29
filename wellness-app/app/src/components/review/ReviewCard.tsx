@@ -7,7 +7,6 @@
  * 【規約】投稿区分ラベルは本文より上に出す（TODO-B）。投稿者の情報は authorSnapshot（投稿時点のコピー）を使う。
  */
 
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -27,6 +26,7 @@ import type { Item, Review, ReviewIndexEntry } from '@/types';
 import { Badge } from '../ui/Badge';
 import { Stars } from '../ui/Stars';
 
+import { LikeButton } from './LikeButton';
 import { PostingLabel } from './PostingLabel';
 import { ReviewMenu } from './ReviewMenu';
 
@@ -151,10 +151,12 @@ export function ReviewCard({
       <Text style={styles.text}>{review.text}</Text>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          <Ionicons name="heart-outline" size={13} color={colors.inkMuted} /> 参考になった{' '}
-          {review.likeCount}
-        </Text>
+        <LikeButton
+          itemId={review.itemId}
+          reviewId={review.id}
+          authorUid={review.uid}
+          likeCount={review.likeCount}
+        />
         {onDelete ? (
           <DeleteAction onDelete={onDelete} />
         ) : (

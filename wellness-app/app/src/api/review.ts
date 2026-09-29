@@ -119,3 +119,31 @@ export const myReviewsQuery = (uid: string) =>
     queryFn: () => getMyReviews(uid),
     retry: 1,
   });
+
+/**
+ * 「参考になった」を切り替える（Callable：toggleLike）
+ * 押していなければ付け、押していれば取り消す。件数の更新はサーバーが行う。
+ */
+export async function toggleLike(
+  itemId: string,
+  reviewId: string,
+): Promise<{ liked: boolean; likeCount: number }> {
+  const call = httpsCallable<
+    { itemId: string; reviewId: string },
+    { liked: boolean; likeCount: number }
+  >(functions(), 'toggleLike');
+  return (await call({ itemId, reviewId })).data;
+}
+
+/** 自分が「参考になった」を押した口コミの ID（全アイテム横断） */
+export async function getMyLikedReviewIds(uid: string): Promise<Set<string>> {
+  const snapshot = await getDocs(query(collectionGroup(db(), 'likes'), where('uid', '==', uid)));
+  return new Set(snapshot.docs.map((d) => (d.data() as { reviewId: string }).reviewId));
+}
+
+export const myLikesQuery = (uid: string) =>
+  queryOptions({
+    queryKey: ['likes', 'mine', uid],
+    queryFn: () => getMyLikedReviewIds(uid),
+    retry: 1,
+  });
