@@ -25,7 +25,12 @@ config.watchFolders = [workspaceRoot];
 // アプリの firebase（クライアント SDK）が使う新しい版は node_modules/firebase/node_modules に入る。
 // 下の 3. で内側の node_modules を見ない設定にしているので、ここで明示的に先に探させる。
 // これがないと古い版が読み込まれ、connectFirestoreEmulator などが動かない。
-const firebaseNestedModules = path.resolve(workspaceRoot, 'node_modules', 'firebase', 'node_modules');
+const firebaseNestedModules = path.resolve(
+  workspaceRoot,
+  'node_modules',
+  'firebase',
+  'node_modules',
+);
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   ...(fs.existsSync(firebaseNestedModules) ? [firebaseNestedModules] : []),
