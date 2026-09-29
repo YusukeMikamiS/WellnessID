@@ -74,7 +74,10 @@ let firestore: Firestore | undefined;
 
 export function db(): Firestore {
   if (firestore) return firestore;
-  firestore = getFirestore(app);
-  if (useEmulator) connectFirestoreEmulator(firestore, emulatorHost(), EMULATOR_PORTS.firestore);
+  const instance = getFirestore(app);
+  // Emulator への切り替えに失敗したら、そのまま例外を投げる。
+  // 切り替え前のインスタンスを覚えてしまうと、以降は黙って本番のサーバーにつなぎに行くため
+  if (useEmulator) connectFirestoreEmulator(instance, emulatorHost(), EMULATOR_PORTS.firestore);
+  firestore = instance;
   return firestore;
 }
