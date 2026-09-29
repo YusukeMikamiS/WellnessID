@@ -3,6 +3,7 @@
  * firebase.ts（初期化）はここから出さない。画面から直接 Firestore を触らせないため（CLAUDE.md §3-4）。
  */
 
+export * as auth from './auth';
 export * as column from './column';
 export * as discover from './discover';
 export * as onboard from './onboard';

@@ -17,14 +17,17 @@
 
 import Constants from 'expo-constants';
 import { type FirebaseOptions, getApp, getApps, initializeApp } from 'firebase/app';
+import { type Auth, connectAuthEmulator } from 'firebase/auth';
 import { connectFirestoreEmulator, type Firestore, getFirestore } from 'firebase/firestore';
 import { Platform } from 'react-native';
+
+import { createAuth } from './auth-instance';
 
 /** Emulator 用のプロジェクトID。demo- で始まるIDは本物のプロジェクトにつながらない。 */
 const EMULATOR_PROJECT_ID = 'demo-wellnessid';
 
 /** firebase.json の emulators と合わせる */
-const EMULATOR_PORTS = { firestore: 8080 } as const;
+const EMULATOR_PORTS = { firestore: 8080, auth: 9099 } as const;
 
 export const useEmulator = __DEV__ && process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATOR !== 'false';
 
@@ -80,4 +83,19 @@ export function db(): Firestore {
   if (useEmulator) connectFirestoreEmulator(instance, emulatorHost(), EMULATOR_PORTS.firestore);
   firestore = instance;
   return firestore;
+}
+
+let authInstance: Auth | undefined;
+
+export function auth(): Auth {
+  if (authInstance) return authInstance;
+  const instance = createAuth(app);
+  // db() と同じく、切り替えに失敗したら例外を投げて本番につながないようにする
+  if (useEmulator) {
+    connectAuthEmulator(instance, `http://${emulatorHost()}:${EMULATOR_PORTS.auth}`, {
+      disableWarnings: true,
+    });
+  }
+  authInstance = instance;
+  return authInstance;
 }
