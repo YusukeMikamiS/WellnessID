@@ -81,6 +81,15 @@ export const POSTING_LABELS = {
     label: '特典つきキャンペーン投稿',
     description: 'キャンペーンの特典を受け取って投稿されたものです。',
   },
+  affiliated: {
+    label: 'PR（関係者による投稿）',
+    description: 'この商品・店舗と利害関係のある人（事業者の関係者など）による投稿です。',
+  },
+  /** 甲の自社商品（Item.operatorOwned）への 'affiliated'（甲のスタッフなど） */
+  affiliatedOperatorOwned: {
+    label: 'PR（運営会社の関係者による投稿）',
+    description: '運営会社の商品・サービスについて、運営会社の関係者が投稿したものです。',
+  },
 } as const;
 
 /** 甲の自社商品・サービスに付けるバッジの文言（TODO-B 確定） */

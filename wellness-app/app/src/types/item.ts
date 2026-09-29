@@ -45,7 +45,7 @@ export interface CohortScore {
   score: number;
   /** 母数。表示のために必須。伏せてはならない。 */
   n: number;
-  /** n のうち、依頼・キャンペーン投稿（postingCategory が 'normal' 以外）の件数。n と併記する。 */
+  /** n のうち、依頼・キャンペーン・関係者の投稿（postingCategory が 'normal' 以外）の件数。n と併記する。 */
   solicitedN: number;
 }
 
@@ -80,7 +80,8 @@ export interface Item {
   /**
    * 甲自身の商品・サービスか（TODO-B 確定）。運営が設定する。
    * true のとき、一覧・詳細・ランキングに OPERATOR_OWNED_BADGE を常に表示し、
-   * このアイテムへの 'requested' 口コミは「PR」ラベルにする。
+   * このアイテムへの 'requested' / 'affiliated' 口コミは「PR」ラベルにする。
+   * 「1位」「No.1」などの順位タグは付けない（付けるなら集計の期間・範囲・件数を必ず併記する）。
    */
   operatorOwned: boolean;
 
@@ -89,7 +90,7 @@ export interface Item {
   avgScore: number;
   /** 口コミ件数 */
   reviewCount: number;
-  /** reviewCount のうち、依頼・キャンペーン投稿の件数。reviewCount と併記する。 */
+  /** reviewCount のうち、依頼・キャンペーン・関係者の投稿の件数。reviewCount と併記する。 */
   solicitedCount: number;
   /** 継続中の割合（0〜1） */
   repeatRate: number;

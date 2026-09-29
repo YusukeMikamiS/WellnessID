@@ -43,20 +43,24 @@ export type DiscoverySource = (typeof DISCOVERY_SOURCES)[number];
  * - normal    : ユーザーの自発的な投稿
  * - requested : 甲が会員へ依頼して集めた投稿（初期口コミの仕込み分）。謝礼・特典なし
  * - campaign  : 特典を伴うキャンペーン投稿。Phase 1 では使わないが、値域として確保しておく
+ * - affiliated: 利害関係者の投稿（掲載事業者の関係者・甲のスタッフなど）。禁止せず「PR」ラベルを付けて認める
  *
- * 【付与ルール】区分はサーバーだけが付ける。クライアントからは指定させない。
- * - アプリからの投稿（review.postReview）は常に 'normal'
+ * 【付与ルール】区分はサーバーだけが付ける。クライアントからは区分を指定させない。
+ * - アプリからの投稿（review.postReview）は 'normal'。
+ *   ただし投稿者が利害関係を自己申告した場合（ReviewDraft.affiliationDeclared）は 'affiliated'
  * - 'requested' は seed スクリプト・運営スクリプトのみが付ける
  * - 'campaign' はキャンペーン経由の投稿でのみ Functions が付ける
+ * - 申告のない関係者の投稿が通報などで分かった場合は、運営が 'affiliated' に付け直す（規約違反として扱う）
  *
  * 【表示ルール】'normal' 以外は、口コミカードの本文より上にラベルを出す（文言は POSTING_LABELS）。
- * 甲の自社商品（Item.operatorOwned）への 'requested' は「PR」を明記したラベルにする。
+ * 'affiliated' と、甲の自社商品（Item.operatorOwned）への 'requested' は「PR」を明記したラベルにする。
+ * ラベルは小さい文字や背景と同化する色にしない。ラベルだけで意味が分かる文言にし、タップの説明は補足にとどめる。
  * ランキング・平均点には含めるが、内訳（solicitedN）を常に併記する。
- * 例：「n=12（うち依頼 8）」
+ * 例：「n=12（うち依頼・関係者 8）」
  *
  * 表示の文言は M2（10/10）の法務確認で最終確認すること。
  */
-export const POSTING_CATEGORIES = ['normal', 'requested', 'campaign'] as const;
+export const POSTING_CATEGORIES = ['normal', 'requested', 'campaign', 'affiliated'] as const;
 export type PostingCategory = (typeof POSTING_CATEGORIES)[number];
 
 /**
@@ -177,6 +181,11 @@ export interface ReviewDraft {
   ongoing: boolean;
   purchaseSource: PurchaseSource | null;
   discoverySource: DiscoverySource | null;
+  /**
+   * 「この商品・店舗と利害関係がある」の自己申告。true なら postReview が 'affiliated' にする。
+   * 区分そのものはクライアントから送らせない。
+   */
+  affiliationDeclared: boolean;
   text: string;
   /** 最大 REVIEW_MAX_PHOTOS 枚 */
   photos: string[];
