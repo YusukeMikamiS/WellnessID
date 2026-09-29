@@ -6,9 +6,9 @@
  */
 
 import { queryOptions } from '@tanstack/react-query';
-import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 
-import type { ReviewIndexEntry } from '@/types';
+import type { Review, ReviewIndexEntry } from '@/types';
 
 import { db } from './firebase';
 
@@ -24,5 +24,24 @@ export const latestReviewsQuery = (count: number) =>
   queryOptions({
     queryKey: ['reviews', 'latest', count],
     queryFn: () => getLatestReviews(count),
+    retry: 1,
+  });
+
+/** アイテムの口コミ（公開中のもの・新しい順） */
+export async function getItemReviews(itemId: string): Promise<Review[]> {
+  const snapshot = await getDocs(
+    query(
+      collection(db(), 'items', itemId, 'reviews'),
+      where('status', '==', 'published'),
+      orderBy('createdAt', 'desc'),
+    ),
+  );
+  return snapshot.docs.map((d) => ({ ...(d.data() as Omit<Review, 'id'>), id: d.id }));
+}
+
+export const itemReviewsQuery = (itemId: string) =>
+  queryOptions({
+    queryKey: ['reviews', 'byItem', itemId],
+    queryFn: () => getItemReviews(itemId),
     retry: 1,
   });

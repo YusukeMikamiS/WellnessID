@@ -23,6 +23,7 @@ import type {
   ProDetail,
   ServiceDetail,
 } from '../../app/src/types/item.ts';
+import { LONG_TERM_MONTHS } from '../../app/src/types/constants.ts';
 import { type RankingDoc, type RankingEntry, rankingPaths } from '../../app/src/types/ranking.ts';
 import type { Review, ReviewIndexEntry } from '../../app/src/types/review.ts';
 import { CATEGORIES, type ItemSeed } from './master.mts';
@@ -85,6 +86,10 @@ export function buildItemDocs(seeds: readonly ItemSeed[], reviews: readonly Revi
       reviewCount: total.n,
       solicitedCount: total.solicitedN,
       repeatRate: total.n > 0 ? round2(total.ongoing / total.n) : 0,
+      starCounts: [1, 2, 3, 4, 5].map(
+        (s) => own.filter((r) => r.stars === s).length,
+      ) as Item['starCounts'],
+      longTermCount: own.filter((r) => r.months >= LONG_TERM_MONTHS).length,
       cohortScores,
       published: true,
       createdAt,

@@ -5,9 +5,18 @@
  */
 
 import { queryOptions } from '@tanstack/react-query';
-import { collection, documentId, getDocs, orderBy, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  documentId,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 
-import type { Category, Item } from '@/types';
+import type { Category, Item, ProDetail, ServiceDetail } from '@/types';
 
 import { db } from './firebase';
 
@@ -51,3 +60,42 @@ export const categoriesQuery = queryOptions({
   staleTime: 60 * 60 * 1000,
   retry: 1,
 });
+
+/** アイテム1件。存在しなければ null */
+export async function getItem(id: string): Promise<Item | null> {
+  const snapshot = await getDoc(doc(db(), 'items', id));
+  return snapshot.exists() ? { ...(snapshot.data() as Omit<Item, 'id'>), id: snapshot.id } : null;
+}
+
+export const itemQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['items', id],
+    queryFn: () => getItem(id),
+    retry: 1,
+  });
+
+/** 店舗固有の情報（serviceDetails/{itemId}） */
+export async function getServiceDetail(itemId: string): Promise<ServiceDetail | null> {
+  const snapshot = await getDoc(doc(db(), 'serviceDetails', itemId));
+  return snapshot.exists() ? (snapshot.data() as ServiceDetail) : null;
+}
+
+/** 専門家固有の情報（proDetails/{itemId}） */
+export async function getProDetail(itemId: string): Promise<ProDetail | null> {
+  const snapshot = await getDoc(doc(db(), 'proDetails', itemId));
+  return snapshot.exists() ? (snapshot.data() as ProDetail) : null;
+}
+
+export const serviceDetailQuery = (itemId: string) =>
+  queryOptions({
+    queryKey: ['serviceDetails', itemId],
+    queryFn: () => getServiceDetail(itemId),
+    retry: 1,
+  });
+
+export const proDetailQuery = (itemId: string) =>
+  queryOptions({
+    queryKey: ['proDetails', itemId],
+    queryFn: () => getProDetail(itemId),
+    retry: 1,
+  });

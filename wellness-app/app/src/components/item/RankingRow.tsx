@@ -18,7 +18,8 @@ import { Badge } from '../ui/Badge';
 import { Stars } from '../ui/Stars';
 
 interface Props {
-  rank: number;
+  /** 順位。省略すると順位の列を出さない（口コミが少なく順位を付けないもの） */
+  rank?: number;
   item: Item;
   /** 画像がないときに出す絵文字（カテゴリの絵文字） */
   emoji: string;
@@ -35,17 +36,18 @@ const RANK_COLORS = [colors.primary, colors.inkMuted, colors.ink];
 
 export function RankingRow({ rank, item, emoji, score, n, solicitedN, near, last }: Props) {
   const kind = kindColors[item.kind];
-  const rankColor = RANK_COLORS[rank - 1];
+  const rankColor = rank != null ? RANK_COLORS[rank - 1] : undefined;
   return (
     <Link href={{ pathname: '/discover/item/[id]', params: { id: item.id } }} asChild>
       <Pressable style={StyleSheet.flatten([styles.row, !last && styles.divider])}>
-        {rankColor ? (
-          <View style={[styles.rank, { backgroundColor: rankColor }]}>
-            <Text style={styles.rankText}>{rank}</Text>
-          </View>
-        ) : (
-          <Text style={styles.rankPlain}>{rank}</Text>
-        )}
+        {rank != null &&
+          (rankColor ? (
+            <View style={[styles.rank, { backgroundColor: rankColor }]}>
+              <Text style={styles.rankText}>{rank}</Text>
+            </View>
+          ) : (
+            <Text style={styles.rankPlain}>{rank}</Text>
+          ))}
 
         <View style={styles.thumb}>
           <Text style={styles.thumbEmoji}>{emoji}</Text>
