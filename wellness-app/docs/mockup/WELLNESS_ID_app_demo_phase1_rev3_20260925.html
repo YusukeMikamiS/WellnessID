@@ -577,7 +577,7 @@ label{font-size:12px;font-weight:700;color:var(--sub);display:block;margin:16px 
 
     <div class="card" style="padding:12px 14px;margin-top:18px;background:var(--primary-soft);border-color:var(--primary)">
       <div style="font-size:11.5px;line-height:1.8;color:var(--primary-deep)">
-        <b>この投稿はあなたのWellness Passportになります</b><br>
+        <b>この投稿はあなたのウェルネスの記録になります</b><br>
         使用期間と継続状況が残るため、あとから「1年続けた人の評価」として参照されます。</div>
     </div>
     <div style="height:18px"></div>
@@ -1401,7 +1401,7 @@ function renderMywell(){
      <div class="card"><div class="v">${total}<span style="font-size:12px">ヶ月</span></div><div class="k">記録の合計</div></div>
    </div>
 
-   <div class="sec"><h2>いま続けているもの</h2><span class="note">Wellness Passport</span></div>
+   <div class="sec"><h2>いま続けているもの</h2><span class="note">ウェルネスの記録</span></div>
    <div class="card" style="margin:2px 20px">
      ${mine.filter(m=>m.on).map(m=>{const it=IT(m.iid);
        const p=m.months>=12?`${Math.floor(m.months/12)}年${m.months%12?m.months%12+"ヶ月":""}`:`${m.months}ヶ月`;
