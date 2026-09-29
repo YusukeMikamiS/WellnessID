@@ -102,8 +102,9 @@ service cloud.firestore {
       // role は Custom Claims 側が正。ここから書き換えさせない。
       allow update: if isSelf(uid)
                     && request.resource.data.role == resource.data.role;
-      // TODO-A(M1): 退会時の扱い。口コミを残す方針なら、アカウント削除は
-      // Callable Function で users 削除 ＋ authorSnapshot 匿名化を行う。
+      // TODO-A 確定：退会しても口コミは匿名化して残す。
+      // アカウント削除は Callable（account.deleteAccount）で users 削除 ＋ 口コミの匿名化を
+      // まとめて行うため、クライアントからは直接消させない。
       allow delete: if false;
 
       match /favorites/{itemId} {

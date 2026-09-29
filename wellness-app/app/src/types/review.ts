@@ -38,7 +38,12 @@ export type PurchaseSource = (typeof PURCHASE_SOURCES)[number];
 export const POSTING_CATEGORIES = ['normal', 'requested', 'campaign'] as const;
 export type PostingCategory = (typeof POSTING_CATEGORIES)[number];
 
-/** 口コミの公開状態 */
+/**
+ * 口コミの公開状態
+ * - published : 公開中
+ * - hidden    : 通報などで運営が一時的に非表示にしたもの
+ * - removed   : 本人削除・運営削除（消去請求を含む）。集計から外す
+ */
 export type ReviewStatus = 'published' | 'hidden' | 'removed';
 
 /**
@@ -53,7 +58,7 @@ export interface AuthorSnapshot {
   gender: Gender;
   area: AreaCode;
   exerciseFreq: ExerciseFreq;
-  /** 投稿時点のニックネーム。退会時の匿名化でここを差し替える。 */
+  /** 投稿時点のニックネーム。退会時の匿名化で WITHDRAWN_NICKNAME に差し替える。 */
   nickname: string;
 }
 
@@ -63,14 +68,26 @@ export interface Review {
   itemId: string;
 
   /**
-   * TODO-A(M1): 退会時に口コミを残すか消すかの確定待ち。
+   * 投稿者の uid。退会すると null になる。
    *
+   * 【TODO-A 確定（M1）】退会しても口コミは匿名化して残す。
    * 消す設計にすると、退会のたびにランキングの母数 n が動く。
-   * 企画書⑪で「母数 n は常時表示・伏せない」と約束している以上、揺れる設計は取れない。
+   * 企画書⑪で「母数 n は常時表示・伏せない」と約束しているため、揺れる設計は取らない。
    *
-   * 推奨：アカウントは削除、口コミは authorSnapshot を匿名化して残す。
-   * その場合 uid は null になり得る（この型はその前提で null 許容にしてある）。
-   * 規約にその旨を明記すること。
+   * 退会時（Callable: account.deleteAccount）に行うこと：
+   * - uid を null にする
+   * - authorSnapshot.nickname を WITHDRAWN_NICKNAME に差し替える
+   *   （年代・性別・エリア・運動頻度はコホート集計のため残す）
+   * - photos を空にし、Storage の実体も削除する（顔・自宅などで本人が特定されるのを防ぐ）
+   * - 本人が付けた ReviewLike を削除し、対象口コミの likeCount を減らす
+   * - 本人の Report は uid を null にして残す（運営の対応記録のため）
+   * - 集計値（avgScore / reviewCount / n）は変えない
+   *
+   * 本人が消したい口コミは、退会前に1件ずつ削除できる（Callable: review.deleteReview）。
+   * その場合は status を 'removed' にし、集計から外す（本人の明示的な操作なので n が減るのは許容）。
+   * 消去請求など運営判断での削除も同じく 'removed' にする。
+   *
+   * 規約と退会画面に「退会後も口コミは匿名で残る」ことを明記し、投稿時点で同意を得ること。
    */
   uid: string | null;
 
@@ -143,7 +160,8 @@ export interface ReviewLike {
 export interface Report {
   id: string;
   reviewId: string;
-  uid: string;
+  /** 通報者の uid。通報者が退会すると null になる。 */
+  uid: string | null;
   reason: string;
   status: 'open' | 'reviewing' | 'closed';
   createdAt: EpochMillis;

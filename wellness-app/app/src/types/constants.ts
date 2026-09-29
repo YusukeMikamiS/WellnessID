@@ -22,6 +22,12 @@ export const REVIEW_STARS_MAX = 5;
 /** 口コミ写真の最大枚数（TODO(M1): 要件定義で確定） */
 export const REVIEW_MAX_PHOTOS = 3;
 
+/**
+ * 退会したユーザーの口コミに表示するニックネーム（TODO-A 確定）。
+ * 退会時に authorSnapshot.nickname をこの値に差し替える。
+ */
+export const WITHDRAWN_NICKNAME = '退会したユーザー';
+
 /** 「1年以上継続」の絞り込みに使う月数 */
 export const LONG_TERM_MONTHS = 12;
 
