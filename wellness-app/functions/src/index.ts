@@ -22,4 +22,5 @@
  * 型は app/src/types を相対パスで import して共有する（functions/tsconfig.json の rootDir を参照）。
  */
 
+export { rebuildRankings, weeklyRankings } from './ranking/weekly';
 export { postReview } from './review/postReview';

@@ -19,7 +19,8 @@
     "test": "npm run test --workspaces --if-present",
     "emu": "npm run build -w functions && firebase emulators:start --project demo-wellnessid --import=.emulator-data --export-on-exit=.emulator-data",
     "seed": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed/index.mts",
-    "seed:check": "npm run seed -- --dry-run"
+    "seed:check": "npm run seed -- --dry-run",
+    "rankings": "node --disable-warning=ExperimentalWarning scripts/rankings.mts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.18.0",
