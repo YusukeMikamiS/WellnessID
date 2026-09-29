@@ -28,6 +28,31 @@ export const REVIEW_MAX_PHOTOS = 3;
  */
 export const WITHDRAWN_NICKNAME = '退会したユーザー';
 
+/**
+ * 投稿区分のラベル（TODO-B 確定）。'normal' にはラベルを出さない。
+ * 口コミカードの本文より上に表示し、タップで description を出す。
+ * 文言は M2（10/10）の法務確認で最終確認すること。
+ */
+export const POSTING_LABELS = {
+  requested: {
+    label: '運営の依頼による投稿',
+    description: '運営が会員に投稿をお願いしたものです。謝礼はありません。',
+  },
+  /** 甲の自社商品（Item.operatorOwned）への 'requested' */
+  requestedOperatorOwned: {
+    label: 'PR（運営会社の依頼による投稿）',
+    description:
+      '運営会社の商品・サービスについて、運営が会員に投稿をお願いしたものです。謝礼はありません。',
+  },
+  campaign: {
+    label: '特典つきキャンペーン投稿',
+    description: 'キャンペーンの特典を受け取って投稿されたものです。',
+  },
+} as const;
+
+/** 甲の自社商品・サービスに付けるバッジの文言（TODO-B 確定） */
+export const OPERATOR_OWNED_BADGE = '運営会社の商品・サービス';
+
 /** 「1年以上継続」の絞り込みに使う月数 */
 export const LONG_TERM_MONTHS = 12;
 
@@ -36,6 +61,7 @@ export const LONG_TERM_MONTHS = 12;
  *
  * Rev.3：想定男女比 8:2。母数が溜まるのは 30s_m / 40s_m / 50s_m の3セルに集中する想定。
  * フォールバック表示を確認するため、意図的に n<5 のセルを混ぜること。
+ * seed の口コミは本番の初期口コミと同じく、全件 postingCategory = 'requested' にする。
  */
 export const SEED_TARGETS = {
   concerns: 15,
