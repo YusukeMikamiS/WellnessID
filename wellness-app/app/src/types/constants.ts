@@ -19,8 +19,41 @@ export const REVIEW_MIN_TEXT_LENGTH = 20;
 export const REVIEW_STARS_MIN = 1;
 export const REVIEW_STARS_MAX = 5;
 
-/** 口コミ写真の最大枚数（TODO(M1): 要件定義で確定） */
+/** 口コミ写真の最大枚数（M1 確定）。Callable Function 側でも同じ値で検証すること。 */
 export const REVIEW_MAX_PHOTOS = 3;
+
+/**
+ * 悩み・目的タグの初版（M1 確定・14項目）。seed スクリプトはこの一覧から concerns を作る。
+ * id は固定。文言（name）と emoji は後から変えてよい。廃止した id は再利用しない。
+ */
+export const INITIAL_CONCERNS = [
+  { id: 'shoulder', name: '肩・首が重い', emoji: '🧍' },
+  { id: 'posture', name: '姿勢を整えたい', emoji: '🦴' },
+  { id: 'move', name: '運動不足', emoji: '🏃' },
+  { id: 'tone', name: '身体を引き締めたい', emoji: '💪' },
+  { id: 'fatigue', name: '疲れが抜けない', emoji: '🔋' },
+  { id: 'sleep', name: '眠りが浅い', emoji: '🌙' },
+  { id: 'refresh', name: 'リフレッシュしたい', emoji: '🌿' },
+  { id: 'hair', name: '頭皮・髪が気になる', emoji: '💈' },
+  { id: 'skin', name: '清潔感を整えたい', emoji: '🧴' },
+  { id: 'golf', name: 'ゴルフ', emoji: '⛳' },
+  { id: 'run', name: 'ランニング', emoji: '👟' },
+  { id: 'focus', name: '仕事の集中力', emoji: '🧠' },
+  { id: 'stamina', name: '体力をつけたい', emoji: '🔥' },
+  { id: 'health', name: '健康診断の数値が気になる', emoji: '🩺' },
+] as const;
+
+/**
+ * エリア選択の入口（M1 確定）。モックアップ rev.3 のチップに対応する。
+ * 'otherTokyo' は東京都の区市町村を、'outsideTokyo' は都道府県を続けて選ばせる。
+ */
+export const AREA_QUICK_PICKS = [
+  { key: 'minato', label: '港区', area: { prefecture: '13', municipality: '13103' } },
+  { key: 'shibuya', label: '渋谷区', area: { prefecture: '13', municipality: '13113' } },
+  { key: 'meguro', label: '目黒区', area: { prefecture: '13', municipality: '13110' } },
+  { key: 'otherTokyo', label: 'その他の東京都', area: null },
+  { key: 'outsideTokyo', label: '東京都外', area: null },
+] as const;
 
 /**
  * 退会したユーザーの口コミに表示するニックネーム（TODO-A 確定）。
@@ -64,7 +97,7 @@ export const LONG_TERM_MONTHS = 12;
  * seed の口コミは本番の初期口コミと同じく、全件 postingCategory = 'requested' にする。
  */
 export const SEED_TARGETS = {
-  concerns: 15,
+  concerns: INITIAL_CONCERNS.length,
   categories: 15,
   items: 100,
   reviews: 300,

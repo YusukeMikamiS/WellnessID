@@ -50,20 +50,35 @@ export const cohortKey = (ageBand: AgeBand, gender: Gender): CohortKey =>
   `${ageBand}_${gender}`;
 
 /**
- * 運動頻度
- * TODO(M1): 区分は要件定義で確定。現在は暫定値。
+ * 運動頻度（M1 確定：モックアップ rev.3 の4区分）
+ * - none   : ほぼしない
+ * - w1     : 週1回
+ * - w2_3   : 週2〜3回
+ * - w4plus : 週4回以上
  * Phase 1 では絞り込み軸に使わず、プロフィール表示のみ。
  */
-export const EXERCISE_FREQS = ['none', 'lt1', 'w1_2', 'w3_4', 'w5plus'] as const;
+export const EXERCISE_FREQS = ['none', 'w1', 'w2_3', 'w4plus'] as const;
 export type ExerciseFreq = (typeof EXERCISE_FREQS)[number];
 
 /**
- * エリア
- * TODO(M1): 掲載エリア（港区・渋谷区中心／東京都全域）の確定待ち。
- * WBS rev4 で 9/12 期限の「地域スコープの確定」の結論を反映すること。
+ * エリア（M1 確定：細かめに取る）
+ *
+ * 地域スコープ（港区・渋谷区中心／東京都全域）が未確定のため、後から粒度を上げられるよう
+ * 都道府県 ＋ 市区町村のコードで持つ。Phase 2 で絞り込み軸にするときに、
+ * 「東京都外」のような粗い区分しかないと分け直せないため。
+ *
+ * - prefecture   : 都道府県コード（JIS X 0401 の2桁。例：東京都 = '13'）
+ * - municipality : 市区町村コード（全国地方公共団体コードの先頭5桁。例：港区 = '13103'）。
+ *                  Phase 1 の画面では東京都の区市町村のみ選ばせ、他県は null
+ *
+ * 画面の選択肢はモックアップどおり「港区／渋谷区／目黒区／その他の東京都／東京都外」を入口にし、
+ * 「その他の東京都」は区市町村、「東京都外」は都道府県を続けて選ばせる（AREA_QUICK_PICKS）。
  * Phase 1 では絞り込み軸に使わず、プロフィール表示のみ。
  */
-export type AreaCode = string;
+export interface Area {
+  prefecture: string;
+  municipality: string | null;
+}
 
 /**
  * データの出所

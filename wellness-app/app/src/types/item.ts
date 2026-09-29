@@ -13,14 +13,19 @@ import type { CohortKey, EpochMillis, ItemKind } from './common';
 
 /**
  * 悩み・目的タグ（マスタ）
- * TODO(M1): 件数とID体系を確定。WBS rev4 で「初版15項目 → 初版14項目」に変更
- * （「痩せたい」を「身体を引き締めたい」に統合、「健康になりたい」は削除候補）。
+ *
+ * 【M1 確定】初版は14項目（一覧は INITIAL_CONCERNS）。
+ * WBS rev4 に従い「お腹まわりを落としたい（diet）」を「身体を引き締めたい（tone）」に統合した。
+ * 「健康になりたい」は「健康診断の数値が気になる（health）」として具体化されているので残す。
+ *
  * 文言はマスタデータなので後から変更可。**体系（ID）は後から統合できない。**
+ * ID は英小文字のスラッグで固定し、廃止したタグの ID は再利用しない。
  */
 export interface Concern {
   id: string;
   /** 表示名。例：「疲れが抜けない」 */
   name: string;
+  emoji: string;
   /** 表示順 */
   order: number;
 }

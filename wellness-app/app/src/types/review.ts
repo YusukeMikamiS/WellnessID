@@ -3,17 +3,18 @@
  *
  * 出典：アプリ企画書 Rev.3（2026/09/25）⑨ データ設計 ／ WBS rev4（投稿区分フラグの追加）
  *
- * 【重要】構造化項目（目的／使用期間／継続中か／購入先）は既存口コミへの後付けが不可能。
+ * 【重要】構造化項目（目的／使用期間／継続中か／購入先・知ったきっかけ）は既存口コミへの後付けが不可能。
  * 口コミが300件たまってから列を追加しても、その300件は空欄のまま。
  */
 
-import type { AgeBand, AreaCode, EpochMillis, ExerciseFreq, Gender } from './common';
+import type { AgeBand, Area, EpochMillis, ExerciseFreq, Gender } from './common';
 
 /**
- * 購入先
+ * 購入先（M1 確定）— 商品（kind = 'product'）の口コミだけで使う
  * 企画書⑨の Review.source に相当。データ出所を表す DataSource と紛らわしいため、
  * 型定義では purchaseSource という名前にしている。
- * TODO(M1): 値域を要件定義で確定（店舗購入・定期便などの扱い）。
+ * - amazon / rakuten / official（公式サイト）/ store（店舗）/ other
+ * 定期便は購入先ではなく買い方の違い。使用期間（months）と継続中か（ongoing）で表すので区分にしない。
  */
 export const PURCHASE_SOURCES = [
   'amazon',
@@ -23,6 +24,14 @@ export const PURCHASE_SOURCES = [
   'other',
 ] as const;
 export type PurchaseSource = (typeof PURCHASE_SOURCES)[number];
+
+/**
+ * 知ったきっかけ（M1 確定）— 店舗・専門家（kind = 'service' | 'pro'）の口コミだけで使う
+ * モックアップ rev.3 の投稿画面に合わせる。
+ * - referral（紹介）/ sns / search（検索）/ this_app（このアプリ）/ other
+ */
+export const DISCOVERY_SOURCES = ['referral', 'sns', 'search', 'this_app', 'other'] as const;
+export type DiscoverySource = (typeof DISCOVERY_SOURCES)[number];
 
 /**
  * 投稿区分（ステマ規制／景品表示法対応）
@@ -68,7 +77,8 @@ export type ReviewStatus = 'published' | 'hidden' | 'removed';
 export interface AuthorSnapshot {
   ageBand: AgeBand;
   gender: Gender;
-  area: AreaCode;
+  /** 任意入力のため null になり得る */
+  area: Area | null;
   exerciseFreq: ExerciseFreq;
   /** 投稿時点のニックネーム。退会時の匿名化で WITHDRAWN_NICKNAME に差し替える。 */
   nickname: string;
@@ -111,8 +121,13 @@ export interface Review {
   months: number;
   /** いまも継続しているか。repeatRate の算出元。 */
   ongoing: boolean;
-  /** 購入先 */
-  purchaseSource: PurchaseSource;
+  /**
+   * 購入先。商品では必須、店舗・専門家では null。
+   * discoverySource とどちらか一方だけが入る（postReview で item.kind を見て検証する）。
+   */
+  purchaseSource: PurchaseSource | null;
+  /** 知ったきっかけ。店舗・専門家では必須、商品では null。 */
+  discoverySource: DiscoverySource | null;
   /** 本文（20文字以上・必須） */
   text: string;
   photos: string[];
@@ -160,8 +175,10 @@ export interface ReviewDraft {
   goalTags: string[];
   months: number;
   ongoing: boolean;
-  purchaseSource: PurchaseSource;
+  purchaseSource: PurchaseSource | null;
+  discoverySource: DiscoverySource | null;
   text: string;
+  /** 最大 REVIEW_MAX_PHOTOS 枚 */
   photos: string[];
 }
 
