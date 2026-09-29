@@ -19,6 +19,7 @@ import Constants from 'expo-constants';
 import { type FirebaseOptions, getApp, getApps, initializeApp } from 'firebase/app';
 import { type Auth, connectAuthEmulator } from 'firebase/auth';
 import { connectFirestoreEmulator, type Firestore, getFirestore } from 'firebase/firestore';
+import { connectFunctionsEmulator, type Functions, getFunctions } from 'firebase/functions';
 import { Platform } from 'react-native';
 
 import { createAuth } from './auth-instance';
@@ -27,7 +28,10 @@ import { createAuth } from './auth-instance';
 const EMULATOR_PROJECT_ID = 'demo-wellnessid';
 
 /** firebase.json の emulators と合わせる */
-const EMULATOR_PORTS = { firestore: 8080, auth: 9099 } as const;
+const EMULATOR_PORTS = { firestore: 8080, auth: 9099, functions: 5001 } as const;
+
+/** Cloud Functions のリージョン。functions/src/lib/admin.ts の REGION と合わせる */
+const FUNCTIONS_REGION = 'asia-northeast1';
 
 export const useEmulator = __DEV__ && process.env.EXPO_PUBLIC_USE_FIREBASE_EMULATOR !== 'false';
 
@@ -98,4 +102,14 @@ export function auth(): Auth {
   }
   authInstance = instance;
   return authInstance;
+}
+
+let functionsInstance: Functions | undefined;
+
+export function functions(): Functions {
+  if (functionsInstance) return functionsInstance;
+  const instance = getFunctions(app, FUNCTIONS_REGION);
+  if (useEmulator) connectFunctionsEmulator(instance, emulatorHost(), EMULATOR_PORTS.functions);
+  functionsInstance = instance;
+  return functionsInstance;
 }

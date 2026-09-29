@@ -7,13 +7,13 @@
     "module": "node16",
     "moduleResolution": "node16",
     "outDir": "lib",
-    "rootDir": "src",
+    // 型の正本 app/src/types を相対パスで import し、一緒にビルドする。
+    // rootDir をワークスペース直下にするため、出力は lib/functions/src/ と lib/app/src/types/ になる。
+    // デプロイでアップロードされるのは functions/ の中だけだが、ビルド結果は lib/ に入るので問題ない。
+    "rootDir": "..",
     "noEmit": false,
     "isolatedModules": false
-    // app/src/types との共有方法は未決。rootDir の制約があるため、
-    // paths エイリアスで app/ 配下を直接参照すると TS6059（rootDir の外）になる。
-    // 最初の Function を書く前に方式を決めること。
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../app/src/types/**/*.ts"],
   "exclude": ["node_modules", "lib"]
 }

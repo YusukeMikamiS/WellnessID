@@ -4,6 +4,9 @@ dist/
 web-build/
 *.tsbuildinfo
 
+# Cloud Functions のビルド結果
+functions/lib/
+
 # Firebase
 .firebase/
 .emulator-data/
