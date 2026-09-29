@@ -8,14 +8,14 @@
  * エリア・運動頻度も取得しておき、データが溜まった Phase 2 で軸に加える。
  */
 
-import type { AgeBand, AreaCode, EpochMillis, ExerciseFreq, Gender, UserRole } from './common';
+import type { AgeBand, Area, EpochMillis, ExerciseFreq, Gender, UserRole } from './common';
 
 /** オンボーディング／設定で入力するプロフィール属性 */
 export interface UserProfile {
   ageBand: AgeBand;
   gender: Gender;
-  /** Phase 1 では絞り込みに使わない（表示のみ） */
-  area: AreaCode;
+  /** 任意入力（未入力は null）。Phase 1 では絞り込みに使わない（表示のみ） */
+  area: Area | null;
   /** Phase 1 では絞り込みに使わない（表示のみ） */
   exerciseFreq: ExerciseFreq;
   /** 選択した悩み・目的タグの concernId */
