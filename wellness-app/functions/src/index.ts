@@ -9,6 +9,10 @@
  *   onboard.estimateCohort / review.postReview / review.reportReview
  * ＋ ランキングの週次集計（スケジューラ）
  *
+ * TODO-A 確定で追加：
+ *   review.deleteReview   … 本人による口コミ削除（status を 'removed' にし、集計から外す）
+ *   account.deleteAccount … 退会。users 削除 ＋ 口コミの匿名化（手順は types/review.ts の Review.uid）
+ *
  * Rev.3 で不要になったもの：予約・会員証・トレーニング履歴・契約プラン関連のすべて。
  */
 
