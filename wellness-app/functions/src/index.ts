@@ -9,6 +9,9 @@
  *   onboard.estimateCohort / review.postReview / review.reportReview
  * ＋ ランキングの週次集計（スケジューラ）
  *
+ * TODO-B 確定：postReview は postingCategory を常に 'normal' で書く（クライアントに指定させない）。
+ * 集計では n と一緒に solicitedN（'normal' 以外の件数）も更新する。
+ *
  * TODO-A 確定で追加：
  *   review.deleteReview   … 本人による口コミ削除（status を 'removed' にし、集計から外す）
  *   account.deleteAccount … 退会。users 削除 ＋ 口コミの匿名化（手順は types/review.ts の Review.uid）

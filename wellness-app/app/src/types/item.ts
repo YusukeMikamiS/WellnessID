@@ -40,6 +40,8 @@ export interface CohortScore {
   score: number;
   /** 母数。表示のために必須。伏せてはならない。 */
   n: number;
+  /** n のうち、依頼・キャンペーン投稿（postingCategory が 'normal' 以外）の件数。n と併記する。 */
+  solicitedN: number;
 }
 
 /** 外部導線 */
@@ -70,12 +72,20 @@ export interface Item {
   price?: number;
   /** 紐づく悩み・目的タグ。array-contains × avgScore の複合インデックス対象。 */
   concernIds: string[];
+  /**
+   * 甲自身の商品・サービスか（TODO-B 確定）。運営が設定する。
+   * true のとき、一覧・詳細・ランキングに OPERATOR_OWNED_BADGE を常に表示し、
+   * このアイテムへの 'requested' 口コミは「PR」ラベルにする。
+   */
+  operatorOwned: boolean;
 
   // ---- 以下は Cloud Functions のみが書き込む ----
   /** 平均評価 */
   avgScore: number;
   /** 口コミ件数 */
   reviewCount: number;
+  /** reviewCount のうち、依頼・キャンペーン投稿の件数。reviewCount と併記する。 */
+  solicitedCount: number;
   /** 継続中の割合（0〜1） */
   repeatRate: number;
   /** コホート別の集計値。母数が0のコホートはキー自体を持たない。 */
@@ -93,6 +103,7 @@ export interface Item {
  *
  * Rev.3：甲のサロン（Motoazabu LIFE CREATE Salon）も、他の掲載店舗と同じくここに入る。
  * コード上で特別扱いしないこと。予約はアプリ外（公式サイト・電話）で受ける。
+ * 自社であることの表示は、データ（Item.operatorOwned = true）で行う。
  */
 export interface ServiceDetail {
   itemId: string;
