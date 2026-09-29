@@ -59,6 +59,18 @@ export async function postReview(draft: ReviewDraft): Promise<{ reviewId: string
   return result.data;
 }
 
+/**
+ * 自分の口コミを削除する（Callable：deleteReview）
+ * 集計から外れ、新着フィードからも消える。口コミ自体は運営の記録として残る（status = 'removed'）。
+ */
+export async function deleteReview(itemId: string, reviewId: string): Promise<void> {
+  const call = httpsCallable<{ itemId: string; reviewId: string }, { ok: true }>(
+    functions(),
+    'deleteReview',
+  );
+  await call({ itemId, reviewId });
+}
+
 /** 投稿のエラーを、画面に出す文言にする。サーバーが返した日本語の文言はそのまま使う */
 export function postErrorMessage(error: unknown): string {
   if (error instanceof FirebaseError) {

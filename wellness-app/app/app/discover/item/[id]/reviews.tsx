@@ -6,7 +6,7 @@
  */
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -17,12 +17,23 @@ import { ReviewCard, toReviewCardData } from '@/components/review/ReviewCard';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { QueryState } from '@/components/ui/QueryState';
 import { profileCohort, useProfileStore } from '@/stores/profile';
+import { useSession } from '@/stores/session';
 import { colors, elevation, radius, spacing, typography } from '@/theme/tokens';
 import { cohortKey, LONG_TERM_MONTHS, type Review, type ReviewFilter } from '@/types';
 
 export default function ItemReviewsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
+  const myUid = useSession((s) => s.user?.uid);
+  // 自分の口コミの削除（集計から外れるので、平均点・件数・一覧を取り直す）
+  const deleteOwn = (itemId: string, reviewId: string) => async () => {
+    await review.deleteReview(itemId, reviewId);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['items'] }),
+      queryClient.invalidateQueries({ queryKey: ['reviews'] }),
+    ]);
+  };
   const myCohort = profileCohort(useProfileStore((s) => s.profile));
   const [filter, setFilter] = useState<ReviewFilter>('all');
 
@@ -88,6 +99,7 @@ export default function ItemReviewsScreen() {
                 goalName={goalName}
                 near={isNear(r)}
                 showItem={false}
+                {...(myUid != null && r.uid === myUid && { onDelete: deleteOwn(r.itemId, r.id) })}
               />
             ))}
         </View>
