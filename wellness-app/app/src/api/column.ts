@@ -5,7 +5,7 @@
  */
 
 import { queryOptions } from '@tanstack/react-query';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore';
 
 import type { Column } from '@/types';
 
@@ -27,3 +27,18 @@ export const columnsQuery = queryOptions({
   staleTime: 10 * 60 * 1000,
   retry: 1,
 });
+
+/** コラム1件。存在しない・未公開なら null */
+export async function getColumn(id: string): Promise<Column | null> {
+  const snapshot = await getDoc(doc(db(), 'columns', id));
+  if (!snapshot.exists()) return null;
+  const column = { ...(snapshot.data() as Omit<Column, 'id'>), id: snapshot.id };
+  return column.publishedAt !== null ? column : null;
+}
+
+export const columnQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['columns', id],
+    queryFn: () => getColumn(id),
+    retry: 1,
+  });

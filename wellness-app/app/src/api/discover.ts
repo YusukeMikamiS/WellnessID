@@ -99,3 +99,24 @@ export const proDetailQuery = (itemId: string) =>
     queryFn: () => getProDetail(itemId),
     retry: 1,
   });
+
+/** カテゴリのアイテム（掲載中のもの・評価の高い順）。categoryId × avgScore のインデックスを使う */
+export async function getItemsByCategory(categoryId: string): Promise<Item[]> {
+  const snapshot = await getDocs(
+    query(
+      collection(db(), 'items'),
+      where('categoryId', '==', categoryId),
+      orderBy('avgScore', 'desc'),
+    ),
+  );
+  return snapshot.docs
+    .map((d) => ({ ...(d.data() as Omit<Item, 'id'>), id: d.id }))
+    .filter((item) => item.published);
+}
+
+export const itemsByCategoryQuery = (categoryId: string) =>
+  queryOptions({
+    queryKey: ['items', 'byCategory', categoryId],
+    queryFn: () => getItemsByCategory(categoryId),
+    retry: 1,
+  });
