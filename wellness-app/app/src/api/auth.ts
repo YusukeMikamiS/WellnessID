@@ -17,10 +17,11 @@ import {
   type User as AuthUser,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 
 import type { User, UserProfile } from '@/types';
 
-import { auth, db } from './firebase';
+import { auth, db, functions } from './firebase';
 
 export interface SignUpInput {
   nickname: string;
@@ -52,6 +53,18 @@ export async function signUp({ nickname, email, password, profile }: SignUpInput
 
 export async function signIn(email: string, password: string): Promise<void> {
   await signInWithEmailAndPassword(auth(), email, password);
+}
+
+/**
+ * 退会（Callable：deleteAccount ★）
+ * アカウントとプロフィールを削除し、口コミは「退会したユーザー」として匿名で残す（TODO-A）。
+ * サーバー側で Auth のアカウントも消えるので、最後に端末のログイン状態も消す。
+ */
+export async function deleteAccount(): Promise<{ anonymizedReviews: number }> {
+  const call = httpsCallable<void, { anonymizedReviews: number }>(functions(), 'deleteAccount');
+  const result = await call();
+  await firebaseSignOut(auth()).catch(() => undefined);
+  return result.data;
 }
 
 export async function signOut(): Promise<void> {

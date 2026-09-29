@@ -143,6 +143,13 @@ async function writeToEmulator(writes: Map<string, object>) {
     password: TEST_ACCOUNTS.admin.password,
     displayName: '運営テスト',
   });
+  // Functions の onUserCreated も role: 'free' を付けに来る。先に付け終わるのを待ってから admin を足す
+  // （同時に書くと、後から書いた方が admin を消してしまうため）。Functions が動いていなければ待たずに進む
+  for (let i = 0; i < 20; i++) {
+    const claims = (await auth.getUser(TEST_ACCOUNTS.admin.uid)).customClaims;
+    if (claims?.role) break;
+    await new Promise((r) => setTimeout(r, 250));
+  }
   await auth.setCustomUserClaims(TEST_ACCOUNTS.admin.uid, { role: 'free', admin: true });
 }
 

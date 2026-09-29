@@ -47,5 +47,15 @@
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "_comment": "退会（deleteAccount）で、全アイテムの口コミから本人の分を探すため（コレクショングループ）",
+      "collectionGroup": "reviews",
+      "fieldPath": "uid",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    }
+  ]
 }

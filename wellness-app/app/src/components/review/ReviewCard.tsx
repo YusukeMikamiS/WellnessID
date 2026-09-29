@@ -9,6 +9,7 @@
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -48,6 +49,11 @@ interface Props {
   near: boolean;
   /** 対象アイテムへのリンクを出すか。アイテムの詳細・口コミ一覧では出さない */
   showItem?: boolean;
+  /**
+   * 自分の口コミのときだけ渡す。「削除」を出し、確認のうえで呼ぶ（TODO-A：退会前に1件ずつ消せる）。
+   * 失敗したら例外を投げること（カードにエラーを出す）
+   */
+  onDelete?: () => Promise<void>;
 }
 
 const AVATAR_COLORS = [
@@ -64,7 +70,14 @@ function avatarColor(seed: string) {
   return AVATAR_COLORS[sum % AVATAR_COLORS.length] ?? colors.primary;
 }
 
-export function ReviewCard({ review, itemEmoji, goalName, near, showItem = true }: Props) {
+export function ReviewCard({
+  review,
+  itemEmoji,
+  goalName,
+  near,
+  showItem = true,
+  onDelete,
+}: Props) {
   const author = review.authorSnapshot;
   const meta = [
     `${AGE_BAND_LABELS[author.ageBand]}・${GENDER_LABELS[author.gender]}`,
@@ -140,9 +153,59 @@ export function ReviewCard({ review, itemEmoji, goalName, near, showItem = true 
           <Ionicons name="heart-outline" size={13} color={colors.inkMuted} /> 参考になった{' '}
           {review.likeCount}
         </Text>
-        {/* 通報は reportReview（Functions）の実装後につなぐ */}
-        <Text style={styles.footerText}>… 報告</Text>
+        {onDelete ? (
+          <DeleteAction onDelete={onDelete} />
+        ) : (
+          // 通報は reportReview（Functions）の実装後につなぐ
+          <Text style={styles.footerText}>… 報告</Text>
+        )}
       </View>
+    </View>
+  );
+}
+
+/** 自分の口コミの削除。1回目で確認、2回目で削除する */
+function DeleteAction({ onDelete }: { onDelete: () => Promise<void> }) {
+  const [step, setStep] = useState<'idle' | 'confirm' | 'deleting'>('idle');
+  const [error, setError] = useState<string | null>(null);
+  if (step === 'idle') {
+    return (
+      <Text style={styles.footerText} onPress={() => setStep('confirm')} accessibilityRole="button">
+        削除
+      </Text>
+    );
+  }
+  return (
+    <View style={styles.confirm}>
+      <Text style={styles.footerText}>
+        {step === 'deleting' ? '削除しています…' : 'この口コミを削除しますか？'}
+      </Text>
+      {step === 'confirm' && (
+        <View style={styles.confirmRow}>
+          <Text
+            style={styles.footerText}
+            onPress={() => setStep('idle')}
+            accessibilityRole="button"
+          >
+            やめる
+          </Text>
+          <Text
+            style={styles.deleteText}
+            accessibilityRole="button"
+            onPress={() => {
+              setStep('deleting');
+              setError(null);
+              onDelete().catch(() => {
+                setError('削除できませんでした。時間をおいてもう一度お試しください。');
+                setStep('confirm');
+              });
+            }}
+          >
+            削除する
+          </Text>
+        </View>
+      )}
+      {error && <Text style={styles.deleteText}>{error}</Text>}
     </View>
   );
 }
@@ -245,6 +308,18 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  confirm: {
+    alignItems: 'flex-end',
+    gap: 2,
+  },
+  confirmRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  deleteText: {
+    ...typography.caption,
+    color: semantic.danger,
   },
   footerText: {
     ...typography.caption,

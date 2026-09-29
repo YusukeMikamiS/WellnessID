@@ -1,15 +1,15 @@
 /**
- * ボタン（primary：主操作／ghost：副操作）
+ * ボタン（primary：主操作／ghost：副操作／danger：退会など取り消せない操作）
  */
 
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 
-import { colors, radius, spacing, typography } from '@/theme/tokens';
+import { colors, radius, semantic, spacing, typography } from '@/theme/tokens';
 
 interface Props {
   label: string;
   onPress: () => void;
-  variant?: 'primary' | 'ghost';
+  variant?: 'primary' | 'ghost' | 'danger';
   disabled?: boolean;
   loading?: boolean;
 }
@@ -24,17 +24,15 @@ export function Button({ label, onPress, variant = 'primary', disabled, loading 
       accessibilityState={{ disabled: !!inactive, busy: !!loading }}
       style={({ pressed }) => [
         styles.base,
-        variant === 'primary' ? styles.primary : styles.ghost,
+        styles[variant],
         inactive && styles.inactive,
         pressed && styles.pressed,
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.surface : colors.primary} />
+        <ActivityIndicator color={variant === 'ghost' ? colors.primary : colors.surface} />
       ) : (
-        <Text
-          style={[styles.label, variant === 'primary' ? styles.primaryLabel : styles.ghostLabel]}
-        >
+        <Text style={[styles.label, variant === 'ghost' ? styles.ghostLabel : styles.primaryLabel]}>
           {label}
         </Text>
       )}
@@ -52,6 +50,9 @@ const styles = StyleSheet.create({
   },
   primary: {
     backgroundColor: colors.primary,
+  },
+  danger: {
+    backgroundColor: semantic.danger,
   },
   ghost: {
     backgroundColor: colors.surface,
