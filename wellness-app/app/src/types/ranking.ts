@@ -13,6 +13,22 @@
 
 import type { CohortKey, EpochMillis, ItemKind, ScopeKey } from './common';
 
+/**
+ * rankings/** のドキュメントパス。読む側（app）と書く側（functions・seed）で必ずこれを使う。
+ *
+ * Firestore のドキュメントパスは「コレクション/ドキュメント」の偶数個の区切りでなければならない。
+ * 企画書の rankings/byKind/{kind} は奇数個で保存できないため、固定のサブコレクション名
+ * （kinds / categories / concerns / cohorts）を1段挟んでいる。
+ */
+export const rankingPaths = {
+  overall: () => 'rankings/overall',
+  kind: (kind: ItemKind) => `rankings/byKind/kinds/${kind}`,
+  category: (categoryId: string) => `rankings/byCategory/categories/${categoryId}`,
+  concern: (concernId: string) => `rankings/byConcern/concerns/${concernId}`,
+  cohort: (cohortKey: CohortKey, scopeKey: ScopeKey) =>
+    `rankings/byCohort/cohorts/${cohortKey}/scopes/${scopeKey}`,
+};
+
 /** ランキング1行。n を省略してはならない。 */
 export interface RankingEntry {
   itemId: string;

@@ -1,7 +1,7 @@
 # ranking — 週次集計
 
 - Cloud Scheduler で週次実行し、`rankings/**` に書き込む
-- 各行は必ず `{ itemId, score, n }` の3点を持つ
+- 各行は必ず `{ itemId, score, n, solicitedN }` を持つ（`solicitedN` は依頼・キャンペーン・関係者の投稿の件数）
 - 並び順は **score 降順（同点は n 降順）**
 - `rankScore = avgScore × log10(reviewCount + 1)` の重み付けは要件定義で確定（企画書⑪）
 
@@ -9,11 +9,14 @@
 
 ```
 rankings/overall
-rankings/byKind/{kind}
-rankings/byCategory/{categoryId}
-rankings/byConcern/{concernId}
-rankings/byCohort/{cohortKey}/scopes/{scopeKey}
+rankings/byKind/kinds/{kind}
+rankings/byCategory/categories/{categoryId}
+rankings/byConcern/concerns/{concernId}
+rankings/byCohort/cohorts/{cohortKey}/scopes/{scopeKey}
 ```
+
+パスの組み立ては `app/src/types/ranking.ts` の `rankingPaths` を使う。
+Firestore のドキュメントパスは偶数個の区切りが必要なので、`kinds` などの固定のサブコレクション名を1段挟んでいる。
 
 **Emulator Suite 上で検証すること。本番 Firestore で試さない。**
 

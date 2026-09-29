@@ -13,11 +13,13 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\"",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,mts,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mts,js,json,md}\"",
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p scripts",
     "test": "npm run test --workspaces --if-present",
-    "emu": "firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data"
+    "emu": "firebase emulators:start --project demo-wellnessid --import=.emulator-data --export-on-exit=.emulator-data",
+    "seed": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed/index.mts",
+    "seed:check": "npm run seed -- --dry-run"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.18.0",

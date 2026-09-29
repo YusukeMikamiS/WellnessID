@@ -76,6 +76,13 @@ npm run lint         # 書き方のチェック
 
 ### ③ データベースを手元で動かす
 
+先に Firebase CLI と Java を入れておきます（1回だけ）。
+
+```bash
+npm install -g firebase-tools
+winget install Microsoft.OpenJDK.21   # Mac は brew install openjdk@21
+```
+
 ```bash
 npm run emu
 ```
@@ -83,6 +90,24 @@ npm run emu
 ブラウザで `http://localhost:4000` が開けば成功です。
 これは**本物そっくりの練習用データベース**で、いくら壊しても本番に影響しません。
 止めるときはターミナルで `Ctrl + C`。
+
+### ④ ダミーデータを入れる
+
+Emulator を動かしたまま、**別のターミナル**で実行します。
+
+```bash
+npm run seed
+```
+
+悩みタグ14件・アイテム100件・口コミ300件などが入ります。何度実行しても同じデータに作り直されます。
+
+| ログイン用 | メール | パスワード |
+|---|---|---|
+| テストユーザー | `test@example.com` | `password123` |
+| 運営（admin） | `admin@example.com` | `password123` |
+
+> 🔒 書き込み先は Emulator だけです。本番・練習用の Firebase プロジェクトには書き込めないようにしてあります。
+> 書き込まずに中身だけ確かめたいときは `npm run seed:check` を使います（Emulator がなくても動きます）。
 
 ---
 
@@ -95,6 +120,8 @@ npm run emu
 | 書き方を直す | `npm run lint:fix` |
 | 見た目を整える | `npm run format` |
 | 練習用DBを動かす | `npm run emu` |
+| ダミーデータを入れ直す | `npm run seed` |
+| ダミーデータの中身だけ確かめる | `npm run seed:check` |
 
 ---
 
@@ -110,7 +137,7 @@ npm run emu
 | 4 | ✅ 17画面の**空っぽのページ**を全部作る | 完了 |
 | 5 | TestFlightに1回配信してみる | **10/17（M3）** |
 | 6 | 🟡 型を確定させる（下の「決めること」を参照）→ 決定済み・甲の了承後に凍結 | **9/30（M1）** |
-| 7 | ダミーデータを入れるスクリプト | |
+| 7 | 🟡 ダミーデータを入れるスクリプト（`npm run seed`）→ 作成済み・Emulator での実行確認待ち | |
 | 8 | **1本だけ最後まで通す**（下記） | 10/20 |
 | 9 | 残りの画面を量産 | 11/13（M4） |
 

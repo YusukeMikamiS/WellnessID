@@ -153,10 +153,13 @@ columns/{columnId}
 notices/{noticeId}                   全ユーザー共通（出し分けなし）
 
 rankings/overall
-rankings/byKind/{kind}
-rankings/byCategory/{categoryId}
-rankings/byConcern/{concernId}
-rankings/byCohort/{cohortKey}/scopes/{scopeKey}
+rankings/byKind/kinds/{kind}
+rankings/byCategory/categories/{categoryId}
+rankings/byConcern/concerns/{concernId}
+rankings/byCohort/cohorts/{cohortKey}/scopes/{scopeKey}
+
+# rankings のパスは偶数個の区切りにするため kinds / categories / concerns / cohorts を挟む。
+# 組み立ては必ず app/src/types/ranking.ts の rankingPaths を使う
 ```
 
 **インデックス**：`items` の `concernIds`（array-contains）× `avgScore` の複合インデックスが必須。
@@ -212,7 +215,7 @@ Callable Function 経由で処理する。
 - `cohortKey = {ageBand}_{gender}`（5 × 3 ＝ 最大15セグメント）
 - エリア・運動頻度は Phase 1 では絞り込みに使わない（**取得はするが、溜まってから使う**）
 - 集計は Functions の**週次ジョブ**
-- 各行は必ず `{ itemId, score, n, solicitedN }` を持つ（`solicitedN` は依頼・キャンペーン投稿の件数）
+- 各行は必ず `{ itemId, score, n, solicitedN }` を持つ（`solicitedN` は依頼・キャンペーン・関係者の投稿の件数）
 - 並び順は **score降順（同点はn降順）**
 
 **表示ルール**
