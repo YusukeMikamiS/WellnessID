@@ -1,4 +1,8 @@
+import { Text } from 'react-native';
+
+import { ConcernChipList } from '@/components/concern/ConcernChipList';
 import { ScreenPlaceholder } from '@/components/ui/ScreenPlaceholder';
+import { colors, spacing, typography } from '@/theme/tokens';
 
 export default function SearchScreen() {
   return (
@@ -11,6 +15,11 @@ export default function SearchScreen() {
         { label: '⑨ アイテム一覧', href: '/discover/category/sample' },
         { label: '⑩ 詳細（検索結果）', href: '/discover/item/sample' },
       ]}
-    />
+    >
+      <Text style={{ ...typography.titleMd, color: colors.ink, marginBottom: spacing.sm }}>
+        悩み・目的から探す
+      </Text>
+      <ConcernChipList />
+    </ScreenPlaceholder>
   );
 }

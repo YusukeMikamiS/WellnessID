@@ -16,13 +16,7 @@ import type { AgeBand, Area, EpochMillis, ExerciseFreq, Gender } from './common'
  * - amazon / rakuten / official（公式サイト）/ store（店舗）/ other
  * 定期便は購入先ではなく買い方の違い。使用期間（months）と継続中か（ongoing）で表すので区分にしない。
  */
-export const PURCHASE_SOURCES = [
-  'amazon',
-  'rakuten',
-  'official',
-  'store',
-  'other',
-] as const;
+export const PURCHASE_SOURCES = ['amazon', 'rakuten', 'official', 'store', 'other'] as const;
 export type PurchaseSource = (typeof PURCHASE_SOURCES)[number];
 
 /**
@@ -147,12 +141,26 @@ export interface Review {
   updatedAt: EpochMillis;
 }
 
-/** 新着フィード用のフラットコレクション（reviews_index/{reviewId}） */
-export interface ReviewIndexEntry
-  extends Pick<
-    Review,
-    'id' | 'itemId' | 'stars' | 'text' | 'authorSnapshot' | 'postingCategory' | 'createdAt'
-  > {
+/**
+ * 新着フィード用のフラットコレクション（reviews_index/{reviewId}）
+ * フィードのカードに構造化項目（目的・使用期間・継続中か・購入先）も出すため、それらも複製して持つ。
+ */
+export interface ReviewIndexEntry extends Pick<
+  Review,
+  | 'id'
+  | 'itemId'
+  | 'stars'
+  | 'text'
+  | 'authorSnapshot'
+  | 'postingCategory'
+  | 'createdAt'
+  | 'goalTags'
+  | 'months'
+  | 'ongoing'
+  | 'purchaseSource'
+  | 'discoverySource'
+  | 'likeCount'
+> {
   itemName: string;
   itemImageUrl?: string;
   itemKind: string;
