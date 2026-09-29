@@ -11,7 +11,7 @@ import { collection, getDocs, limit, orderBy, query, where } from 'firebase/fire
 import { FirebaseError } from 'firebase/app';
 import { httpsCallable } from 'firebase/functions';
 
-import type { Review, ReviewDraft, ReviewIndexEntry } from '@/types';
+import type { ReportInput, Review, ReviewDraft, ReviewIndexEntry } from '@/types';
 
 import { db, functions } from './firebase';
 
@@ -69,6 +69,12 @@ export async function deleteReview(itemId: string, reviewId: string): Promise<vo
     'deleteReview',
   );
   await call({ itemId, reviewId });
+}
+
+/** 口コミを通報する（Callable：reportReview ★）。運営が確認する */
+export async function reportReview(input: ReportInput): Promise<void> {
+  const call = httpsCallable<ReportInput, { ok: true }>(functions(), 'reportReview');
+  await call(input);
 }
 
 /** 投稿のエラーを、画面に出す文言にする。サーバーが返した日本語の文言はそのまま使う */

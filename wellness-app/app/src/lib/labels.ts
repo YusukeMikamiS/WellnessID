@@ -12,6 +12,7 @@ import type {
   Gender,
   ItemKind,
   PurchaseSource,
+  ReportReason,
 } from '@/types';
 
 export const AGE_BAND_LABELS: Record<AgeBand, string> = {
@@ -54,6 +55,15 @@ export const DISCOVERY_SOURCE_LABELS: Record<DiscoverySource, string> = {
   sns: 'SNS',
   search: '検索',
   this_app: 'このアプリ',
+  other: 'その他',
+};
+
+export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+  spam: '宣伝・スパム',
+  inappropriate: '誹謗中傷・不適切な表現',
+  personal_info: '個人情報が書かれている',
+  undisclosed_affiliation: '関係者の投稿なのに申告されていない',
+  misleading: '事実と違う・誤解を招く',
   other: 'その他',
 };
 

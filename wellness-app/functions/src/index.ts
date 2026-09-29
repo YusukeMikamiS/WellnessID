@@ -26,4 +26,5 @@ export { onUserCreated } from './account/claims';
 export { deleteAccount } from './account/deleteAccount';
 export { rebuildRankings, weeklyRankings } from './ranking/weekly';
 export { deleteReview } from './review/deleteReview';
+export { reportReview } from './review/reportReview';
 export { postReview } from './review/postReview';

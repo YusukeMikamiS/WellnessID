@@ -13,7 +13,7 @@ import {
   REVIEW_STARS_MAX,
   REVIEW_STARS_MIN,
 } from './constants';
-import { DISCOVERY_SOURCES, PURCHASE_SOURCES } from './review';
+import { DISCOVERY_SOURCES, PURCHASE_SOURCES, REPORT_REASONS } from './review';
 
 /** 本文の上限（長すぎる投稿を防ぐ）。画面の入力欄の上限と合わせる */
 export const REVIEW_MAX_TEXT_LENGTH = 2000;
@@ -62,3 +62,20 @@ export function sourceError(
   }
   return null;
 }
+
+/** 通報の補足の上限 */
+export const REPORT_MAX_DETAIL_LENGTH = 500;
+
+/** 通報（reportReview）の検証 */
+export const reportInputSchema = z.object({
+  itemId: z.string().min(1),
+  reviewId: z.string().min(1),
+  reason: z.enum(REPORT_REASONS, { error: '通報の理由を選んでください' }),
+  detail: z
+    .string()
+    .trim()
+    .max(REPORT_MAX_DETAIL_LENGTH, `補足は${REPORT_MAX_DETAIL_LENGTH}文字以内にしてください`)
+    .nullable(),
+});
+
+export type ReportInput = z.infer<typeof reportInputSchema>;

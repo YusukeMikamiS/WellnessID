@@ -25,7 +25,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Stars } from '@/components/ui/Stars';
 import { KIND_LABELS, sampleLabel } from '@/lib/labels';
 import { profileCohort, useProfileStore } from '@/stores/profile';
-import { useSession } from '@/stores/session';
+import { useSession, withoutBlocked } from '@/stores/session';
 import { colors, elevation, kindColors, radius, spacing, typography } from '@/theme/tokens';
 import { cohortKey, OPERATOR_OWNED_BADGE } from '@/types';
 
@@ -36,6 +36,7 @@ export default function ItemScreen() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const myUid = useSession((s) => s.user?.uid);
+  const blockedUids = useSession((s) => s.blockedUids);
   // 自分の口コミの削除（集計から外れるので、平均点・件数・一覧を取り直す）
   const deleteOwn = (itemId: string, reviewId: string) => async () => {
     await review.deleteReview(itemId, reviewId);
@@ -177,19 +178,21 @@ export default function ItemScreen() {
             onRetry={() => void reviews.refetch()}
           />
           <View style={styles.reviews}>
-            {(reviews.data ?? []).slice(0, PREVIEW_REVIEW_COUNT).map((r) => (
-              <ReviewCard
-                key={r.id}
-                review={toReviewCardData(r, item)}
-                goalName={goalName}
-                near={
-                  myCohort != null &&
-                  cohortKey(r.authorSnapshot.ageBand, r.authorSnapshot.gender) === myCohort
-                }
-                showItem={false}
-                {...(myUid != null && r.uid === myUid && { onDelete: deleteOwn(r.itemId, r.id) })}
-              />
-            ))}
+            {withoutBlocked(reviews.data ?? [], blockedUids)
+              .slice(0, PREVIEW_REVIEW_COUNT)
+              .map((r) => (
+                <ReviewCard
+                  key={r.id}
+                  review={toReviewCardData(r, item)}
+                  goalName={goalName}
+                  near={
+                    myCohort != null &&
+                    cohortKey(r.authorSnapshot.ageBand, r.authorSnapshot.gender) === myCohort
+                  }
+                  showItem={false}
+                  {...(myUid != null && r.uid === myUid && { onDelete: deleteOwn(r.itemId, r.id) })}
+                />
+              ))}
           </View>
         </View>
 

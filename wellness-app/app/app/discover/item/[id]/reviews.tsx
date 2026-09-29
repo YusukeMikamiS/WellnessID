@@ -17,7 +17,7 @@ import { ReviewCard, toReviewCardData } from '@/components/review/ReviewCard';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { QueryState } from '@/components/ui/QueryState';
 import { profileCohort, useProfileStore } from '@/stores/profile';
-import { useSession } from '@/stores/session';
+import { useSession, withoutBlocked } from '@/stores/session';
 import { colors, elevation, radius, spacing, typography } from '@/theme/tokens';
 import { cohortKey, LONG_TERM_MONTHS, type Review, type ReviewFilter } from '@/types';
 
@@ -26,6 +26,7 @@ export default function ItemReviewsScreen() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const myUid = useSession((s) => s.user?.uid);
+  const blockedUids = useSession((s) => s.blockedUids);
   // 自分の口コミの削除（集計から外れるので、平均点・件数・一覧を取り直す）
   const deleteOwn = (itemId: string, reviewId: string) => async () => {
     await review.deleteReview(itemId, reviewId);
@@ -51,7 +52,9 @@ export default function ItemReviewsScreen() {
     spontaneous: (r) => r.postingCategory === 'normal',
   };
 
-  const all = reviews.data ?? [];
+  // ブロック中の相手の口コミは、自分の画面にだけ出さない
+  const all = withoutBlocked(reviews.data ?? [], blockedUids);
+  const hiddenByBlock = (reviews.data ?? []).length - all.length;
   const count = (f: ReviewFilter) => all.filter(matchers[f]).length;
   const options: { value: ReviewFilter; label: string }[] = [
     { value: 'all', label: `すべて（${all.length}）` },
@@ -78,6 +81,8 @@ export default function ItemReviewsScreen() {
         <FilterChips options={options} value={filter} onChange={setFilter} />
         <Text style={styles.caption}>
           {shown.length}件を表示（全{all.length}件）
+          {hiddenByBlock > 0 &&
+            `。ブロック中のユーザーの口コミ${hiddenByBlock}件は表示していません`}
           {filter === 'spontaneous' &&
             shown.length === 0 &&
             '。いま表示している口コミは、すべて運営の依頼などによる投稿です'}

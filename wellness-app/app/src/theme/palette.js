@@ -55,6 +55,8 @@ const semantic = {
   star: '#C9931F',
   success: '#1B7A4B',
   danger: '#B4483C',
+  /** シート・ダイアログの背後を暗くする幕（文字色 #1A1F27 の 40%） */
+  overlay: 'rgba(26, 31, 39, 0.4)',
 };
 
 module.exports = { community, member, kind, semantic };
