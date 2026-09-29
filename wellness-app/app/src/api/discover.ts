@@ -120,3 +120,30 @@ export const itemsByCategoryQuery = (categoryId: string) =>
     queryFn: () => getItemsByCategory(categoryId),
     retry: 1,
   });
+
+/**
+ * 掲載中の全アイテム。キーワード検索用。
+ * Firestore には全文検索がないので、Phase 1 の件数（約100件）なら全件を読んで絞り込む。
+ * TODO(件数が増えたら)：検索サービス（Algolia など）に切り替える。
+ */
+export async function getAllItems(): Promise<Item[]> {
+  const snapshot = await getDocs(query(collection(db(), 'items'), where('published', '==', true)));
+  return snapshot.docs.map((d) => ({ ...(d.data() as Omit<Item, 'id'>), id: d.id }));
+}
+
+export const allItemsQuery = queryOptions({
+  queryKey: ['items', 'all'],
+  queryFn: getAllItems,
+  staleTime: 10 * 60 * 1000,
+  retry: 1,
+});
+
+/** 名前・ブランドにキーワードを含むアイテム（大文字・小文字、全角・半角の英数字を区別しない） */
+export function searchItems(items: readonly Item[], keyword: string): Item[] {
+  const normalize = (s: string) => s.normalize('NFKC').toLowerCase().replace(/\s+/g, '');
+  const q = normalize(keyword);
+  if (!q) return [];
+  return items
+    .filter((it) => normalize(`${it.name}${it.brand ?? ''}`).includes(q))
+    .sort((a, b) => b.reviewCount - a.reviewCount || b.avgScore - a.avgScore);
+}

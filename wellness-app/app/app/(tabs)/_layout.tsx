@@ -4,15 +4,17 @@
  * - ロールによる行き先の出し分けはしない（Rev.3 でタブの行き先は固定）
  * - タブバーは磨りガラス（CLAUDE.md §4）。背後のコンテンツが透けるよう position: absolute にする。
  *   各画面は BottomTabBarHeightContext でタブバーの高さぶん下に余白を取ること
+ * - 初めて開いたとき（スプラッシュ未表示・プロフィール未入力）は ① Splash へ移す
  */
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { BlurView } from 'expo-blur';
 import Constants from 'expo-constants';
-import { Link, Tabs, type Href } from 'expo-router';
+import { Link, Redirect, Tabs, type Href } from 'expo-router';
 import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useProfileStore } from '@/stores/profile';
 import { headerOptions } from '@/theme/navigation';
 import { colors, fontFamily, spacing } from '@/theme/tokens';
 
@@ -49,6 +51,14 @@ function HeaderIconLink({ href, icon, label }: { href: Href; icon: IconName; lab
 }
 
 export default function TabsLayout() {
+  const hydrated = useProfileStore((s) => s.hydrated);
+  const introSeen = useProfileStore((s) => s.introSeen);
+  const hasProfile = useProfileStore((s) => s.profile != null);
+
+  // 端末の保存内容を読み終えるまでは何も出さない（初回かどうかが分からないため）
+  if (!hydrated) return null;
+  if (!introSeen && !hasProfile) return <Redirect href="/splash" />;
+
   return (
     <Tabs
       screenOptions={{
