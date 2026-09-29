@@ -18,7 +18,8 @@
  *   account.deleteAccount … 退会。users 削除 ＋ 口コミの匿名化（手順は types/review.ts の Review.uid）
  *
  * Rev.3 で不要になったもの：予約・会員証・トレーニング履歴・契約プラン関連のすべて。
+ *
+ * 型は app/src/types を相対パスで import して共有する（functions/tsconfig.json の rootDir を参照）。
  */
 
-// TODO: 実装は基盤構築後。まずは型とルールを確定させる。
-export {};
+export { postReview } from './review/postReview';

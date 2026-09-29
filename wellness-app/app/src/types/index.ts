@@ -26,3 +26,4 @@ export * from './user';
 export * from './review';
 export * from './ranking';
 export * from './content';
+export * from './schemas';
