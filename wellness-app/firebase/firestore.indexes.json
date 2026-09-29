@@ -49,6 +49,15 @@
   ],
   "fieldOverrides": [
     {
+      "_comment": "自分が押した「参考になった」を全アイテムから探す（アプリ）／退会時に取り消す（deleteAccount）",
+      "collectionGroup": "likes",
+      "fieldPath": "uid",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    },
+    {
       "_comment": "退会（deleteAccount）で、全アイテムの口コミから本人の分を探すため（コレクショングループ）",
       "collectionGroup": "reviews",
       "fieldPath": "uid",

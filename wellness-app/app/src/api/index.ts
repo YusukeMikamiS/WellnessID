@@ -7,6 +7,7 @@ export * as auth from './auth';
 export * as block from './block';
 export * as column from './column';
 export * as discover from './discover';
+export * as favorite from './favorite';
 export * as notice from './notice';
 export * as onboard from './onboard';
 export * as ranking from './ranking';

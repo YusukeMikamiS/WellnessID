@@ -3,7 +3,7 @@
  *
  * 未ログイン：空の状態 → 無料登録／ログイン → 使い方の4ステップ
  * 会員      ：プロフィール → 目的 → 数字（評価したもの・継続中・記録の合計）
- *             → いま続けているもの → やめたもの → 投稿への反応
+ *             → いま続けているもの → やめたもの → お気に入り → 投稿への反応
  *
  * 記録は自分の口コミ（公開中のもの）から作る。「ウェルネスの記録」という呼び方を使う
  * （「Wellness Passport」は他社の登録商標のため使わない）。
@@ -16,7 +16,8 @@ import { BottomTabBarHeightContext } from 'expo-router/tabs';
 import { useContext } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { discover, onboard, review } from '@/api';
+import { discover, favorite, onboard, review } from '@/api';
+import { RankingRow } from '@/components/item/RankingRow';
 import { Badge } from '@/components/ui/Badge';
 import { QueryState } from '@/components/ui/QueryState';
 import { SectionHeader } from '@/components/ui/SectionHeader';
@@ -124,7 +125,17 @@ function Member() {
   const categories = useQuery(discover.categoriesQuery);
   const mine = useQuery({ ...review.myReviewsQuery(user?.uid ?? ''), enabled: user != null });
   const reviews = mine.data ?? [];
-  const items = useQuery(discover.itemsByIdsQuery(reviews.map((r) => r.itemId)));
+  const favorites = useQuery({
+    ...favorite.favoritesQuery(user?.uid ?? ''),
+    enabled: user != null,
+  });
+  const favoriteIds = (favorites.data ?? []).map((f) => f.itemId);
+  const items = useQuery(
+    discover.itemsByIdsQuery([...reviews.map((r) => r.itemId), ...favoriteIds]),
+  );
+  const favoriteItems = favoriteIds
+    .map((id) => items.data?.get(id))
+    .filter((it): it is Item => it != null);
 
   const nickname = user?.nickname ?? '';
   const summary = profile?.ageBand
@@ -208,6 +219,25 @@ function Member() {
         <View>
           <SectionHeader title="やめたもの" note="これも記録として残ります" />
           <RecordList reviews={stopped} items={items.data} emojiOf={emojiOf} />
+        </View>
+      )}
+
+      {favoriteItems.length > 0 && (
+        <View>
+          <SectionHeader title="お気に入り" note={`${favoriteItems.length}件`} />
+          <View style={styles.list}>
+            {favoriteItems.map((item, i) => (
+              <RankingRow
+                key={item.id}
+                item={item}
+                emoji={emojiOf(item)}
+                score={item.avgScore}
+                n={item.reviewCount}
+                solicitedN={item.solicitedCount}
+                last={i === favoriteItems.length - 1}
+              />
+            ))}
+          </View>
         </View>
       )}
 

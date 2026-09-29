@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { discover, onboard, review } from '@/api';
 import { ExternalLinks } from '@/components/item/ExternalLinks';
+import { FavoriteButton } from '@/components/item/FavoriteButton';
 import { StarDistribution } from '@/components/item/StarDistribution';
 import { ReviewCard, toReviewCardData } from '@/components/review/ReviewCard';
 import { Badge } from '@/components/ui/Badge';
@@ -89,7 +90,9 @@ export default function ItemScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: '詳細' }} />
+      <Stack.Screen
+        options={{ title: '詳細', headerRight: () => <FavoriteButton itemId={item.id} /> }}
+      />
       <ScrollView
         style={styles.root}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}

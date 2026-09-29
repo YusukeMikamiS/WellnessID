@@ -57,6 +57,12 @@ service cloud.firestore {
         allow read: if true;
         // 投稿は Callable Function 経由（検証＋集計のトランザクション更新が必要）
         allow create, update, delete: if false;
+
+        // 「参考になった」。本人の分だけ読める。書き込みは Callable（toggleLike）のみ（likeCount と一緒に更新するため）
+        match /likes/{likeUid} {
+          allow read: if isSelf(likeUid);
+          allow write: if false;
+        }
       }
     }
 
@@ -74,6 +80,11 @@ service cloud.firestore {
     // 設定画面でブロック中のユーザーの表示名を探すのに使う。口コミは上と同じく誰でも読める
     match /{path=**}/reviews/{reviewId} {
       allow read: if true;
+    }
+
+    // 自分が「参考になった」を押した口コミを、全アイテムを横断して読む（where uid == 自分 が必須）
+    match /{path=**}/likes/{likeUid} {
+      allow read: if isSignedIn() && resource.data.uid == request.auth.uid;
     }
 
     // 新着フィード用のフラットコレクション（Functions が書き込む）

@@ -145,6 +145,7 @@ concerns/{concernId}                 悩み・目的タグ（初版14件）
 categories/{categoryId}
 items/{itemId}                       商品・店舗・専門家の共通コレクション
 items/{itemId}/reviews/{reviewId}    構造化口コミ
+items/{itemId}/reviews/{reviewId}/likes/{uid}   参考になった（toggleLike が likeCount と一緒に更新）
 serviceDetails/{itemId}              店舗固有（甲のサロンもここ）
 proDetails/{itemId}                  専門家固有
 reviews_index/{reviewId}             新着フィード用
