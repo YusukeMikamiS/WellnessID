@@ -9,5 +9,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["seed/**/*.mts"]
+  "include": ["seed/**/*.mts", "*.mts"]
 }
