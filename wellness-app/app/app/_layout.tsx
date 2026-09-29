@@ -4,6 +4,7 @@
  * - NativeWind v4 の global.css を読み込む
  * - Jost（英字・数字）／ Zen Kaku Gothic New（本文）を読み込み、完了までは何も描画しない
  * - TanStack Query と SafeArea で全体を包む
+ * - Firebase Auth のログイン状態を購読する（useAuthListener）
  * - テーマは colors（community）固定。ダークテーマ・テーマ切替は実装しない（CLAUDE.md §3-3）
  */
 
@@ -21,12 +22,14 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { useAuthListener } from '@/stores/session';
 import { headerOptions } from '@/theme/navigation';
 import { colors } from '@/theme/tokens';
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+  useAuthListener();
   const [fontsLoaded] = useFonts({
     Jost_400Regular,
     Jost_600SemiBold,

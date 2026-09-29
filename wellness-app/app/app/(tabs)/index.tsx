@@ -27,6 +27,7 @@ import { QueryState } from '@/components/ui/QueryState';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { AGE_BAND_LABELS, GENDER_LABELS } from '@/lib/labels';
 import { profileCohort, useProfileStore } from '@/stores/profile';
+import { useSession } from '@/stores/session';
 import { colors, elevation, radius, spacing, typography } from '@/theme/tokens';
 import { COHORT_MIN_N, cohortKey, type RankingEntry, rankingPaths, scopeKeys } from '@/types';
 
@@ -39,6 +40,7 @@ export default function HomeScreen() {
   const tabBarHeight = useContext(BottomTabBarHeightContext) ?? 0;
   const profile = useProfileStore((s) => s.profile);
   const myCohort = profileCohort(profile);
+  const signedIn = useSession((s) => s.status === 'signedIn');
 
   const concerns = useQuery(onboard.concernsQuery);
   const categories = useQuery(discover.categoriesQuery);
@@ -113,16 +115,18 @@ export default function HomeScreen() {
       style={styles.root}
       contentContainerStyle={[styles.content, { paddingBottom: tabBarHeight + spacing.lg }]}
     >
-      {/* 無料登録の案内（ログイン機能の実装後、未ログインのときだけ出す） */}
-      <Link href="/signup" asChild>
-        <Pressable style={StyleSheet.flatten([styles.banner, elevation.card])}>
-          <View style={styles.bannerBody}>
-            <Text style={styles.bannerTitle}>無料登録で口コミを残す</Text>
-            <Text style={styles.bannerText}>使ったもの・通った場所が MY WELLNESS に残ります</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={18} color={colors.primary} />
-        </Pressable>
-      </Link>
+      {/* 無料登録の案内（未ログインのときだけ出す） */}
+      {!signedIn && (
+        <Link href="/signup" asChild>
+          <Pressable style={StyleSheet.flatten([styles.banner, elevation.card])}>
+            <View style={styles.bannerBody}>
+              <Text style={styles.bannerTitle}>無料登録で口コミを残す</Text>
+              <Text style={styles.bannerText}>使ったもの・通った場所が MY WELLNESS に残ります</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+          </Pressable>
+        </Link>
+      )}
 
       <View style={styles.section}>
         <SectionHeader title="最近どうですか？" action={{ label: 'すべて', href: '/search' }} />

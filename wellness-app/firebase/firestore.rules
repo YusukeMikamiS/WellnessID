@@ -98,7 +98,11 @@ service cloud.firestore {
       // プロフィールは本人のみ読取。口コミの表示には authorSnapshot を使うため、
       // 他人の users ドキュメントを読む必要はない。
       allow read: if isSelf(uid);
-      allow create: if isSelf(uid);
+      // 新規登録（src/api/auth.ts の signUp）。role は 'free' 固定、uid は本人のものに限る。
+      // role の正は Custom Claims。ここでは表示用の値を書き換えられないようにするだけ。
+      allow create: if isSelf(uid)
+                    && request.resource.data.uid == uid
+                    && request.resource.data.role == 'free';
       // role は Custom Claims 側が正。ここから書き換えさせない。
       allow update: if isSelf(uid)
                     && request.resource.data.role == resource.data.role;

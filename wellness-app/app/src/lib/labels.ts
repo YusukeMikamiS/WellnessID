@@ -59,7 +59,7 @@ export const DISCOVERY_SOURCE_LABELS: Record<DiscoverySource, string> = {
 
 /** 都道府県コード（JIS X 0401） */
 // prettier-ignore
-const PREFECTURES: Record<string, string> = {
+export const PREFECTURES: Record<string, string> = {
   '01': '北海道', '02': '青森県', '03': '岩手県', '04': '宮城県', '05': '秋田県', '06': '山形県',
   '07': '福島県', '08': '茨城県', '09': '栃木県', '10': '群馬県', '11': '埼玉県', '12': '千葉県',
   '13': '東京都', '14': '神奈川県', '15': '新潟県', '16': '富山県', '17': '石川県', '18': '福井県',
@@ -72,7 +72,7 @@ const PREFECTURES: Record<string, string> = {
 
 /** 東京都の特別区（全国地方公共団体コードの先頭5桁）。多摩地域などは「東京都」と表示する */
 // prettier-ignore
-const TOKYO_WARDS: Record<string, string> = {
+export const TOKYO_WARDS: Record<string, string> = {
   '13101': '千代田区', '13102': '中央区', '13103': '港区', '13104': '新宿区', '13105': '文京区',
   '13106': '台東区', '13107': '墨田区', '13108': '江東区', '13109': '品川区', '13110': '目黒区',
   '13111': '大田区', '13112': '世田谷区', '13113': '渋谷区', '13114': '中野区', '13115': '杉並区',
