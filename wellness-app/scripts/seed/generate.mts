@@ -285,6 +285,19 @@ const CLOSINGS: Readonly<Record<number, readonly string[]>> = {
   1: ['自分には合いませんでした。', '残念ながら効果を感じられませんでした。'],
 };
 
+/** やめた人の締め（「これからも続けます」のように、継続中と食い違う文を避ける） */
+const CLOSINGS_STOPPED: Readonly<Record<number, readonly string[]>> = {
+  5: [
+    'はっきり変化を感じました。目標を達成したので、いまは使っていません。',
+    '期待以上でした。人にも勧めています。',
+  ],
+  4: [
+    '効果は感じましたが、値段が気になってやめました。',
+    '満足でしたが、いまは別のものを試しています。',
+  ],
+  2: ['期待していたほどの変化はありませんでした。', '続けるのが面倒になってしまいました。'],
+};
+
 function buildText(
   rng: Rng,
   item: ItemSeed,
@@ -295,7 +308,9 @@ function buildText(
 ): string {
   const opener = rng.pick(OPENERS[goal] ?? ['気になっていたので、']);
   const body = rng.pick(BODIES[item.kind] ?? BODIES.product ?? ['']);
-  const closing = rng.pick(CLOSINGS[stars] ?? CLOSINGS[3] ?? ['']);
+  const closing = rng.pick(
+    (!ongoing && CLOSINGS_STOPPED[stars]) || CLOSINGS[stars] || CLOSINGS[3] || [''],
+  );
   const period = months >= 12 ? `${Math.floor(months / 12)}年以上` : `${months}ヶ月`;
   const status = ongoing ? `${period}続けています。` : `${period}使ってやめました。`;
   const text = `${opener}${body}${status}${closing}`;

@@ -28,6 +28,15 @@
       ]
     },
     {
+      "_comment": "アイテムの口コミ一覧（公開中・新しい順）",
+      "collectionGroup": "reviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
       "_comment": "口コミ一覧の絞り込み（継続中／使用期間）",
       "collectionGroup": "reviews",
       "queryScope": "COLLECTION",

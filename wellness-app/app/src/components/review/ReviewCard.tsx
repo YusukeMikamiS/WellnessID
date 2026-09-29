@@ -21,21 +21,33 @@ import {
   PURCHASE_SOURCE_LABELS,
 } from '@/lib/labels';
 import { colors, kindColors, radius, semantic, spacing, typography } from '@/theme/tokens';
-import type { ReviewIndexEntry } from '@/types';
+import type { Item, Review, ReviewIndexEntry } from '@/types';
 
 import { Badge } from '../ui/Badge';
 import { Stars } from '../ui/Stars';
 
 import { PostingLabel } from './PostingLabel';
 
+/**
+ * カードに必要な項目。新着フィード（ReviewIndexEntry）はそのまま渡せる。
+ * アイテムの口コミ（Review）は、アイテム名と自社フラグを足して渡す（toReviewCardData）。
+ */
+export type ReviewCardData = Omit<ReviewIndexEntry, 'itemImageUrl' | 'itemKind'>;
+
+export function toReviewCardData(review: Review, item: Item): ReviewCardData {
+  return { ...review, itemName: item.name, itemOperatorOwned: item.operatorOwned };
+}
+
 interface Props {
-  review: ReviewIndexEntry;
+  review: ReviewCardData;
   /** 対象アイテムの絵文字（カテゴリの絵文字） */
   itemEmoji?: string;
   /** 悩みタグの ID → 表示名 */
   goalName: (concernId: string) => string;
   /** 自分と同じコホートの投稿者か */
   near: boolean;
+  /** 対象アイテムへのリンクを出すか。アイテムの詳細・口コミ一覧では出さない */
+  showItem?: boolean;
 }
 
 const AVATAR_COLORS = [
@@ -52,7 +64,7 @@ function avatarColor(seed: string) {
   return AVATAR_COLORS[sum % AVATAR_COLORS.length] ?? colors.primary;
 }
 
-export function ReviewCard({ review, itemEmoji, goalName, near }: Props) {
+export function ReviewCard({ review, itemEmoji, goalName, near, showItem = true }: Props) {
   const author = review.authorSnapshot;
   const meta = [
     `${AGE_BAND_LABELS[author.ageBand]}・${GENDER_LABELS[author.gender]}`,
@@ -85,14 +97,16 @@ export function ReviewCard({ review, itemEmoji, goalName, near }: Props) {
         <Stars score={review.stars} showValue={false} />
       </View>
 
-      <Link
-        href={{ pathname: '/discover/item/[id]', params: { id: review.itemId } }}
-        style={styles.item}
-        numberOfLines={1}
-      >
-        {itemEmoji ? `${itemEmoji} ` : ''}
-        {review.itemName} ›
-      </Link>
+      {showItem && (
+        <Link
+          href={{ pathname: '/discover/item/[id]', params: { id: review.itemId } }}
+          style={styles.item}
+          numberOfLines={1}
+        >
+          {itemEmoji ? `${itemEmoji} ` : ''}
+          {review.itemName} ›
+        </Link>
+      )}
 
       <PostingLabel category={review.postingCategory} operatorOwned={review.itemOperatorOwned} />
 

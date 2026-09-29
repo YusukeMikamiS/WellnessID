@@ -94,6 +94,13 @@ export interface Item {
   solicitedCount: number;
   /** 継続中の割合（0〜1） */
   repeatRate: number;
+  /**
+   * 星ごとの件数。[★1, ★2, ★3, ★4, ★5] の順。詳細画面の「評価の分布」に使う。
+   * クライアントで口コミを数えて出さないこと（CLAUDE.md §3-5）。
+   */
+  starCounts: [number, number, number, number, number];
+  /** 使用期間が LONG_TERM_MONTHS（12ヶ月）以上の口コミの件数。詳細画面の「1年以上継続」に使う */
+  longTermCount: number;
   /** コホート別の集計値。母数が0のコホートはキー自体を持たない。 */
   cohortScores: Partial<Record<CohortKey, CohortScore>>;
 
