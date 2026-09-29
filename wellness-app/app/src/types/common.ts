@@ -36,7 +36,7 @@ export type UserRole = (typeof USER_ROLES)[number];
 
 /**
  * ランキングのスコープキー
- * rankings/byCohort/{cohortKey}/scopes/{scopeKey} のドキュメントIDに使う。
+ * rankings/byCohort/cohorts/{cohortKey}/scopes/{scopeKey} のドキュメントIDに使う（パスは rankingPaths）。
  */
 export type ScopeKey = 'overall' | `concern_${string}` | `kind_${ItemKind}`;
 

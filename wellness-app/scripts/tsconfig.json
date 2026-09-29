@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // seed などの運用スクリプト用。Node 22 の型除去（type stripping）でそのまま実行するため、
+    // 相対 import には拡張子（.mts / .ts）を付け、tsc は型チェックだけに使う。
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["seed/**/*.mts"]
+}
