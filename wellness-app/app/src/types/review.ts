@@ -149,6 +149,7 @@ export interface ReviewIndexEntry extends Pick<
   Review,
   | 'id'
   | 'itemId'
+  | 'uid'
   | 'stars'
   | 'text'
   | 'authorSnapshot'
@@ -206,13 +207,38 @@ export interface ReviewLike {
   createdAt: EpochMillis;
 }
 
-/** 通報（reports/{reportId}）— 作成のみ許可、読取は運営のみ */
+/**
+ * 通報の理由
+ * - spam                   : 宣伝・スパム
+ * - inappropriate          : 誹謗中傷・不適切な表現
+ * - personal_info          : 個人情報が書かれている
+ * - undisclosed_affiliation: 関係者なのに申告していない（ステマ規制・TODO-B の追加ルール1）
+ * - misleading             : 事実と違う・誤解を招く
+ * - other                  : その他
+ */
+export const REPORT_REASONS = [
+  'spam',
+  'inappropriate',
+  'personal_info',
+  'undisclosed_affiliation',
+  'misleading',
+  'other',
+] as const;
+export type ReportReason = (typeof REPORT_REASONS)[number];
+
+/**
+ * 通報（reports/{reportId}）— 作成は Callable（reportReview）のみ、読取は運営のみ
+ * ID は `{reviewId}_{通報者の uid}`（同じ人が同じ口コミを何度も通報しても1件にまとめる）
+ */
 export interface Report {
   id: string;
+  itemId: string;
   reviewId: string;
   /** 通報者の uid。通報者が退会すると null になる。 */
   uid: string | null;
-  reason: string;
+  reason: ReportReason;
+  /** 補足（任意） */
+  detail: string | null;
   status: 'open' | 'reviewing' | 'closed';
   createdAt: EpochMillis;
 }

@@ -243,6 +243,7 @@ export function buildReviewIndex(
       return {
         id: r.id,
         itemId: r.itemId,
+        uid: r.uid,
         stars: r.stars,
         text: r.text,
         authorSnapshot: r.authorSnapshot,

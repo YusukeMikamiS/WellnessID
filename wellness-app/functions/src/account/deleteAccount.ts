@@ -69,7 +69,7 @@ export const deleteAccount = onCall(
       const indexRef = db.doc(`reviews_index/${doc.id}`);
       const indexSnap = await indexRef.get();
       if (indexSnap.exists) {
-        void writer.update(indexRef, { 'authorSnapshot.nickname': WITHDRAWN_NICKNAME });
+        void writer.update(indexRef, { uid: null, 'authorSnapshot.nickname': WITHDRAWN_NICKNAME });
       }
     }
     for (const doc of reportsSnap.docs) void writer.update(doc.ref, { uid: null });

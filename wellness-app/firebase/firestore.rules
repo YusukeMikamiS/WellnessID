@@ -70,6 +70,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // 全アイテムの口コミを横断して読むクエリ（コレクショングループ）。
+    // 設定画面でブロック中のユーザーの表示名を探すのに使う。口コミは上と同じく誰でも読める
+    match /{path=**}/reviews/{reviewId} {
+      allow read: if true;
+    }
+
     // 新着フィード用のフラットコレクション（Functions が書き込む）
     match /reviews_index/{reviewId} {
       allow read: if true;

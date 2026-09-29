@@ -2,7 +2,7 @@
  * 口コミカード（構造化口コミ）
  *
  * 上から：投稿者（年代・性別・エリア・運動頻度）と星 → 対象アイテム → 投稿区分ラベル
- * → 構造化項目（目的・使用期間・購入先／知ったきっかけ・継続中か）→ 本文 → 参考になった／報告
+ * → 構造化項目（目的・使用期間・購入先／知ったきっかけ・継続中か）→ 本文 → 参考になった／報告（通報・ブロック）
  *
  * 【規約】投稿区分ラベルは本文より上に出す（TODO-B）。投稿者の情報は authorSnapshot（投稿時点のコピー）を使う。
  */
@@ -28,6 +28,7 @@ import { Badge } from '../ui/Badge';
 import { Stars } from '../ui/Stars';
 
 import { PostingLabel } from './PostingLabel';
+import { ReviewMenu } from './ReviewMenu';
 
 /**
  * カードに必要な項目。新着フィード（ReviewIndexEntry）はそのまま渡せる。
@@ -79,6 +80,7 @@ export function ReviewCard({
   onDelete,
 }: Props) {
   const author = review.authorSnapshot;
+  const [menuOpen, setMenuOpen] = useState(false);
   const meta = [
     `${AGE_BAND_LABELS[author.ageBand]}・${GENDER_LABELS[author.gender]}`,
     areaLabel(author.area),
@@ -156,10 +158,26 @@ export function ReviewCard({
         {onDelete ? (
           <DeleteAction onDelete={onDelete} />
         ) : (
-          // 通報は reportReview（Functions）の実装後につなぐ
-          <Text style={styles.footerText}>… 報告</Text>
+          <Text
+            style={styles.footerText}
+            onPress={() => setMenuOpen(true)}
+            accessibilityRole="button"
+            accessibilityLabel="通報・ブロック"
+          >
+            … 報告
+          </Text>
         )}
       </View>
+      <ReviewMenu
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        target={{
+          itemId: review.itemId,
+          reviewId: review.id,
+          uid: review.uid,
+          nickname: author.nickname,
+        }}
+      />
     </View>
   );
 }

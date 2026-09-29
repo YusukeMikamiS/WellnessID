@@ -37,4 +37,5 @@ export declare const semantic: {
   star: string;
   success: string;
   danger: string;
+  overlay: string;
 };

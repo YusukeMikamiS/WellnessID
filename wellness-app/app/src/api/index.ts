@@ -4,6 +4,7 @@
  */
 
 export * as auth from './auth';
+export * as block from './block';
 export * as column from './column';
 export * as discover from './discover';
 export * as onboard from './onboard';

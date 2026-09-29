@@ -118,6 +118,7 @@ export const postReview = onCall({ region: REGION }, async (request): Promise<Po
     const indexEntry: ReviewIndexEntry = {
       id: review.id,
       itemId: review.itemId,
+      uid,
       stars: review.stars,
       text: review.text,
       authorSnapshot,

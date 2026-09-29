@@ -27,7 +27,7 @@ import { QueryState } from '@/components/ui/QueryState';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { AGE_BAND_LABELS, GENDER_LABELS } from '@/lib/labels';
 import { profileCohort, useProfileStore } from '@/stores/profile';
-import { useSession } from '@/stores/session';
+import { useSession, withoutBlocked } from '@/stores/session';
 import { colors, elevation, radius, spacing, typography } from '@/theme/tokens';
 import { COHORT_MIN_N, cohortKey, type RankingEntry, rankingPaths, scopeKeys } from '@/types';
 
@@ -41,6 +41,7 @@ export default function HomeScreen() {
   const profile = useProfileStore((s) => s.profile);
   const myCohort = profileCohort(profile);
   const signedIn = useSession((s) => s.status === 'signedIn');
+  const blockedUids = useSession((s) => s.blockedUids);
 
   const concerns = useQuery(onboard.concernsQuery);
   const categories = useQuery(discover.categoriesQuery);
@@ -205,7 +206,7 @@ export default function HomeScreen() {
           onRetry={() => void latest.refetch()}
         />
         <View style={styles.reviews}>
-          {(latest.data ?? []).map((r) => (
+          {withoutBlocked(latest.data ?? [], blockedUids).map((r) => (
             <ReviewCard
               key={r.id}
               review={r}
