@@ -8,7 +8,7 @@
  * - 各行は必ず { itemId, score, n } の3点を持つ。
  * - 並び順は score 降順（同点は n 降順）。
  * - 母数 n はすべてのランキングに常時表示する。件数を伏せてはならない。
- * - 依頼・キャンペーン投稿も集計に含めるが、その件数 solicitedN を n と併記する（TODO-B）。
+ * - 依頼・キャンペーン・関係者の投稿も集計に含めるが、その件数 solicitedN を n と併記する（TODO-B）。
  */
 
 import type { CohortKey, EpochMillis, ItemKind, ScopeKey } from './common';
@@ -19,7 +19,7 @@ export interface RankingEntry {
   score: number;
   /** 母数。表示必須。 */
   n: number;
-  /** n のうち、依頼・キャンペーン投稿の件数。表示必須（例：「n=12（うち依頼 8）」）。 */
+  /** n のうち、依頼・キャンペーン・関係者の投稿の件数。表示必須（例：「n=12（うち依頼・関係者 8）」）。 */
   solicitedN: number;
 }
 

@@ -9,7 +9,8 @@
  *   onboard.estimateCohort / review.postReview / review.reportReview
  * ＋ ランキングの週次集計（スケジューラ）
  *
- * TODO-B 確定：postReview は postingCategory を常に 'normal' で書く（クライアントに指定させない）。
+ * TODO-B 確定：postReview は postingCategory を 'normal' で書く（クライアントに区分を指定させない）。
+ * 投稿者が利害関係を自己申告した場合（affiliationDeclared）だけ 'affiliated' にする。
  * 集計では n と一緒に solicitedN（'normal' 以外の件数）も更新する。
  *
  * TODO-A 確定で追加：
