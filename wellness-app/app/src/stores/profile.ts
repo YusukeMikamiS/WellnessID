@@ -15,6 +15,9 @@ import { type CohortKey, cohortKey, type DraftProfile, type UserProfile } from '
 interface ProfileState {
   profile: DraftProfile | null;
   setProfile: (profile: DraftProfile | null) => void;
+  /** スプラッシュ（初回起動の案内）を見たか。初回だけスプラッシュ → オンボーディングへ進める */
+  introSeen: boolean;
+  markIntroSeen: () => void;
   /** 端末からの読み込みが終わったか（終わるまでは「未入力」と区別できない） */
   hydrated: boolean;
 }
@@ -24,12 +27,14 @@ export const useProfileStore = create<ProfileState>()(
     (set) => ({
       profile: null,
       setProfile: (profile) => set({ profile }),
+      introSeen: false,
+      markIntroSeen: () => set({ introSeen: true }),
       hydrated: false,
     }),
     {
       name: 'wellnessid.profile',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({ profile: state.profile }),
+      partialize: (state) => ({ profile: state.profile, introSeen: state.introSeen }),
       onRehydrateStorage: () => () => useProfileStore.setState({ hydrated: true }),
     },
   ),

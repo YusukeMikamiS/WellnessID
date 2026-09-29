@@ -6,7 +6,15 @@
  */
 
 import { queryOptions } from '@tanstack/react-query';
-import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
+import {
+  collection,
+  collectionGroup,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 
 import { FirebaseError } from 'firebase/app';
 import { httpsCallable } from 'firebase/functions';
@@ -95,3 +103,19 @@ export function postErrorMessage(error: unknown): string {
   }
   return '投稿できませんでした。時間をおいてもう一度お試しください。';
 }
+
+/** 自分の口コミ（公開中のもの・新しい順）。MY WELLNESS 用。全アイテムを横断して探す */
+export async function getMyReviews(uid: string): Promise<Review[]> {
+  const snapshot = await getDocs(query(collectionGroup(db(), 'reviews'), where('uid', '==', uid)));
+  return snapshot.docs
+    .map((d) => ({ ...(d.data() as Omit<Review, 'id'>), id: d.id }))
+    .filter((r) => r.status === 'published')
+    .sort((a, b) => b.createdAt - a.createdAt);
+}
+
+export const myReviewsQuery = (uid: string) =>
+  queryOptions({
+    queryKey: ['reviews', 'mine', uid],
+    queryFn: () => getMyReviews(uid),
+    retry: 1,
+  });
