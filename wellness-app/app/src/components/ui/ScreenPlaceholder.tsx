@@ -6,12 +6,13 @@
  *
  * - 動的ルート（[id]）では useLocalSearchParams() の id も表示する
  * - links は骨組み段階の遷移確認用（全17画面に到達できることを確かめるため）
+ * - children は、実データをつないだ部品を骨組みの画面に仮置きするために使う
  * - タブ内ではタブバー（磨りガラス・absolute）の高さぶん下に余白を取る
  */
 
 import { Link, useLocalSearchParams, type Href } from 'expo-router';
 import { BottomTabBarHeightContext } from 'expo-router/tabs';
-import { useContext } from 'react';
+import { type ReactNode, useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -28,9 +29,11 @@ interface Props {
   screenNo: number;
   note: string;
   links?: PlaceholderLink[];
+  /** 実データをつないだ部品の仮置き場所。note の下に表示する */
+  children?: ReactNode;
 }
 
-export function ScreenPlaceholder({ title, screenNo, note, links = [] }: Props) {
+export function ScreenPlaceholder({ title, screenNo, note, links = [], children }: Props) {
   const { id } = useLocalSearchParams<{ id?: string }>();
   // タブ外では undefined。タブバーが下端のセーフエリアを含むので、タブ内では bottom の inset を重ねない
   const tabBarHeight = useContext(BottomTabBarHeightContext);
@@ -51,6 +54,8 @@ export function ScreenPlaceholder({ title, screenNo, note, links = [] }: Props) 
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.note}>{note}</Text>
         {id != null && <Text style={styles.param}>id: {id}</Text>}
+
+        {children != null && <View style={styles.children}>{children}</View>}
 
         {links.length > 0 && (
           <View style={styles.links}>
@@ -90,6 +95,9 @@ const styles = StyleSheet.create({
   param: {
     ...typography.bodySm,
     color: colors.ink,
+  },
+  children: {
+    marginTop: spacing.lg,
   },
   links: {
     marginTop: spacing.lg,
