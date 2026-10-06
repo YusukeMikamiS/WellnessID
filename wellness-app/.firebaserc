@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "dev": "wellnessidtest",
+    "prod": "wellness-id-62d44",
+    "default": "wellnessidtest"
+  }
+}
