@@ -2,8 +2,8 @@
 
 ## ファイル
 
-| ファイル | 内容 |
-|---|---|
+| ファイル                                         | 内容                                                                 |
+| ------------------------------------------------ | -------------------------------------------------------------------- |
 | `WELLNESS_ID_app_demo_phase1_rev3_20260925.html` | Phase 1 スコープのクリッカブルデモ（17画面）。単一HTML・外部通信なし |
 
 ブラウザでそのまま開けます。企画書 Rev.3 ⑥⑦⑧ を視覚的に展開したものです。
@@ -13,13 +13,13 @@
 **このHTMLは Web 用のモックアップであり、React Native のコードではありません。**
 そのままコピーしても動きません。次の対応関係で「**意図だけ**」を読み取ってください。
 
-| デモ（Web） | 実装（React Native） |
-|---|---|
-| `<div>` / `<span>` | `<View>` / `<Text>` |
-| CSS の `class` | NativeWind の `className`、または `StyleSheet` |
-| `:hover` | 無し（`Pressable` の押下状態で表現） |
-| `position: fixed` のタブバー | `expo-router` の `<Tabs>` |
-| CSS変数 `--primary` 等 | `src/theme/tokens.ts` の `colors` |
+| デモ（Web）                  | 実装（React Native）                           |
+| ---------------------------- | ---------------------------------------------- |
+| `<div>` / `<span>`           | `<View>` / `<Text>`                            |
+| CSS の `class`               | NativeWind の `className`、または `StyleSheet` |
+| `:hover`                     | 無し（`Pressable` の押下状態で表現）           |
+| `position: fixed` のタブバー | `expo-router` の `<Tabs>`                      |
+| CSS変数 `--primary` 等       | `src/theme/tokens.ts` の `colors`              |
 
 ### 読み取るべきもの
 
@@ -38,15 +38,15 @@
 
 `go('...')` と `data-go="..."` で画面を切り替えています。実装のルートとの対応：
 
-| デモのID | expo-router のルート |
-|---|---|
-| `home` | `app/(tabs)/index.tsx` |
-| `search` | `app/(tabs)/search.tsx` |
-| `ranking` | `app/(tabs)/ranking.tsx` |
-| `feed` | `app/(tabs)/reviews.tsx` |
-| `mywell` | `app/(tabs)/mywellness.tsx` |
-| `onboard` | `app/onboarding/index.tsx` |
-| `login` / `signup` | `app/(auth)/login.tsx` / `signup.tsx` |
+| デモのID              | expo-router のルート                  |
+| --------------------- | ------------------------------------- |
+| `home`                | `app/(tabs)/index.tsx`                |
+| `search`              | `app/(tabs)/search.tsx`               |
+| `ranking`             | `app/(tabs)/ranking.tsx`              |
+| `feed`                | `app/(tabs)/reviews.tsx`              |
+| `mywell`              | `app/(tabs)/mywellness.tsx`           |
+| `onboard`             | `app/onboarding/index.tsx`            |
+| `login` / `signup`    | `app/(auth)/login.tsx` / `signup.tsx` |
 | `notice` / `settings` | `app/notice.tsx` / `app/settings.tsx` |
 
 ## 注意

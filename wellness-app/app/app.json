@@ -20,12 +20,7 @@
     "android": {
       "package": "net.stechco.wellness"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font",
-      "expo-status-bar",
-      "expo-secure-store"
-    ],
+    "plugins": ["expo-router", "expo-font", "expo-status-bar", "expo-secure-store"],
     "experiments": {
       "typedRoutes": true
     }

@@ -46,8 +46,7 @@ export const scopeKeys = {
   kind: (kind: ItemKind): ScopeKey => `kind_${kind}`,
 };
 
-export const cohortKey = (ageBand: AgeBand, gender: Gender): CohortKey =>
-  `${ageBand}_${gender}`;
+export const cohortKey = (ageBand: AgeBand, gender: Gender): CohortKey => `${ageBand}_${gender}`;
 
 /**
  * 運動頻度（M1 確定：モックアップ rev.3 の4区分）

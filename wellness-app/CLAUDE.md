@@ -21,14 +21,14 @@
 
 サロン会員機能を**まるごと削除**しました。作らないでください。
 
-| 消えたもの |
-|---|
-| 会員証QR ／ 予約 ／ 予約変更 ／ トレーニング履歴 ／ 契約プラン |
-| Member Home（ダークテーマの画面群） |
-| `role: 'member'` とルートガード（`useMemberGuard`） |
+| 消えたもの                                                                |
+| ------------------------------------------------------------------------- |
+| 会員証QR ／ 予約 ／ 予約変更 ／ トレーニング履歴 ／ 契約プラン            |
+| Member Home（ダークテーマの画面群）                                       |
+| `role: 'member'` とルートガード（`useMemberGuard`）                       |
 | `MemberProfile` / `Reservation` / `TrainingLog` / `Plan` の各エンティティ |
-| `Notice.audience`（会員限定の出し分け） |
-| 予約リマインドのプッシュ通知 |
+| `Notice.audience`（会員限定の出し分け）                                   |
+| 予約リマインドのプッシュ通知                                              |
 
 **画面は 23 → 17 に減りました。テーマはライト1つだけです。**
 
@@ -47,20 +47,20 @@
 
 ## 2. 技術スタック（変更禁止）
 
-| 領域 | 採用 |
-|---|---|
-| フレームワーク | Expo SDK（Managed）+ expo-router |
-| 言語 | TypeScript **strict** |
-| 状態管理 | Zustand + TanStack Query |
-| フォーム検証 | react-hook-form + **zod**（クライアントとFunctionsで同じスキーマを使う） |
-| UI | 自前デザイントークン + NativeWind |
-| BaaS | Firebase（Auth / Firestore / Functions / Storage / FCM） |
-| 通知 | FCM（新着口コミ・コラム・ランキング更新） |
-| 認証 | Firebase Auth（Email） |
-| 配信 | EAS Build / EAS Submit → TestFlight、EAS Update（OTA） |
-| クラッシュ計測 | Firebase Crashlytics |
-| E2E | Maestro |
-| フォント | Jost（英字・数字）／ Zen Kaku Gothic New（本文） |
+| 領域           | 採用                                                                     |
+| -------------- | ------------------------------------------------------------------------ |
+| フレームワーク | Expo SDK（Managed）+ expo-router                                         |
+| 言語           | TypeScript **strict**                                                    |
+| 状態管理       | Zustand + TanStack Query                                                 |
+| フォーム検証   | react-hook-form + **zod**（クライアントとFunctionsで同じスキーマを使う） |
+| UI             | 自前デザイントークン + NativeWind                                        |
+| BaaS           | Firebase（Auth / Firestore / Functions / Storage / FCM）                 |
+| 通知           | FCM（新着口コミ・コラム・ランキング更新）                                |
+| 認証           | Firebase Auth（Email）                                                   |
+| 配信           | EAS Build / EAS Submit → TestFlight、EAS Update（OTA）                   |
+| クラッシュ計測 | Firebase Crashlytics                                                     |
+| E2E            | Maestro                                                                  |
+| フォント       | Jost（英字・数字）／ Zen Kaku Gothic New（本文）                         |
 
 ---
 
@@ -86,24 +86,24 @@
 
 実体は `app/src/theme/palette.js`。Tailwind も TypeScript も同じファイルを読む。
 
-| 用途 | 値 |
-|---|---|
-| 背景 | `#F7F8FA` |
+| 用途       | 値        |
+| ---------- | --------- |
+| 背景       | `#F7F8FA` |
 | サーフェス | `#FFFFFF` |
-| 文字 | `#1A1F27` |
-| 補助文字 | `#6E7684` |
-| 主色 | `#1F4FBF` |
-| 主色・濃 | `#16388C` |
-| 主色・淡 | `#EAEFF9` |
-| 罫線 | `#E4E8EE` |
+| 文字       | `#1A1F27` |
+| 補助文字   | `#6E7684` |
+| 主色       | `#1F4FBF` |
+| 主色・濃   | `#16388C` |
+| 主色・淡   | `#EAEFF9` |
+| 罫線       | `#E4E8EE` |
 | 面（Tint） | `#DDE3EB` |
 
 **種別色**（商品・店舗・専門家をひと目で見分ける）
 
-| 種別 | 文字色 | 背景 |
-|---|---|---|
-| PRODUCT | `#1F4FBF` | `#EAEFF9` |
-| SERVICE | `#0F7A6B` | `#E4F2EF` |
+| 種別         | 文字色    | 背景      |
+| ------------ | --------- | --------- |
+| PRODUCT      | `#1F4FBF` | `#EAEFF9` |
+| SERVICE      | `#0F7A6B` | `#E4F2EF` |
 | PROFESSIONAL | `#7A3E86` | `#F2E9F4` |
 
 **その他**：星 `#C9931F`（アンバー固定）／成功 `#1B7A4B`／注意 `#B4483C`
@@ -299,14 +299,14 @@ n < 5  → 総合評価を表示し、その理由を画面に明示する
 
 ### ✅ その他の M1 項目（確定）
 
-| 項目 | 決定 |
-|---|---|
-| 悩み・目的タグ | 初版14項目（`INITIAL_CONCERNS`）。`diet` を `tone` に統合。ID は英小文字スラッグで固定し、廃止した ID は再利用しない |
-| 運動頻度 | 4区分：`none`（ほぼしない）／`w1`（週1回）／`w2_3`（週2〜3回）／`w4plus`（週4回以上） |
-| エリア | 任意入力。**細かめに取る**：都道府県コード＋市区町村コード（`Area`）。地域スコープが未確定でも後から分け直せるようにするため |
-| 購入先 | 商品のみ：`amazon` / `rakuten` / `official` / `store` / `other`。定期便は区分にしない |
-| 知ったきっかけ | 店舗・専門家のみ：`referral` / `sns` / `search` / `this_app` / `other`（`discoverySource`） |
-| 口コミ写真 | 最大3枚 |
+| 項目           | 決定                                                                                                                         |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 悩み・目的タグ | 初版14項目（`INITIAL_CONCERNS`）。`diet` を `tone` に統合。ID は英小文字スラッグで固定し、廃止した ID は再利用しない         |
+| 運動頻度       | 4区分：`none`（ほぼしない）／`w1`（週1回）／`w2_3`（週2〜3回）／`w4plus`（週4回以上）                                        |
+| エリア         | 任意入力。**細かめに取る**：都道府県コード＋市区町村コード（`Area`）。地域スコープが未確定でも後から分け直せるようにするため |
+| 購入先         | 商品のみ：`amazon` / `rakuten` / `official` / `store` / `other`。定期便は区分にしない                                        |
+| 知ったきっかけ | 店舗・専門家のみ：`referral` / `sns` / `search` / `this_app` / `other`（`discoverySource`）                                  |
+| 口コミ写真     | 最大3枚                                                                                                                      |
 
 ---
 

@@ -90,7 +90,7 @@ module.exports = [
       'no-restricted-syntax': [
         'error',
         {
-          selector: "Literal[value=/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/]",
+          selector: 'Literal[value=/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/]',
           message:
             '色をハードコードしないこと。src/theme/tokens.ts から参照してください（CLAUDE.md §3-2）。',
         },

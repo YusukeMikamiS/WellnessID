@@ -10,6 +10,12 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# GitHub はリポジトリ直下の .github/workflows しか読まないので、このファイルは直下に置く。
+# アプリ一式は wellness-app/ にあるので、コマンドはすべてその中で実行する
+defaults:
+  run:
+    working-directory: wellness-app
+
 jobs:
   verify:
     name: Lint / Typecheck / Test
@@ -23,6 +29,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: wellness-app/package-lock.json
 
       - name: Install
         run: npm ci
@@ -51,6 +58,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: wellness-app/package-lock.json
       # Emulator（Firestore・Storage）は Java 21 以上が必要
       - uses: actions/setup-java@v4
         with:
