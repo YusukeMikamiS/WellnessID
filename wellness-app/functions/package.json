@@ -8,10 +8,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p test",
     "serve": "npm run build && firebase emulators:start --only functions,firestore,auth",
     "deploy": "firebase deploy --only functions",
-    "test": "echo \"(集計ロジックのテストをここに追加する)\" && exit 0"
+    "test": "echo \"(集計ロジックのテストをここに追加する)\" && exit 0",
+    "test:rules": "node --disable-warning=ExperimentalWarning --test \"test/rules/*.test.mts\""
   },
   "dependencies": {
     "firebase-admin": "^12.7.0",
@@ -19,6 +20,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0",
     "typescript": "~5.6.3"
   }
 }

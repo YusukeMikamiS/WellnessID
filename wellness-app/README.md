@@ -126,6 +126,10 @@ npm run seed
 | ダミーデータを入れ直す | `npm run seed` |
 | ダミーデータの中身だけ確かめる | `npm run seed:check` |
 | ランキングを今すぐ集計し直す（Emulator） | `npm run rankings` |
+| DBの鍵（ルール）が正しいか確かめる | `npm run test:rules` |
+
+> `npm run test:rules` は Emulator を自分で起動・停止します。`npm run emu` を動かしている間は番号がぶつかるので、
+> 代わりに `npm run test:rules -w functions` を使ってください（練習用のデータは消えません）。
 
 ---
 
