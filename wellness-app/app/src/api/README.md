@@ -5,17 +5,17 @@
 
 企画書 Rev.3 ⑫ の API 構成に対応させる：
 
-| モジュール | 内容 |
-|---|---|
+| モジュール    | 内容                                                                                                           |
+| ------------- | -------------------------------------------------------------------------------------------------------------- |
 | `firebase.ts` | Firebase の初期化と接続先の切り替え（開発中は Emulator）。**各モジュールだけが使い、画面からは import しない** |
-| `auth.ts` | signUp / signIn / signOut / updateProfile |
-| `onboard.ts` | getConcerns / estimateCohort ★Callable |
-| `discover.ts` | getItems / getItem / getServiceDetail / getProDetail / search |
-| `ranking.ts` | getRanking(scope, cohortKey?) — `rankings/**` を読むだけ |
-| `review.ts` | getReviews / postReview ★Callable / toggleLike / toggleFavorite / reportReview ★Callable |
-| `column.ts` | getColumns / getColumn |
-| `mywell.ts` | getMyReviews / getMyItems |
-| `notice.ts` | getNotices() |
+| `auth.ts`     | signUp / signIn / signOut / updateProfile                                                                      |
+| `onboard.ts`  | getConcerns / estimateCohort ★Callable                                                                         |
+| `discover.ts` | getItems / getItem / getServiceDetail / getProDetail / search                                                  |
+| `ranking.ts`  | getRanking(scope, cohortKey?) — `rankings/**` を読むだけ                                                       |
+| `review.ts`   | getReviews / postReview ★Callable / toggleLike / toggleFavorite / reportReview ★Callable                       |
+| `column.ts`   | getColumns / getColumn                                                                                         |
+| `mywell.ts`   | getMyReviews / getMyItems                                                                                      |
+| `notice.ts`   | getNotices()                                                                                                   |
 
 ★ = Cloud Functions 経由（整合性・通知・不正防止が必要なもの）
 
