@@ -37,8 +37,8 @@
 
 ### TestFlight配信準備
 
-- `eas.json` の `preview`/`production` プロファイルを `wellnessidtest` のFirebase設定値に紐付ける対応中（2026-10-07）。Firebase JS SDK使用のため `EXPO_PUBLIC_FIREBASE_*` 環境変数のみで足りる（ネイティブ設定ファイル不要）。
-- 当初 `eas.json` に生の値（`apiKey`等）を直書きしてコミットしたところ、pushがClaude Codeの資格情報漏洩チェックでブロックされた。**値は直書きせず、EAS Environment Variables（`eas env:create`）で管理する方式に変更**し、`eas.json` 側は `"environment": "preview"` / `"environment": "production"` の参照だけにした。
-- 未実施：EAS CLIへのログイン（`eas-cli` はnpx経由でローカルから実行可能。ログインはブラウザ認証が必要でユーザー本人の操作待ち）。ログイン後、`eas env:create` で以下の変数を `preview`/`production` 両環境に登録する必要あり：
-  `EXPO_PUBLIC_USE_FIREBASE_EMULATOR=false` / `EXPO_PUBLIC_FIREBASE_API_KEY` / `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN` / `EXPO_PUBLIC_FIREBASE_PROJECT_ID` / `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET` / `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` / `EXPO_PUBLIC_FIREBASE_APP_ID`（値は `wellnessidtest` のWebアプリ設定。`firebase apps:sdkconfig WEB <appId> --project wellnessidtest` で取得可能）
-- この時点でプロジェクトがEASにリンク済みか未確認（`app.json` に `extra.eas.projectId` が無い）。未リンクなら `eas init` も必要。
+- ✅ 完了（2026-10-07）：`eas.json` の `preview`/`production` プロファイルを `wellnessidtest` のFirebase設定値に紐付け済み。
+  - `eas.json` には値を直書きせず `"environment": "preview"` / `"environment": "production"` の参照のみ（直書き版は一度コミットしたがpushが資格情報漏洩チェックでブロックされたため、ローカルでコミットを作り直して修正版だけをpush済み）
+  - EAS Environment Variablesに7変数を登録済み（`EXPO_PUBLIC_FIREBASE_API_KEY` は visibility=sensitive、他はplaintext）：`EXPO_PUBLIC_USE_FIREBASE_EMULATOR` / `EXPO_PUBLIC_FIREBASE_API_KEY` / `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN` / `EXPO_PUBLIC_FIREBASE_PROJECT_ID` / `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET` / `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` / `EXPO_PUBLIC_FIREBASE_APP_ID`
+  - EASプロジェクトを新規作成・リンク済み：`@stechmikami/wellness-id`（`app.json` に `extra.eas.projectId` / `owner` が追加された。要コミット）
+- 未実施：実際のEAS Build実行（`eas build --profile preview`）での動作確認。`wellnessidtest` のCallable Functions `allUsers` 許可が下りてから試すのが良い（それまではFunctions呼び出しが403になる）

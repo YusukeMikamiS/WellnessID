@@ -20,9 +20,21 @@
     "android": {
       "package": "net.stechco.wellness"
     },
-    "plugins": ["expo-router", "expo-font", "expo-status-bar", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-status-bar",
+      "expo-secure-store"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1703f1f4-9849-4808-87dd-23ab3200190d"
+      }
+    },
+    "owner": "stechmikami"
   }
 }
